@@ -1,0 +1,8 @@
+{
+  "name": "bbc-charts",
+  "description": "BBC Charts UI library",
+  "version": "0.0.1",
+  "dependencies": {
+    "serve": "^14.0.1"
+  }
+}
