@@ -2,7 +2,13 @@
   "name": "bbc-charts",
   "description": "BBC Charts UI library",
   "version": "0.0.1",
+  "scripts": {
+    "build": "sass _assets/sass/main.scss:_assets/css/style.min.css _assets/sass/charts.scss:_assets/css/charts.min.css --style=compressed",
+    "watch": "serve && sass --watch _assets/sass/:_assets/css/ --style=compressed"
+  },
   "dependencies": {
+    "bootstrap": "^5.2.2",
+    "sass": "^1.55.0",
     "serve": "^14.0.1"
   }
 }
