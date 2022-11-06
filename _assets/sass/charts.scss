@@ -91,29 +91,30 @@ $chart-colors: map-merge((
 
 // #region Apply colours
 @for $i from 1 to 10 {
-
-  .chart__key .key:not(:first-child):nth-child(#{$i+1}):before,
-  input:not([value="none"]):not([value="pie"]):checked ~ .chart table tbody tr td:not(:first-child):nth-child(#{$i+1}) {
+  
+  .chart__key .key:nth-child(#{$i}):before,
+  input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner table tbody tr td:not(:first-child):nth-child(#{$i+1}) {
     background: var(#{'--colour-chart-'+$i});
+    border-color: var(#{'--colour-chart-'+$i});
   }
-  input[value="line"]:checked ~ .chart .line:nth-child(#{$i}) {
+  input[value="line"]:checked ~ .chart__inner .line:nth-child(#{$i}) {
     stroke: var(#{'--colour-chart-'+$i});
     z-index: #{10 - $i};
   }
-  input[value="pie"]:checked ~ .chart .pie path:nth-child(#{$i}) {
+  input[value="pie"]:checked ~ .chart__inner .pie path:nth-child(#{$i}) {
     fill: var(#{'--colour-chart-'+$i});
   }
 }
 // #endregion
 
 
-.chart__wrapper {
+.chart {
 
     container-type: inline-size;
 }
 
 // #region caption
-.chart__wrapper {
+.chart {
   figcaption {
     font-size: 1rem;
     margin-bottom: 2rem;
@@ -123,7 +124,7 @@ $chart-colors: map-merge((
 // #endregion
 
 // #region 
-.chart__wrapper > [type="radio"]{
+.chart > [type="radio"]{
     display: none;
 }
 // #endregion
@@ -153,14 +154,10 @@ $chart-colors: map-merge((
       height: 1em;
       width: 1em;
       margin-right: 0.25em;
-      background: red;
+    border: 1px solid currentColor;
       display: inline-block;
       vertical-align: middle;
       margin-bottom: 0.2em;
-    }
-
-    &:first-child {
-      display: none;
     }
   }
 }
@@ -169,13 +166,35 @@ $chart-colors: map-merge((
 
     .chart__key {
             
-        --key-label-width: auto;
+      --key-label-width: auto;
     }
 }
 // #endregion
 
+// #region Hide data sets
+
+
+
+@for $i from 1 to 10 {
+  
+  input:nth-of-type(#{$i}):not(:checked) ~ .chart__inner table tbody tr td:not(:first-child):nth-child(#{$i+1}) {
+    display: none;
+  }
+
+  input:nth-of-type(#{$i}):not(:checked) ~ .chart__key .key:nth-of-type(#{$i}):before {
+              
+    background: none!important;
+  }
+  
+  input:nth-of-type(#{$i}):not(:checked) ~ .chart__inner .lines .line:nth-child(#{$i}) {
+    display: none!important;
+  }
+}
+// #endregion
+
+
 // #region Default bar chart (Also applies to line chart)
-input:not([value="none"]):not([value="pie"]):checked ~ .chart {
+input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner {
 
   --label-size: #{rem(12)};
   --chart-ratio: 56.25%;
@@ -435,7 +454,7 @@ input:not([value="none"]):not([value="pie"]):checked ~ .chart {
 
 // #region Stacked bar chart
 
-input:not([value="none"]):not([value="pie"])[value="stacked"]:checked ~ .chart {
+input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:checked ~ .chart__inner {
   table tbody tr {
     flex-direction: column-reverse;
     justify-content: flex-start;
@@ -445,7 +464,7 @@ input:not([value="none"]):not([value="pie"])[value="stacked"]:checked ~ .chart {
 // #endregion
 
 // #region Line chart
-input:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart {
+input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner {
 
   --line-thickness: 1px;
 
@@ -548,7 +567,7 @@ input:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart {
 // #endregion
 
 // #region Pie chart
-input:not([value="none"])[value="pie"]:checked ~ .chart {
+input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .chart__inner {
 
   margin-bottom: 2rem;
 
@@ -644,10 +663,10 @@ input:not([value="none"])[value="pie"]:checked ~ .chart {
 // #endregion
 
 // #region Reverted back into a table
-input[value="none"]:checked ~ .chart__key {
+input[type="radio"][value="none"]:checked ~ .chart__key {
   display: none;
 }
-input[value="none"]:checked ~ .chart {
+input[type="radio"][value="none"]:checked ~ .chart__inner {
 
   .chart__yaxis,
   .line,
