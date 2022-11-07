@@ -17,24 +17,33 @@
       <details>
         <summary>Read more</summary>
 
+        <p>Principles</p>
         <ul>
             <li>Data is interchangeable between charts</li>
-            <li>Minimal JS</li>
-            <li>Re-usable components</li>
+            <li>Minimal JS needed for chart to function</li>
+            <li>Add as much or as little html as you want to create the chart</li>
+            <li>Re-usable component</li>
             <li>CSS Vars to customise</li>
-            <li>Interaction added via JS to show/hide datasets</li>
+            <li>Interaction to show/hide datasets and even update the chart type</li>
             <li>Live charts - auto update after table is updated</li>
-            <li>Events</li>
         </ul>
+
         <p>Charts types</p>
         <ul>
-            <li>Bar</li>
-            <li>Column</li>
+            <li>Bar (not started)</li>
+            <li>Column (rename from bar)</li>
             <li>Stacked</li>
-            <li>scatter</li>
+            <li>scatter (not started)</li>
             <li>line</li>
-            <li>Different min values</li>
-            <li>Negative values</li>
+            <li>Different min values (not started)</li>
+            <li>Negative values (not started)</li>
+            <li>Range (not started)</li>
+        </ul>
+        <p>Todo</p>
+        <ul>
+            <li>CSS Vars to customise</li>
+            <li>Live charts - auto update after table is updated</li>
+            <li>Events</li>
         </ul>
       </details>
 
@@ -208,15 +217,10 @@
     <figure class="chart" data-max="100" data-min="0">
         <figcaption></figcaption>
 
-
         <input type="radio" name="chart-type" value="none" id="chart-none" checked/>
-
         <input type="radio" name="chart-type" value="bar" id="chart-bar"/>
-
         <input type="radio" name="chart-type" value="line" id="chart-line"/>
-
         <input type="radio" name="chart-type" value="pie" id="chart-pie"/>
-
         <input type="radio" name="chart-type" value="stacked" id="chart-stacked"/>
 
         <div class="chart__inner">

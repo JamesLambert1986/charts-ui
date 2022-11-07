@@ -145,24 +145,32 @@ function chart(chartElement,min,max,type,guidelines) {
 
 export const createChartKey = function(chartID, chartElement){
 
+  const chartInner = chartElement.querySelector('.chart__inner');
   let chartKey = document.createElement("div");
+  let previousInput;
   chartKey.setAttribute('class','chart__key');
   chartKey.setAttribute('role','presentation');
 
-  chartElement.prepend(chartKey);
+  chartElement.insertBefore(chartKey,chartInner);
 
   Array.from(chartElement.querySelectorAll('thead th')).forEach((arrayElement, index) => {
 
     if(index != 0){
 
+      let firstChild = chartElement.querySelector(':scope > *');
       let input = document.createElement('input');
       input.setAttribute('name',`${chartID}-dataset-${index}`);
       input.setAttribute('id',`${chartID}-dataset-${index}`);
       input.setAttribute('checked',`checked`);
       input.setAttribute('type',`checkbox`);
 
+      if(index == 1)
+        chartElement.prepend(input);
+      else
+        chartElement.insertBefore(input,previousInput.nextSibling);
 
-      chartElement.insertBefore(input,chartKey);
+      previousInput = input;
+
 
       let label = document.createElement('label');
       label.setAttribute('class',`key`);
@@ -177,7 +185,7 @@ export const createChartKey = function(chartID, chartElement){
 
 export const createChartType = function(chartID,chartElement,type){
 
-  const chartInner = chartElement.querySelector('.chart__inner');
+  const chartKey = chartElement.querySelector('.chart__key');
   const chartType = document.createElement('input');
 
   chartType.setAttribute('type','radio');
@@ -185,7 +193,7 @@ export const createChartType = function(chartID,chartElement,type){
   chartType.value = type;
   chartType.setAttribute('checked','checked');
 
-  chartElement.insertBefore(chartType, chartInner);
+  chartElement.insertBefore(chartType, chartKey);
 }
 
 
@@ -284,7 +292,7 @@ export const createPies = function(chartElement){
 
       const display = getComputedStyle(cell).display;
 
-      if(subindex != 0 && display != 'none'){
+      if(subindex != 0){
 
         let value = cell.getAttribute('data-numeric');
 
@@ -297,7 +305,8 @@ export const createPies = function(chartElement){
         const [startX, startY] = getCoordinatesForPercent(cumulativePercent);
 
         // each slice starts where the last slice ended, so keep a cumulative percent
-        cumulativePercent += percent;
+        if(display != 'none')
+          cumulativePercent += percent;
 
         const [endX, endY] = getCoordinatesForPercent(cumulativePercent);
 

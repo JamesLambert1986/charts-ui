@@ -60,16 +60,16 @@
 // #region Chart Colours
 $chart-colors: ();
 $chart-colors: map-merge((
-  1: blue,
-  2: red,
-  3: yellow,
-  4: purple,
-  5: pink,
-  6: orange,
-  7: --colour-primary,
-  8: --colour-secondary,
-  9: --colour-info,
-  10: --colour-warning,
+  1: #0071F1,
+  2: #009B9B,
+  3: #24B300,
+  4: #FFB32B,
+  5: #F51A5A,
+  6: #FA6400,
+  7: #963CE1,
+  8: #8D8D8D,
+  9: #067EB3,
+  10: #D24712,
 ), $chart-colors);
 
 :root {
@@ -130,6 +130,10 @@ $chart-colors: map-merge((
 // #endregion
 
 // #region Chart key
+.chart > input[type="checkbox"] {
+  display: none;
+}
+
 .chart__key {
 
     --key-label-width: 100%;
