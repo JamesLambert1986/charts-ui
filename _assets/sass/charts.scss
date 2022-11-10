@@ -1,129 +1,102 @@
-@use "_vars" as *;
-@use "_func" as *;
-@use "_mixins" as *;
 @use "sass:math";
 
+// #region Sass vars
+$chart-colour-1: #0071F1!default;
+$chart-colour-2: #009B9B!default;
+$chart-colour-3: #24B300!default;
+$chart-colour-4: #FFB32B!default;
+$chart-colour-5: #F51A5A!default;
+$chart-colour-6: #FA6400!default;
+$chart-colour-7: #963CE1!default;
+$chart-colour-8: #8D8D8D!default;
+$chart-colour-9: #067EB3!default;
+$chart-colour-10: #D24712!default;
 
-@import "../../node_modules/bootstrap/scss/functions";
-@import "_BS_vars";
-@import "../../node_modules/bootstrap/scss/mixins";
-
-
-:root {
-    // Print out the $vars array setup in the variables file so they can be used as CSS vars
-    // Custom variable values only support SassScript inside `#{}`.
-    @each $var, $value in $vars {
-      #{$var}: #{$value};
-    }
-  
-    // Add in media query based updates to the global vars like updating the heading 1 font size
-    @include media-breakpoint-up(md) {
-      
-      @each $var, $value in $varsMD {
-        #{$var}: #{$value};
-      }
-    }
-  
-    // Extra vars needed
-    --body-bg: white;
-    --colour-underline: var(--colour-primary);
-    --colour-heading: var(--colour-primary);
-    --alpha: var(--bg-opacity,1);
-    --#{$variable-prefix}gradient: #{$gradient};
-    --content-max-width: #{$content-max-width};
-    --colour-brand: var(--colour-primary);
-  
-    /* Button colours */
-    --btn-bg: var(--colour-warning);
-    --btn-text: var(--colour-primary);
-    --btn-hover-text: var(--colour-primary);
-    --btn-tertiary-bg: var(--colour-primary);
-    --btn-tertiary-hover-text: white;
-}
-  
-
-
-
-
-.table__wrapper {
-    display: block;
-    width: calc(100% + 1rem);
-    padding-right: 1rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-    margin-bottom: 2rem;
-
-}
-
-
-// #region Chart Colours
 $chart-colors: ();
 $chart-colors: map-merge((
-  1: #0071F1,
-  2: #009B9B,
-  3: #24B300,
-  4: #FFB32B,
-  5: #F51A5A,
-  6: #FA6400,
-  7: #963CE1,
-  8: #8D8D8D,
-  9: #067EB3,
-  10: #D24712,
+  1: $chart-colour-1,
+  2: $chart-colour-2,
+  3: $chart-colour-3,
+  4: $chart-colour-4,
+  5: $chart-colour-5,
+  6: $chart-colour-6,
+  7: $chart-colour-7,
+  8: $chart-colour-8,
+  9: $chart-colour-9,
+  10: $chart-colour-10
 ), $chart-colors);
 
-:root {
-  
-  @each $index, $value in $chart-colors {
-    --colour-chart-#{$index}: #{$value};
-  }
+// #endregion
+
+// #region Functions and mixins
+@function rem($pixels, $context: 16)
+{
+	@return #{math.div($pixels,$context)}rem;
+}
+// #endregion
+
+// #region Table wrapper - adds overflow support when in smaller containers
+.table__wrapper {
+  display: block;
+  width: calc(100% + 1rem);
+  padding-right: 1rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+  margin-bottom: 2rem;
+}
+// #endregion
+
+// #region Basic setup - including: container setup, css vars 
+*:has(> .chart){
+  container-type: inline-size;
 }
 
-@media screen and (prefers-color-scheme: dark) {
-  :root {
-    --colour-chart-1: var(--colour-dark);
-    --colour-chart-5: var(--colour-light);
-    --colour-chart-6: var(--colour-dark);
-    --colour-chart-7: var(--colour-secondary);
+.chart {
+  
+  // CSS vars that can be overwritten by declaring them without the -set on the end of the variable i.e. --chart-colour-1: red; would overwrite --chart-colour-1-set
+  --body-colour-set: var(--body-colour, white);
+  --index-below: -1;
+  --index-base: 0;
+  --index-focus: 2;
+  --index-above: 10;
+  --index-floating: 100;
+  --index-menu: 200;
+  --index-overlay: 1000;
+
+  @each $index, $value in $chart-colors {
+    --chart-colour-#{$index}-set: var(--chart-colour-#{$index},#{$value});
+  }
+
+  // Non-configurable css vars
+  --key-label-width: 100%;
+
+  @container (min-width: 36em) {
+
+    --key-label-width: auto;
   }
 }
 // #endregion
 
-// #region Apply colours
+// #region Apply chart colours
 @for $i from 1 to 10 {
   
-  .chart__key .key:nth-child(#{$i}):before,
+  .chart__key .key:nth-child(#{$i}),
   input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner table tbody tr td:not(:first-child):nth-child(#{$i+1}) {
-    background: var(#{'--colour-chart-'+$i});
-    border-color: var(#{'--colour-chart-'+$i});
+    
+    --chart-colour: var(#{'--chart-colour-'+$i+'-set'});
   }
   input[value="line"]:checked ~ .chart__inner .line:nth-child(#{$i}) {
-    stroke: var(#{'--colour-chart-'+$i});
+    stroke: var(#{'--chart-colour-'+$i+'-set'});
     z-index: #{10 - $i};
   }
   input[value="pie"]:checked ~ .chart__inner .pie path:nth-child(#{$i}) {
-    fill: var(#{'--colour-chart-'+$i});
+    fill: var(#{'--chart-colour-'+$i+'-set'});
   }
 }
 // #endregion
 
-
-.chart {
-
-    container-type: inline-size;
-}
-
-// #region caption
-.chart {
-  figcaption {
-    font-size: 1rem;
-    margin-bottom: 2rem;
-    display: block;
-  }
-}
-// #endregion
-
-// #region 
+// #region Chart type switcher
 .chart > [type="radio"]{
     display: none;
 }
@@ -136,66 +109,59 @@ $chart-colors: map-merge((
 
 .chart__key {
 
-    --key-label-width: 100%;
-  padding-bottom: 2rem;
-  margin-bottom: 0;
-
-  &:before {
-    content: "Key: ";
-    display: inline-block;
-    padding-right: 1.5rem;
-    margin-bottom: 1rem;
-    width: var(--key-label-width);
-  }
+  padding: 0.75rem;
+  margin-bottom: 2rem;
+  background: var(--colour-key-bg, rgb(220, 220, 220));
 
   .key {
     display: inline-block;
-    padding-right: 1.5rem;
-    margin-bottom: 1rem;
+    padding: 0.5rem;
+    margin-right: 0.75rem;
+    background: white;
+    border-left: 5px solid var(--chart-colour);
+    cursor: pointer;
 
-    &:before {
-      content: "";
-      height: 1em;
-      width: 1em;
-      margin-right: 0.25em;
-    border: 1px solid currentColor;
-      display: inline-block;
-      vertical-align: middle;
-      margin-bottom: 0.2em;
+    &:hover,
+    &:focus-within {
+      outline: 3px solid var(--chart-colour);
     }
   }
-}
-
-@container (min-width: 36em) {
-
-    .chart__key {
-            
-      --key-label-width: auto;
-    }
 }
 // #endregion
 
 // #region Hide data sets
 
+.chart > input[type="checkbox"]:not(:checked) ~ .chart__key .key {
+  
+  opacity: 0.25;
+}
 
+.chart > input[type="checkbox"]:not(:checked) ~ .chart__inner table tbody tr td:not(:first-child) {
+  display: none;
+}
+
+
+.chart > input[type="checkbox"]:not(:checked) ~ .chart__inner .lines .line {
+  display: none!important;
+}
 
 @for $i from 1 to 10 {
   
-  input:nth-of-type(#{$i}):not(:checked) ~ .chart__inner table tbody tr td:not(:first-child):nth-child(#{$i+1}) {
-    display: none;
+
+  .chart > input[type="checkbox"]:nth-of-type(#{$i}):not(:checked) ~ .chart__inner table tbody tr td:not(:first-child):nth-child(#{$i+1}) {
+    display: block;
   }
 
-  input:nth-of-type(#{$i}):not(:checked) ~ .chart__key .key:nth-of-type(#{$i}):before {
-              
-    background: none!important;
+  .chart > input[type="checkbox"]:nth-of-type(#{$i}):not(:checked) ~ .chart__key .key:nth-of-type(#{$i}) {
+    
+    opacity: 1;
   }
   
   input:nth-of-type(#{$i}):not(:checked) ~ .chart__inner .lines .line:nth-child(#{$i}) {
-    display: none!important;
+    display: block!important;
   }
 }
 // #endregion
-
 
 // #region Default bar chart (Also applies to line chart)
 input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner {
@@ -385,6 +351,8 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
         background: green;
         padding: 0;
 
+        background: var(--chart-colour);
+
         &[data-label]:before {
           display: none;
         }
@@ -396,7 +364,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
           font-size: var(--label-size);
           line-height: 1.2;
           transform: translate(-50%,0);
-          background: var(--colour-info);
+          background: var(--chart-colour);
           opacity: 0;
           pointer-events: none;
           padding: 0.5rem;
@@ -445,6 +413,17 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
         &[data-label]:before {
           display: none;
         }
+      }
+    }
+
+    tbody:has(tr:nth-child(26)){
+
+      tr {
+        display: none;
+      }
+
+      tr:nth-last-child(-n+26) ~ tr {
+        display: flex;
       }
     }
   }
@@ -561,7 +540,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked
     width: 100%;
     height: calc(100% - 2rem);
     pointer-events: none;
-    z-index: var(--index-below)
+    z-index: var(--index-above)
   }
 
   .pie {
@@ -626,7 +605,7 @@ input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .chart__inner {
   }
 
   .pie foreignObject {
-    background: var(--body-bg);
+    background: var(--body-colour-set);
     border-radius: 50%;
     z-index: var(--index-focus);
     pointer-events: none;

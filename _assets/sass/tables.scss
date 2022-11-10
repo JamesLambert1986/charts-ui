@@ -1,11 +1,11 @@
-@use "_vars" as *;
-@use "_func" as *;
-@use "_mixins" as *;
 @use "sass:math";
 
-@import "../../node_modules/bootstrap/scss/functions";
-@import "_BS_vars";
-@import "../../node_modules/bootstrap/scss/mixins";
+// #region Functions and mixins
+@function rem($pixels, $context: 16)
+{
+	@return #{math.div($pixels,$context)}rem;
+}
+// #endregion
 
 
 // #region Default table
@@ -36,23 +36,23 @@ td,th {
 
 th {
   font-weight: bold;
-  @include var(color,--colour-heading);
+  color: var(--colour-heading);
 }
 
 tr {
   border-bottom: var(--inner-border-width) solid currentColor;
-  @include var(border-color,--colour-border);
+  border-color: var(--colour-border);
 
   &:last-child {
     border-bottom: var(--border-width) solid currentColor;
-    @include var(border-color,--colour-border);
+    border-color: var(--colour-border);
   }
 }
 
 thead {
   tr:first-child {
     border-top: var(--border-width) solid currentColor;
-    @include var(border-color,--colour-border);
+    border-color: var(--colour-border);
   }
 
   th {
@@ -60,11 +60,10 @@ thead {
     line-height: rem(24);
     padding-bottom: rem(24);
 
-    @include media-breakpoint-up(sm) {
   
       font-size: rem(18);
       white-space: nowrap;
-    }
+    
 
     font-weight: bold;
     vertical-align: bottom;
@@ -74,7 +73,7 @@ thead {
 tbody:first-child{
   tr:first-child {
     border-top: var(--border-width) solid currentColor;
-    @include var(border-color,--colour-border);
+    border-color: var(--colour-border);
   }
 }
 
@@ -106,9 +105,11 @@ table.border-0 {
 // #endregion
 
 // #region Tables are only stacked on mobile
-@media screen and (max-width: 36em) {
-  .table__wrapper:not(.table-fullwidth):not(.client-table) {
+.table__wrapper:not(.table-fullwidth):not(.client-table) {
 
+  container-type: inline-size;
+  
+  @container (max-width: 36em) {
     overflow: hidden;
 
     thead {
@@ -118,7 +119,7 @@ table.border-0 {
     tbody {
       display: block;
       border-top: 2px solid currentColor;
-      @include var(border-color,--colour-border);
+      border-color: var(--colour-border);
     }
 
     tr {
@@ -163,7 +164,7 @@ table.border-0 {
 
   .bg-light & {
 
-    @include var(background-color,--colour-white);
+    background-color: var(--colour-white);
   }
 }
 // #endregion
@@ -275,25 +276,3 @@ table.border-0 {
 }
 
 // #endregion
-
-
-.note-feed {
-
-  td:last-child {
-    min-width: 20rem;
-
-    /*
-    display: -webkit-box;
-    -webkit-line-clamp: 5;
-    -webkit-box-orient: vertical;  
-    overflow: hidden;
-    padding-bottom: 0;
-    margin-bottom: 1rem;
-
-    &:hover {
-
-    -webkit-line-clamp: inherit;
-    }
-    */
-  }
-}

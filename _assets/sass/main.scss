@@ -1,3 +1,20 @@
 @charset "UTF-8";
 
 @import "../../node_modules/bootstrap/scss/bootstrap.scss";
+
+
+:root {
+    //--chart-colour-2: red;
+}
+
+body {
+    font-family: ReithSans,Helvetica,Arial,freesans,sans-serif;
+    font-weight: 400;
+    font-feature-settings: '';
+    font-size: 1rem;
+    line-height: 1.375;
+}
+
+//$chart-colour-1: purple;
+@import "./tables.scss";
+@import "./charts.scss";

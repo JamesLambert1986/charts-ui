@@ -3,8 +3,7 @@
   <head>
     <title>BBC Charts UI Library</title>
     <link rel="stylesheet" href="_assets/css/main.css" />
-    <link rel="stylesheet" href="_assets/css/tables.css" />
-    <link rel="stylesheet" href="_assets/css/charts.css" />
+    
     <script src="_assets/js/main.js" type="module" defer></script>
   </head>
   <body>
@@ -44,6 +43,11 @@
             <li>CSS Vars to customise</li>
             <li>Live charts - auto update after table is updated</li>
             <li>Events</li>
+            <li>Unit tests</li>
+            <li>react component</li>
+            <li>Fix z-index</li>
+            <li>JS populate switcher</li>
+            <li>Update styles to match GEL</li>
         </ul>
       </details>
 
@@ -279,6 +283,81 @@
             </div>
         </div>
     </figure>
+
+
+
+
+    <h2>Line chart that updates with new data being added to the table</h2>
+    
+    <figure class="chart" data-max="100" data-min="0" data-type="line" data-guidelines="£0,£50,£100" id="autoUpdate">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Growth</th>
+                    <th>Growth2</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2011</td>
+                    <td>£50.00</td>
+                    <td>£50.10</td>
+                </tr>
+                <tr>
+                    <td>2012</td>
+                    <td>£75.00</td>
+                    <td>£50.10</td>
+                </tr>
+                <tr>
+                    <td>2013</td>
+                    <td>£45.00</td>
+                    <td>£57.10</td>
+                </tr>
+                <tr>
+                    <td>2014</td>
+                    <td>£35.00</td>
+                    <td>£80.10</td>
+                </tr>
+            </tbody>
+        </table>
+    </figure>
+
+
+<script>
+
+function randomIntFromInterval(min, max) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+let year = 2015;
+let updateChart;
+
+updateChart = setInterval(function () {
+    
+
+    let table = document.getElementById('autoUpdate');
+
+    let tbody = table.querySelector('tbody');
+
+
+    let growth = table.querySelector('tbody tr:last-child td:nth-child(2)');
+    let growthValue = parseInt(growth.getAttribute('data-numeric')) < 120 ? parseInt(growth.getAttribute('data-numeric')) : 110;
+
+    
+    let growth2 = table.querySelector('tbody tr:last-child td:nth-child(3)');
+    let growthValue2 = parseInt(growth2.getAttribute('data-numeric')) > 0 ? parseInt(growth2.getAttribute('data-numeric')) : 10;
+
+
+    tbody.innerHTML += `<tr><td>${year++}</td><td>£${growthValue + randomIntFromInterval(-5,10)}</td><td>£${growthValue2 + randomIntFromInterval(-10,5)}</td></tr>`;
+
+    if(year == 2051)
+        clearInterval(updateChart);
+
+}, 3000);
+
+</script>
 
 
 

@@ -57,51 +57,7 @@ function chart(chartElement,min,max,type,guidelines) {
   }
 
   // Make sure table cells have enough data attached to them to display the chart data
-  Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr, index) => {
-
-    let group = tr.querySelector('td:first-child, th:first-child') ? tr.querySelector('td:first-child, th:first-child').innerHTML : '';
-
-    // Set the data numeric value if not set
-    Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td, index) => {
-      td.setAttribute('data-numeric',parseFloat(td.innerHTML.replace('£','')));
-    });
-
-    // Set the data label value if not set
-    Array.from(tr.querySelectorAll('td:not([data-label])')).forEach((td, index) => {
-
-      td.setAttribute('data-label',chartElement.querySelectorAll('thead th')[index].innerHTML);
-    });
-
-    // Add css vars to cells
-    Array.from(tr.querySelectorAll('td[data-numeric]:not([data-numeric="0"]):not(:first-child)')).forEach((td, index) => {
-
-      
-      const label = td.getAttribute('data-label');
-      const content = td.innerHTML;
-
-      if(!td.querySelector('span[data-group]'))
-        td.innerHTML = `<span data-group="${group}" data-label="${label}">${content}</span>`;
-
-      if(!td.hasAttribute('style')){
-        
-
-        const value = Number.parseFloat(td.getAttribute('data-numeric'));
-        let percent = ((value - min)/(max)) * 100;
-        let bottom = 0;
-
-        // If the value is negative the position below the 0 line
-        if(min < 0){
-          bottom = Math.abs((min)/(max)*100);
-          if(value < 0){
-            bottom = bottom - percent;
-          }
-        }
-        td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;`);
-      }
-
-
-    });
-  });
+  setCellData(chartElement,min,max);
 
   // Create lines for line graph
   if(chartElement.querySelector(':scope > input[value="line"]:checked'))
@@ -141,6 +97,116 @@ function chart(chartElement,min,max,type,guidelines) {
     }
 
   }
+
+  // event observers 
+  const attributesUpdated = (mutationList, observer) => {
+    for (const mutation of mutationList) {
+
+      observer.disconnect();
+      observer2.disconnect();
+
+      if (mutation.type === 'childList') {
+        console.log('A child node has been added or removed.');
+      } else if (mutation.type === 'attributes') {
+        console.log(`The ${mutation.attributeName} attribute was modified.`);
+      }
+
+      
+      min = chartElement.getAttribute('data-min');
+      max = chartElement.getAttribute('data-max');
+      
+      if(mutation.type === 'attributes'){
+
+        guidelines = chartElement.getAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : [];
+        
+        // Y Axis and Guidelines
+        if(guidelines){
+          createChartYaxis(chartElement,min,max,guidelines);
+          createChartGuidelines(chartElement,min,max,guidelines);
+        }
+
+        deleteCellData(chartElement);
+      }
+
+      setCellData(chartElement,min,max);
+
+      // Create lines for line graph
+      if(chartElement.querySelector(':scope > input[value="line"]:checked'))
+        createLines(chartElement,min,max);
+
+      // Create pies
+      if(chartElement.querySelector(':scope > input[value="pie"]:checked'))
+        createPies(chartElement);
+
+        
+
+      observer.observe(table, { attributes: true, childList: true, subtree: true });
+      observer2.observe(chartElement, { attributes: true });
+
+    }
+  };
+
+  const tableUpdated = (mutationList, observer) => {
+    for (const mutation of mutationList) {
+
+      observer.disconnect();
+      observer2.disconnect();
+
+      let attributeChange = false;
+
+      min = chartElement.getAttribute('data-min');
+      max = chartElement.getAttribute('data-max');
+      
+      Array.from(chartElement.querySelectorAll('tbody tr td[data-numeric]')).forEach((td, index) => {
+        
+        if(parseFloat(td.getAttribute('data-numeric')) > max){
+
+          max = parseFloat(td.getAttribute('data-numeric'));
+          attributeChange = true;
+          chartElement.setAttribute('data-max',max);
+        }
+      });
+
+
+
+      if(attributeChange){
+
+        console.log('update')
+
+        guidelines = chartElement.getAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : [];
+        
+        // Y Axis and Guidelines
+        if(guidelines){
+          createChartYaxis(chartElement,min,max,guidelines);
+          createChartGuidelines(chartElement,min,max,guidelines);
+        }
+
+        deleteCellData(chartElement);
+      }
+
+      setCellData(chartElement,min,max);
+
+      // Create lines for line graph
+      if(chartElement.querySelector(':scope > input[value="line"]:checked'))
+        createLines(chartElement,min,max);
+
+      // Create pies
+      if(chartElement.querySelector(':scope > input[value="pie"]:checked'))
+        createPies(chartElement);
+
+
+      observer.observe(table, { attributes: true, childList: true, subtree: true });
+      observer2.observe(chartElement, { attributes: true });
+    }
+  };
+
+  const observer = new MutationObserver(tableUpdated);
+  const observer2 = new MutationObserver(attributesUpdated);
+
+  observer.observe(table, { attributes: true, childList: true, subtree: true });
+  observer2.observe(chartElement, { attributes: true });
+
+
 }
 
 export const createChartKey = function(chartID, chartElement){
@@ -201,16 +267,20 @@ export const createChartYaxis = function(chartElement,min,max,guidelines){
 
   const chartInner = chartElement.querySelector('.chart__inner');
 
-  const chartYaxis = document.createElement('div');
-  chartYaxis.setAttribute('class','chart__yaxis');
+  let chartYaxis = chartElement.querySelector('.chart__yaxis');
 
+  if(!chartYaxis){
+    chartYaxis = document.createElement('div');
+    chartYaxis.setAttribute('class','chart__yaxis');
+  }
+
+  chartYaxis.innerHTML = '';
   for (var i = 0; i < guidelines.length; i++) {
 
     const value = parseFloat(guidelines[i].replace('£',''));
     const percent = (100 * value) / max;
 
     chartYaxis.innerHTML += `<div class="axis__point" style="--percent:${percent}%;"><span>${guidelines[i]}</span></div>`;
-    
   }
 
   chartInner.prepend(chartYaxis);
@@ -219,10 +289,14 @@ export const createChartYaxis = function(chartElement,min,max,guidelines){
 export const createChartGuidelines = function(chartElement,min,max,guidelines){
 
   const tableWrapper = chartElement.querySelector('.table__wrapper');
+  let chartGuidelines = chartElement.querySelector('.chart__guidelines');
 
-  const chartGuidelines = document.createElement('div');
-  chartGuidelines.setAttribute('class','chart__guidelines');
+  if(!chartGuidelines){
+    chartGuidelines = document.createElement('div');
+    chartGuidelines.setAttribute('class','chart__guidelines');
+  }
 
+  chartGuidelines.innerHTML = '';
   for (var i = 0; i < guidelines.length; i++) {
 
     const value = parseFloat(guidelines[i].replace('£',''));
@@ -233,6 +307,61 @@ export const createChartGuidelines = function(chartElement,min,max,guidelines){
 
   tableWrapper.prepend(chartGuidelines);
 
+}
+
+export const deleteCellData = function(chartElement){
+  Array.from(chartElement.querySelectorAll('tbody tr td')).forEach((td, index) => {
+    td.removeAttribute('style');
+  });
+}
+
+export const setCellData = function(chartElement,min,max){
+
+  Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr, index) => {
+
+    let group = tr.querySelector('td:first-child, th:first-child') ? tr.querySelector('td:first-child, th:first-child').innerHTML : '';
+
+    // Set the data numeric value if not set
+    Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td, index) => {
+      td.setAttribute('data-numeric',parseFloat(td.innerHTML.replace('£','')));
+    });
+
+    // Set the data label value if not set
+    Array.from(tr.querySelectorAll('td:not([data-label])')).forEach((td, index) => {
+
+      td.setAttribute('data-label',chartElement.querySelectorAll('thead th')[index].innerHTML);
+    });
+
+    // Add css vars to cells
+    Array.from(tr.querySelectorAll('td[data-numeric]:not([data-numeric="0"]):not(:first-child)')).forEach((td, index) => {
+
+      
+      const label = td.getAttribute('data-label');
+      const content = td.innerHTML;
+
+      if(!td.querySelector('span[data-group]'))
+        td.innerHTML = `<span data-group="${group}" data-label="${label}">${content}</span>`;
+
+      if(!td.hasAttribute('style')){
+        
+
+        const value = Number.parseFloat(td.getAttribute('data-numeric'));
+        let percent = ((value - min)/(max)) * 100;
+        let bottom = 0;
+
+        // If the value is negative the position below the 0 line
+        if(min < 0){
+          bottom = Math.abs((min)/(max)*100);
+          if(value < 0){
+            bottom = bottom - percent;
+          }
+        }
+        td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;`);
+      }
+
+
+    });
+  });
 }
 
 
@@ -353,7 +482,8 @@ export const createLines = function(chartElement,min,max){
   let items = Array.from(chartElement.querySelectorAll('tbody tr'));
 
   let lines = Array();
-  let spacer = 200/(items.length - 1);
+  let itemCount = items.length <= 25 ? items.length : 25;
+  let spacer = 200/(itemCount - 1);
 
   // Creates the lines array from the fields array
   Array.from(chartElement.querySelectorAll('thead th')).forEach((field, index) => {
@@ -365,25 +495,34 @@ export const createLines = function(chartElement,min,max){
   });
 
   // populate the lines array from the items array
+  let counter = 0;
   Array.from(chartElement.querySelectorAll('tbody tr')).forEach((item, index) => {
 
-    Array.from(item.querySelectorAll('td')).forEach((cell, subindex) => {
+    const display = getComputedStyle(item).display;
 
-      if(subindex != 0){
+    if(display != "none"){
 
-        let value = cell.getAttribute('data-numeric');
+      Array.from(item.querySelectorAll('td')).forEach((cell, subindex) => {
 
-        value = value.replace('£','');
-        value = value.replace('%','');
-        value = Number.parseFloat(value) - min;
+        if(subindex != 0){
 
-        const percent = (value/max) * 100;
+          let value = cell.getAttribute('data-numeric');
 
-        let command = index == 0 ? 'M' : 'L';
+          value = value.replace('£','');
+          value = value.replace('%','');
+          value = Number.parseFloat(value) - min;
 
-        lines[subindex-1] += `${command} ${spacer * index} ${100-percent} `;
-      }
-    });
+          const percent = (value/max) * 100;
+
+          let command = counter == 0 ? 'M' : 'L';
+
+          lines[subindex-1] += `${command} ${spacer * counter} ${100-percent} `;
+        }
+      });
+
+      counter++;
+    }
+
   });
 
   lines.forEach((line, index) => {
