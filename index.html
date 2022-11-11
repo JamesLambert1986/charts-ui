@@ -30,7 +30,7 @@
         <p>Charts types</p>
         <ul>
             <li>Bar (not started)</li>
-            <li>Column (rename from bar)</li>
+            <li>Column</li>
             <li>Stacked</li>
             <li>scatter (not started)</li>
             <li>line</li>
@@ -51,13 +51,65 @@
         </ul>
       </details>
 
+    <ul>
+        <li><a href="#bar">Bar chart (Not started)</a></li>
+        <li><a href="#column">Column chart</a></li>
+        <li><a href="#responsive">Responsive chart</a></li>
+        <li><a href="#scatter">Scatter chart</a></li>
+        <li><a href="#line">Line chart</a></li>
+        <li><a href="#switcher">Chart with switcher</a></li>
+        <li><a href="#live">Live line chart</a></li>
+    </ul>
 
-    <h2>Bar Chart</h2>
+    <h2 id="bar">Bar Chart</h2>
     <p>TBD</p>
     
-    <h2>Column chart</h2>
+    <figure class="chart" data-max="50" data-min="0" data-type="bar">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue</th>
+                    <th>Democrat</th>
+                    <th>Republican</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Inflation</td>
+                    <td>45%</td>
+                    <td>18%</td>
+                </tr>
+                <tr>
+                    <td>Abortion</td>
+                    <td>12%</td>
+                    <td>43%</td>
+                </tr>
+                <tr>
+                    <td>Gun policy</td>
+                    <td>8%</td>
+                    <td>14%</td>
+                </tr>
+                <tr>
+                    <td>Immigration</td>
+                    <td>15%</td>
+                    <td>5%</td>
+                </tr>
+                <tr>
+                    <td>Crime</td>
+                    <td>13%</td>
+                    <td>10%</td>
+                </tr>
+            </tbody>
+        </table>
+    </figure>
+
+
+
+
+    <h2 id="column">Column chart</h2>
     
-    <figure class="chart" data-max="100" data-min="0" data-type="bar" data-guidelines="£0,£50,£100">
+    <figure class="chart" data-max="100" data-min="0" data-type="column" data-guidelines="£0,£50,£100">
 
         <table>
             <thead>
@@ -93,8 +145,90 @@
     </figure>
 
 
+    <h2 id="responsive">Responsive Chart</h2>
+    <p>TBD - bar chart that transforms to column in larger containers</p>
+    
+    <figure class="chart" data-max="50" data-min="0" data-type="responsive">
 
-    <h2>Line chart</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Issue</th>
+                    <th>Democrat</th>
+                    <th>Republican</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Inflation</td>
+                    <td>45%</td>
+                    <td>18%</td>
+                </tr>
+                <tr>
+                    <td>Abortion</td>
+                    <td>12%</td>
+                    <td>43%</td>
+                </tr>
+                <tr>
+                    <td>Gun policy</td>
+                    <td>8%</td>
+                    <td>14%</td>
+                </tr>
+                <tr>
+                    <td>Immigration</td>
+                    <td>15%</td>
+                    <td>5%</td>
+                </tr>
+                <tr>
+                    <td>Crime</td>
+                    <td>13%</td>
+                    <td>10%</td>
+                </tr>
+            </tbody>
+        </table>
+    </figure>
+
+
+
+
+    <h2 id="scatter">Scatter Chart</h2>
+    
+    <figure class="chart" data-max="100" data-min="0" data-type="scatter" data-guidelines="£0,£50,£100">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Growth</th>
+                    <th>Growth2</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2011</td>
+                    <td>£50.00</td>
+                    <td>£50.10</td>
+                </tr>
+                <tr>
+                    <td>2012</td>
+                    <td>£75.00</td>
+                    <td>£50.10</td>
+                </tr>
+                <tr>
+                    <td>2013</td>
+                    <td>£45.00</td>
+                    <td>£57.10</td>
+                </tr>
+                <tr>
+                    <td>2014</td>
+                    <td>£35.00</td>
+                    <td>£80.10</td>
+                </tr>
+            </tbody>
+        </table>
+    </figure>
+
+    <h2 id="line">Line chart</h2>
     
     <figure class="chart" data-max="100" data-min="0" data-type="line" data-guidelines="£0,£50,£100">
 
@@ -130,8 +264,6 @@
             </tbody>
         </table>
     </figure>
-
-
 
 
 
@@ -172,8 +304,6 @@
     </figure>
 
 
-
-
     <h2>Stacked chart</h2>
     
     <figure class="chart" data-max="150" data-type="stacked" data-min="0" data-guidelines="£0,£150">
@@ -212,16 +342,15 @@
     </figure>
 
 
-    <h2>With switcher</h2>
-
-
-    
+    <h2 id="switcher">With switcher</h2>
 
     <figure class="chart" data-max="100" data-min="0">
         <figcaption></figcaption>
 
         <input type="radio" name="chart-type" value="none" id="chart-none" checked/>
+        <input type="radio" name="chart-type" value="column" id="chart-column"/>
         <input type="radio" name="chart-type" value="bar" id="chart-bar"/>
+        <input type="radio" name="chart-type" value="scatter" id="chart-scatter"/>
         <input type="radio" name="chart-type" value="line" id="chart-line"/>
         <input type="radio" name="chart-type" value="pie" id="chart-pie"/>
         <input type="radio" name="chart-type" value="stacked" id="chart-stacked"/>
@@ -232,7 +361,9 @@
 
             <span class="">Chart Type</span>
             <label for="chart-none">None</label>
+            <label for="chart-column">Column</label>
             <label for="chart-bar">Bar</label>
+            <label for="chart-scatter">Scatter</label>
             <label for="chart-line">Line</label>
             <label for="chart-pie">Pie</label>
             <label for="chart-stacked">Stacked</label>
@@ -296,9 +427,7 @@
     </figure>
 
 
-
-
-    <h2>Line chart that updates with new data being added to the table</h2>
+    <h2 id="live">Line chart that updates with new data being added to the table</h2>
     
     <figure class="chart" data-max="100" data-min="0" data-type="line" data-guidelines="£0,£50,£100" id="autoUpdate">
 

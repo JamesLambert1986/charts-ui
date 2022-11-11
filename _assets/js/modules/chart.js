@@ -12,7 +12,7 @@ function chart(chartElement,min,max,type,guidelines) {
     max = chartElement.getAttribute('data-max');
   }
   if(typeof type == 'undefined'){
-    type = chartElement.getAttribute('data-type') ? chartElement.getAttribute('data-type') : 'bar';
+    type = chartElement.getAttribute('data-type') ? chartElement.getAttribute('data-type') : 'column';
   }
   if(typeof guidelines == 'undefined' && chartElement.hasAttribute('data-guidelines')){
     guidelines = chartElement.getAttribute('data-guidelines').split(',');
@@ -276,7 +276,7 @@ export const createChartYaxis = function(chartElement,min,max,guidelines){
   chartYaxis.innerHTML = '';
   for (var i = 0; i < guidelines.length; i++) {
 
-    const value = parseFloat(guidelines[i].replace('£',''));
+    const value = parseFloat(guidelines[i].replace('£','').replace('%',''));
     const percent = (100 * value) / max;
 
     chartYaxis.innerHTML += `<div class="axis__point" style="--percent:${percent}%;"><span>${guidelines[i]}</span></div>`;
@@ -298,7 +298,7 @@ export const createChartGuidelines = function(chartElement,min,max,guidelines){
   chartGuidelines.innerHTML = '';
   for (var i = 0; i < guidelines.length; i++) {
 
-    const value = parseFloat(guidelines[i].replace('£',''));
+    const value = parseFloat(guidelines[i].replace('£','').replace('%',''));
     const percent = (100 * value) / max;
 
     chartGuidelines.innerHTML += `<div class="guideline" style="--percent:${percent}%;"></div>`;
@@ -322,7 +322,7 @@ export const setCellData = function(chartElement,min,max){
 
     // Set the data numeric value if not set
     Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td, index) => {
-      td.setAttribute('data-numeric',parseFloat(td.innerHTML.replace('£','')));
+      td.setAttribute('data-numeric',parseFloat(td.innerHTML.replace('£','').replace('%','')));
     });
 
     // Set the data label value if not set

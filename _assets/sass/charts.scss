@@ -42,7 +42,7 @@ $chart-colors: map-merge((
   padding-right: 1rem;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  -ms-overflow-style: -ms-autohiding-scrollbar;
+  -ms-overflow-style: -ms-autohiding-scrollcolumn;
   margin-bottom: 2rem;
 }
 // #endregion
@@ -184,7 +184,7 @@ $chart-colors: map-merge((
 .chart__key {
 
   padding: 0.75rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   background: var(--colour-key-bg, rgb(220, 220, 220));
 
   .key {
@@ -239,7 +239,7 @@ $chart-colors: map-merge((
 }
 // #endregion
 
-// #region Default bar chart (Also applies to line chart)
+// #region Default column chart (Also applies to line chart)
 input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner {
 
   --label-size: #{rem(12)};
@@ -511,7 +511,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 }
 // #endregion
 
-// #region Stacked bar chart
+// #region Stacked column chart
 
 input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:checked ~ .chart__inner {
   table tbody tr {
@@ -522,27 +522,86 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 }
 // #endregion
 
-// #region Line chart
-input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner {
+// #region bar chart and responsive chart
+@mixin barchart($type) {
+  input[type="radio"][value="#{$type}"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner {
+
+    :is(.chart__yaxis, .chart__guidelines) {
+      display: none;
+    }
+
+    table {
+
+      padding-top: 0;
+    }
+
+    table tbody {
+
+      flex-direction: column;
+      position: relative;
+    }
+
+    table tbody tr {
+      flex-direction: column;
+      height: 4rem;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+      padding: 0;
+
+      td {
+        height: 100%;
+        bottom: 0;
+        left: var(--bottom, 0%);
+        width: var(--percent);
+        max-width: 100%;
+      }
+
+      td:first-child {
+        position: static;
+        transform: none;
+        display: block!important;
+      }
+    }
+  }
+}
+
+.chart {
+
+  @include barchart('bar');
+
+
+  @container (max-width: 36em) {
+
+
+    @include barchart('responsive');
+  }
+
+}
+
+
+// #endregion
+
+// #region Line and scatter chart
+input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"]):checked ~ .chart__inner {
 
   --line-thickness: 1px;
 
 
-    @container (min-width: 36em) {
+  @container (min-width: 36em) {
 
-        --line-thickness: 0.8px;
-    }
+      --line-thickness: 0.8px;
+  }
 
-    @container (min-width: 62em) {
+  @container (min-width: 62em) {
 
-        --line-thickness: 0.5px;
-    }
+      --line-thickness: 0.5px;
+  }
 
   table tbody {
     justify-content: space-between;
 
     tr {
-      width:auto;
+      width: 4rem;
       margin-left: -2rem;
       margin-right: -2rem;
       padding: 0;
@@ -596,6 +655,13 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked
     }
   }
 
+  .pie {
+    display: none;
+  }
+}
+// Lines
+input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner {
+
   .lines ~ table tbody {
 
     tr {
@@ -605,7 +671,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked
         opacity: 0;
       }
     }
-}
+  }
 
   .line {
     display: block;
@@ -617,10 +683,6 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked
     height: calc(100% - 2rem);
     pointer-events: none;
     z-index: var(--index-above)
-  }
-
-  .pie {
-    display: none;
   }
 }
 // #endregion

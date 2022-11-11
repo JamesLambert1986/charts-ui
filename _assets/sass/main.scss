@@ -51,6 +51,10 @@ body {
     font-weight: 700
 }
 
+details {
+    margin-bottom: 3rem;
+}
+
 //$chart-colour-1: purple;
 @import "./tables.scss";
 @import "./charts.scss";
