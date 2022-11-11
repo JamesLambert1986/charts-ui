@@ -242,7 +242,6 @@ export const createChartKey = function(chartID, chartElement){
       label.setAttribute('class',`key`);
       label.setAttribute('for',`${chartID}-dataset-${index}`);
       label.innerHTML = `${arrayElement.innerText}`;
-
       chartKey.append(label);
 
     }

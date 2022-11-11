@@ -212,11 +212,6 @@
 
 
     
-        <label for="chart-none">None</label>
-        <label for="chart-bar">Bar</label>
-        <label for="chart-line">Line</label>
-        <label for="chart-pie">Pie</label>
-        <label for="chart-stacked">Stacked</label>
 
     <figure class="chart" data-max="100" data-min="0">
         <figcaption></figcaption>
@@ -226,6 +221,18 @@
         <input type="radio" name="chart-type" value="line" id="chart-line"/>
         <input type="radio" name="chart-type" value="pie" id="chart-pie"/>
         <input type="radio" name="chart-type" value="stacked" id="chart-stacked"/>
+
+        <div class="chart__options">
+
+            <span>Options</span>
+
+            <span class="">Chart Type</span>
+            <label for="chart-none">None</label>
+            <label for="chart-bar">Bar</label>
+            <label for="chart-line">Line</label>
+            <label for="chart-pie">Pie</label>
+            <label for="chart-stacked">Stacked</label>
+        </div>
 
         <div class="chart__inner">
             <div class="chart__yaxis" role="presentation">
