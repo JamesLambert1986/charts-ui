@@ -11,46 +11,38 @@
       <h1>BBC Charts UI Library</h1>
 
 
-      <p>Strapline</p>
+      <p>A multi-functional JS/CSS chart library with suitable and accessible fallbacks. With lots of configurable options and different views. <a href="./create">An image generator</a> is also available to help with the creation of image charts for when the library cannot be used.</p>
+
+      <h2>Principles</h2>
+      <ul>
+          <li>Data is interchangeable between charts</li>
+          <li>Minimal JS needed for chart to function</li>
+          <li>Add as much or as little html as you want to create the chart (JS functions can populate the bits missing)</li>
+          <li>CSS Vars can be used customise the chart (Sass vars can also be used)</li>
+          <li>Interaction to show/hide datasets</li>
+          <li>Charts update when the data is changed; allowing for live charts</li>
+      </ul>
+
 
       <details>
-        <summary>Read more</summary>
+        <summary><h2 class="d-inline-block">Roadmap</h2></summary>
 
-        <p>Principles</p>
         <ul>
-            <li>Data is interchangeable between charts</li>
-            <li>Minimal JS needed for chart to function</li>
-            <li>Add as much or as little html as you want to create the chart</li>
-            <li>Re-usable component</li>
-            <li>CSS Vars to customise</li>
-            <li>Interaction to show/hide datasets and even update the chart type</li>
-            <li>Live charts - auto update after table is updated</li>
-        </ul>
-
-        <p>Charts types</p>
-        <ul>
-            <li>Bar (not started)</li>
-            <li>Column</li>
-            <li>Stacked</li>
-            <li>scatter (not started)</li>
-            <li>line</li>
+            <li>Increase customisability</li>
+            <li>Improve data resilience </li>
+            <li>Event flags</li>
+            <li>Unit tests</li>
+            <li>React component</li>
+            <li>JS function to populate chart options</li>
+            <li>Update styles to match GEL</li>
             <li>Different min values (not started)</li>
             <li>Negative values (not started)</li>
             <li>Range (not started)</li>
-        </ul>
-        <p>Todo</p>
-        <ul>
-            <li>CSS Vars to customise</li>
-            <li>Live charts - auto update after table is updated</li>
-            <li>Events</li>
-            <li>Unit tests</li>
-            <li>react component</li>
-            <li>Fix z-index</li>
-            <li>JS populate switcher</li>
-            <li>Update styles to match GEL</li>
+            <li>Make the image generator functional</li>
         </ul>
       </details>
 
+    <h2>Chart types</h2>
     <ul>
         <li><a href="#bar">Bar chart (Not started)</a></li>
         <li><a href="#column">Column chart</a></li>
@@ -61,7 +53,7 @@
         <li><a href="#live">Live line chart</a></li>
     </ul>
 
-    <h2 id="bar">Bar Chart</h2>
+    <h3 id="bar">Bar Chart</h3>
     <p>TBD</p>
     
     <figure class="chart" data-max="50" data-min="0" data-type="bar">
@@ -107,7 +99,7 @@
 
 
 
-    <h2 id="column">Column chart</h2>
+    <h3 id="column">Column chart</h3>
     
     <figure class="chart" data-max="100" data-min="0" data-type="column" data-guidelines="£0,£50,£100">
 
@@ -145,7 +137,7 @@
     </figure>
 
 
-    <h2 id="responsive">Responsive Chart</h2>
+    <h3 id="responsive">Responsive Chart</h3>
     <p>TBD - bar chart that transforms to column in larger containers</p>
     
     <figure class="chart" data-max="50" data-min="0" data-type="responsive">
@@ -191,7 +183,7 @@
 
 
 
-    <h2 id="scatter">Scatter Chart</h2>
+    <h3 id="scatter">Scatter Chart</h3>
     
     <figure class="chart" data-max="100" data-min="0" data-type="scatter" data-guidelines="£0,£50,£100">
 
@@ -228,7 +220,7 @@
         </table>
     </figure>
 
-    <h2 id="line">Line chart</h2>
+    <h3 id="line">Line chart</h3>
     
     <figure class="chart" data-max="100" data-min="0" data-type="line" data-guidelines="£0,£50,£100">
 
@@ -267,7 +259,7 @@
 
 
 
-    <h2>Pie chart</h2>
+    <h3>Pie chart</h3>
     
     <figure class="chart" data-max="100" data-min="0" data-type="pie">
 
@@ -304,7 +296,7 @@
     </figure>
 
 
-    <h2>Stacked chart</h2>
+    <h3>Stacked chart</h3>
     
     <figure class="chart" data-max="150" data-type="stacked" data-min="0" data-guidelines="£0,£150">
  
@@ -342,7 +334,7 @@
     </figure>
 
 
-    <h2 id="switcher">With switcher</h2>
+    <h3 id="switcher">With chart options</h3>
 
     <figure class="chart" data-max="100" data-min="0">
         <figcaption></figcaption>
@@ -359,7 +351,7 @@
 
             <span>Options</span>
 
-            <span class="">Chart Type</span>
+            <span class="chart__options__title">Chart Type</span>
             <label for="chart-none">None</label>
             <label for="chart-column">Column</label>
             <label for="chart-bar">Bar</label>
@@ -427,7 +419,7 @@
     </figure>
 
 
-    <h2 id="live">Line chart that updates with new data being added to the table</h2>
+    <h3 id="live">Line chart</h3>
     
     <figure class="chart" data-max="100" data-min="0" data-type="line" data-guidelines="£0,£50,£100" id="autoUpdate">
 
@@ -465,6 +457,9 @@
     </figure>
 
 
+
+    </div>
+
 <script>
 
 function randomIntFromInterval(min, max) { // min and max included 
@@ -500,8 +495,5 @@ updateChart = setInterval(function () {
 </script>
 
 
-
-
-    </div>
   </body>
 </html>

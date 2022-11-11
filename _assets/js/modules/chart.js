@@ -115,6 +115,16 @@ function chart(chartElement,min,max,type,guidelines) {
       min = chartElement.getAttribute('data-min');
       max = chartElement.getAttribute('data-max');
       
+
+      Array.from(chartElement.querySelectorAll('tbody tr td[data-numeric]')).forEach((td, index) => {
+        
+        if(parseFloat(td.getAttribute('data-numeric')) > max){
+
+          max = parseFloat(td.getAttribute('data-numeric'));
+        }
+      });
+
+
       if(mutation.type === 'attributes'){
 
         guidelines = chartElement.getAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : [];
@@ -147,6 +157,7 @@ function chart(chartElement,min,max,type,guidelines) {
   };
 
   const tableUpdated = (mutationList, observer) => {
+
     for (const mutation of mutationList) {
 
       observer.disconnect();
@@ -157,21 +168,29 @@ function chart(chartElement,min,max,type,guidelines) {
       min = chartElement.getAttribute('data-min');
       max = chartElement.getAttribute('data-max');
       
+      if(mutation.type == "characterData"){
+
+        let cell = mutation.target.parentNode.closest('td');
+        
+        cell.removeAttribute('data-numeric');
+        cell.removeAttribute('style');
+
+        cell.setAttribute('data-numeric',parseFloat(cell.innerText.replace('£','').replace('%','')));
+      }
+
       Array.from(chartElement.querySelectorAll('tbody tr td[data-numeric]')).forEach((td, index) => {
         
         if(parseFloat(td.getAttribute('data-numeric')) > max){
 
           max = parseFloat(td.getAttribute('data-numeric'));
           attributeChange = true;
-          chartElement.setAttribute('data-max',max);
+
+          console.log('change')
         }
       });
 
 
-
       if(attributeChange){
-
-        console.log('update')
 
         guidelines = chartElement.getAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : [];
         
@@ -181,9 +200,9 @@ function chart(chartElement,min,max,type,guidelines) {
           createChartGuidelines(chartElement,min,max,guidelines);
         }
 
-        deleteCellData(chartElement);
       }
 
+      deleteCellData(chartElement);
       setCellData(chartElement,min,max);
 
       // Create lines for line graph
@@ -195,7 +214,7 @@ function chart(chartElement,min,max,type,guidelines) {
         createPies(chartElement);
 
 
-      observer.observe(table, { attributes: true, childList: true, subtree: true });
+      observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
       observer2.observe(chartElement, { attributes: true });
     }
   };
@@ -203,7 +222,7 @@ function chart(chartElement,min,max,type,guidelines) {
   const observer = new MutationObserver(tableUpdated);
   const observer2 = new MutationObserver(attributesUpdated);
 
-  observer.observe(table, { attributes: true, childList: true, subtree: true });
+  observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
   observer2.observe(chartElement, { attributes: true });
 
 
@@ -322,13 +341,13 @@ export const setCellData = function(chartElement,min,max){
 
     // Set the data numeric value if not set
     Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td, index) => {
-      td.setAttribute('data-numeric',parseFloat(td.innerHTML.replace('£','').replace('%','')));
+      td.setAttribute('data-numeric',parseFloat(td.innerText.replace('£','').replace('%','')));
     });
 
     // Set the data label value if not set
     Array.from(tr.querySelectorAll('td:not([data-label])')).forEach((td, index) => {
 
-      td.setAttribute('data-label',chartElement.querySelectorAll('thead th')[index].innerHTML);
+      td.setAttribute('data-label',chartElement.querySelectorAll('thead th')[index].innerText);
     });
 
     // Add css vars to cells

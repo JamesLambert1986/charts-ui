@@ -110,7 +110,6 @@ $chart-colors: map-merge((
   pointer-events: none;
 }
 
-
 .chart__options {
 
   position: absolute;
@@ -164,6 +163,11 @@ $chart-colors: map-merge((
     > * {
       display: block;
     }
+  }
+
+  .chart__options__title {
+    margin-top: 1rem;
+    font-weight: bold;
   }
 }
 
@@ -543,7 +547,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 
     table tbody tr {
       flex-direction: column;
-      height: 4rem;
+      height: 6rem;
       align-items: flex-start;
       margin-bottom: 0.5rem;
       padding: 0;
@@ -560,6 +564,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
         position: static;
         transform: none;
         display: block!important;
+        max-height: 1.5rem;
       }
     }
   }
