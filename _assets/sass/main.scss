@@ -3,9 +3,39 @@
 @import "../../node_modules/bootstrap/scss/bootstrap.scss";
 
 
+// #region Virgin Sans 
+@font-face {
+    font-family: ReithSans;
+    src:  url(../fonts/BBCReithSans_W_Rg.woff2) format("woff2");
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: ReithSans;
+    src:  url(../fonts/BBCReithSans_W_Bd.woff2) format("woff2");
+    font-weight: 700;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: ReithSans;
+    src:  url(../fonts/BBCReithSans_W_ExBd.woff2) format("woff2");
+    font-weight: 900;
+    font-display: swap;
+}
+// #endregion
+  
+
+
+
 :root {
     //--chart-colour-2: red;
 }
+
+
+
+
 
 body {
     font-family: ReithSans,Helvetica,Arial,freesans,sans-serif;
@@ -13,6 +43,12 @@ body {
     font-feature-settings: '';
     font-size: 1rem;
     line-height: 1.375;
+    padding-top: 2rem;
+}
+
+*:is(h1,h2,h3,h4,h5,h6) {
+    margin-bottom: 1em;
+    font-weight: 700
 }
 
 //$chart-colour-1: purple;
