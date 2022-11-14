@@ -18,7 +18,20 @@
 
       <p>A multi-functional JS/CSS chart library with suitable and accessible fallbacks. With lots of configurable options and different views. <a href="./create">An image generator</a> is also available to help with the creation of image charts for when the library cannot be used.</p>
 
-      <h2>Principles</h2>
+    <h2>Page contents</h2>
+    <ul>
+      <li><a href="#bar">Principles</a></li>
+      <li><a href="#bar">Bar chart (Not started)</a></li>
+        <li><a href="#column">Column chart</a></li>
+        <li><a href="#responsive">Responsive chart</a></li>
+        <li><a href="#scatter">Scatter chart</a></li>
+        <li><a href="#line">Line chart</a></li>
+        <li><a href="#switcher">Chart with switcher</a></li>
+        <li><a href="#live">Live line chart</a></li>
+        <li><a href="#roadmap">Roadmap</a></li>
+    </ul>
+
+      <h2 id="principles">Principles</h2>
       <ul>
           <li>Data is interchangeable between charts</li>
           <li>Minimal JS needed for chart to function</li>
@@ -28,37 +41,7 @@
           <li>Charts update when the data is changed; allowing for live charts</li>
       </ul>
 
-
-      <details>
-        <summary><h2 class="d-inline-block">Roadmap</h2></summary>
-
-        <ul>
-            <li>Increase customisability</li>
-            <li>Improve data resilience </li>
-            <li>Event flags</li>
-            <li>Unit tests</li>
-            <li>React component</li>
-            <li>JS function to populate chart options</li>
-            <li>Update styles to match GEL</li>
-            <li>Different min values (not started)</li>
-            <li>Negative values (not started)</li>
-            <li>Range (not started)</li>
-            <li>Make the image generator functional</li>
-        </ul>
-      </details>
-
-    <h2>Chart types</h2>
-    <ul>
-        <li><a href="#bar">Bar chart (Not started)</a></li>
-        <li><a href="#column">Column chart</a></li>
-        <li><a href="#responsive">Responsive chart</a></li>
-        <li><a href="#scatter">Scatter chart</a></li>
-        <li><a href="#line">Line chart</a></li>
-        <li><a href="#switcher">Chart with switcher</a></li>
-        <li><a href="#live">Live line chart</a></li>
-    </ul>
-
-    <h3 id="bar">Bar Chart</h3>
+    <h2 id="bar">Bar Chart</h2>
     <p>TBD</p>
     
     <figure class="chart" data-max="50" data-min="0" data-type="bar">
@@ -104,7 +87,7 @@
 
 
 
-    <h3 id="column">Column chart</h3>
+    <h2 id="column">Column chart</h2>
     
     <figure class="chart" data-max="100" data-min="0" data-type="column" data-guidelines="£0,£50,£100">
 
@@ -142,7 +125,7 @@
     </figure>
 
 
-    <h3 id="responsive">Responsive Chart</h3>
+    <h2 id="responsive">Responsive Chart</h2>
     <p>TBD - bar chart that transforms to column in larger containers</p>
     
     <figure class="chart" data-max="50" data-min="0" data-type="responsive">
@@ -188,7 +171,7 @@
 
 
 
-    <h3 id="scatter">Scatter Chart</h3>
+    <h2 id="scatter">Scatter Chart</h2>
     
     <figure class="chart" data-max="100" data-min="0" data-type="scatter" data-guidelines="£0,£50,£100">
 
@@ -225,7 +208,7 @@
         </table>
     </figure>
 
-    <h3 id="line">Line chart</h3>
+    <h2 id="line">Line chart</h2>
     
     <figure class="chart" data-max="100" data-min="0" data-type="line" data-guidelines="£0,£50,£100">
 
@@ -264,7 +247,7 @@
 
 
 
-    <h3>Pie chart</h3>
+    <h2>Pie chart</h2>
     
     <figure class="chart" data-max="100" data-min="0" data-type="pie">
 
@@ -274,7 +257,7 @@
                     <th>Year</th>
                     <th>Growth</th>
                     <th>Growth2</th>
-                    <th>Growth3</th>
+                    <th>Growth2</th>
                 </tr>
             </thead>
             <tbody>
@@ -282,26 +265,26 @@
                     <td data-label="Year" data-numeric="2011">2011</td>
                     <td data-label="Growth" data-numeric="50" >£50.0</td>
                     <td data-label="Growth2" data-numeric="50.1">£50.10</td>
-                    <td data-label="Growth3" data-numeric="50.1">£50.10</td>
+                    <td data-label="Growth2" data-numeric="50.1">£50.10</td>
                 </tr>
                 <tr>
                     <td data-label="Year" data-numeric="2012">2012</td>
                     <td data-label="Growth" data-numeric="75">£75.00</td>
                     <td data-label="Growth2" data-numeric="50.1">£50.10</td>
-                    <td data-label="Growth3" data-numeric="50.1">£50.10</td>
+                    <td data-label="Growth2" data-numeric="50.1">£50.10</td>
                 </tr>
                 <tr>
                     <td data-label="Year" data-numeric="2013">2013</td>
                     <td data-label="Growth" data-numeric="45">£45.00</td>
                     <td data-label="Growth2" data-numeric="57.1">£57.10</td>
-                    <td data-label="Growth3" data-numeric="57.1">£57.10</td>
+                    <td data-label="Growth2" data-numeric="57.1">£57.10</td>
                 </tr>
             </tbody>
         </table>
     </figure>
 
 
-    <h3>Stacked chart</h3>
+    <h2>Stacked chart</h2>
     
     <figure class="chart" data-max="150" data-type="stacked" data-min="0" data-guidelines="£0,£150">
  
@@ -339,7 +322,7 @@
     </figure>
 
 
-    <h3 id="switcher">With chart options</h3>
+    <h2 id="switcher">With chart options</h2>
 
     <figure class="chart" data-max="100" data-min="0">
         <figcaption></figcaption>
@@ -424,7 +407,7 @@
     </figure>
 
 
-    <h3 id="live">Line chart</h3>
+    <h2 id="live">Live chart</h2>
     
     <figure class="chart" data-max="100" data-min="0" data-type="line" data-guidelines="£0,£50,£100" id="autoUpdate">
 
@@ -463,7 +446,50 @@
 
 
 
+
+      <h2 id="roadmap">Roadmap</h2>
+
+      <ul>
+          <li>Increase customisability</li>
+          <li>Improve data resilience </li>
+          <li>Event flags</li>
+          <li>Unit tests</li>
+          <li>React component</li>
+          <li>JS function to populate chart options</li>
+          <li>Update styles to match GEL</li>
+          <li>Different min values (not started)</li>
+          <li>Negative values (not started)</li>
+          <li>Range (not started)</li>
+          <li>Generate chart options with JS</li>
+          <li>Re-do pie charts to use conic gradient and not SVG</li>
+          <li>Re-do line charts to use clip paths and not SVG</li>
+          <li>Download as CSV</li>
+          <li>Utility classes
+            <ul>
+              <li>Display data</li>
+              <li>Control aspect ratio</li>
+              <li>Hide guidelines</li>
+              <li>Import CSV</li>
+            </ul>
+          </li>
+          <li>Make the image generator functional
+            <ul>
+              <li>Customise colours</li>
+              <li>Add rows/columns</li>
+              <li>Update column names</li>
+              <li>Copy HTML code button</li>
+              <li>BBC watermark</li>
+              <li>Add Text to images</li>
+            </ul>
+
+          </li>
+          <li>Import data to generator from BBC sources i.e. piano</li>
+      </ul>
+
     </div>
+
+
+
 
 <script>
 
