@@ -500,7 +500,7 @@ export const createLines = function(chartElement,min,max){
   let items = Array.from(chartElement.querySelectorAll('tbody tr'));
 
   let lines = Array();
-  let itemCount = items.length <= 25 ? items.length : 25;
+  let itemCount = items.length <= 40 ? items.length : 40;
   let spacer = 200/(itemCount - 1);
 
   // Creates the lines array from the fields array
