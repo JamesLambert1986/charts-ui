@@ -26,6 +26,9 @@ $chart-colors: map-merge((
   10: $chart-colour-10
 ), $chart-colors);
 
+$chart-height: 56.25%!default;
+$chart-height-lg: 42.86%!default;
+
 // #endregion
 
 // #region Functions and mixins
@@ -63,6 +66,9 @@ $chart-colors: map-merge((
   --index-floating: 100;
   --index-menu: 200;
   --index-overlay: 1000;
+  --chart-height-set: var(--chart-height, #{$chart-height});
+  --chart-height-lg-set: var(--chart-height-lg, #{$chart-height-lg});
+  --chart-height-resp: var(--chart-height-set);
 
   @each $index, $value in $chart-colors {
     --chart-colour-#{$index}-set: var(--chart-colour-#{$index},#{$value});
@@ -73,7 +79,9 @@ $chart-colors: map-merge((
 
   @container (min-width: 36em) {
 
+    --chart-height-resp: var(--chart-height-lg-set);
   }
+  
 
   &:has(.chart__options){
     position: relative;
@@ -247,16 +255,11 @@ $chart-colors: map-merge((
 input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner {
 
   --label-size: #{rem(12)};
-  --chart-ratio: 56.25%;
   display: block;
   display: flex;
   position: relative;
   margin-bottom: 2rem;
 
-    @container (min-width: 36em) {
-
-        --chart-ratio: 42.86%; // 21:9 ratio
-    }
 
     @container (min-width: 62em) {
 
@@ -351,7 +354,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     padding-bottom: 2rem;
     padding-right: 0;
     margin: 0;
-    overflow-x: visible;
+    overflow: visible;
     position: relative;
 
     table{
@@ -362,7 +365,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
   table {
     display: block;
     width: 100%;
-    padding-top: var(--chart-ratio); // 16:9 ratio
+    padding-top: var(--chart-height-resp); // 16:9 ratio
     position: relative;
     margin-bottom: 0;
     //border-bottom: 1px solid black;
@@ -407,11 +410,12 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
         text-overflow: ellipsis;
         font-size: var(--label-size);
         display: none;
+        text-align: center;
 
         @container (min-width: 62em) {
     
             display: block;
-          max-width: 95%;
+          //max-width: 95%;
         }
       }
 
@@ -469,12 +473,14 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 
         left: -20%;
         transform: translate(0%,0);
+        text-align: left;
       }
 
       &:last-child td:not(:first-child) span {
           
         left: 120%;
         transform: translate(-100%,0);
+        text-align: right;
       }
 
       @container (min-width: 36em) {
@@ -499,13 +505,40 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     // Hide labels when it gets crowded
     @container (min-width: 62em) {
 
-      tbody:has(tr:nth-child(20)){
+      tbody:has(tr:nth-child(25)){
         tr td:first-child {
-          display: none;
+          display: none!important;
         }
 
         tr:is(:first-child, :nth-child(5n)) td:first-child {
-          display: block;
+          display: block!important;
+          max-width: 6rem;
+        }
+
+      }
+
+      tbody:has(tr:nth-child(50)){
+
+        tr:is(:first-child, :nth-child(5n)) td:first-child,
+        tr td:first-child {
+          display: none!important;
+        }
+
+        tr:is(:first-child, :nth-child(10n)) td:first-child {
+          display: block!important;
+          max-width: 6rem;
+        }
+      }
+
+      tbody:has(tr:nth-child(100)){
+
+        tr:is(:first-child, :nth-child(10n)) td:first-child,
+        tr td:first-child {
+          display: none!important;
+        }
+
+        tr:is(:first-child, :nth-child(20n)) td:first-child {
+          display: block!important;
           max-width: 6rem;
         }
 
@@ -513,13 +546,13 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     }
 
     // Hide items when theres too many too display
-    tbody:has(tr:nth-child(101)){
+    tbody:has(tr:nth-child(1001)){
 
       tr {
         display: none;
       }
 
-      tr:nth-last-child(-n+101) ~ tr {
+      tr:nth-last-child(-n+1001) ~ tr {
         display: flex;
       }
     }
@@ -632,12 +665,14 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[va
 
         transform: translate(0,0);
         display: block;
+        text-align: left;
       }
       &:last-child td:first-child {
 
         left: 100%;
         transform: translate(-100%,0);
         display: block;
+        text-align: right;
       }
 
       td:first-child {

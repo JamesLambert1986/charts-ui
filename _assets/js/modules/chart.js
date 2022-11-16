@@ -296,7 +296,7 @@ export const createChartYaxis = function(chartElement,min,max,guidelines){
   for (var i = 0; i < guidelines.length; i++) {
 
     const value = parseFloat(guidelines[i].replace('£','').replace('%',''));
-    const percent = (100 * value) / max;
+    const percent = ((value - min) / max) * 100;
 
     chartYaxis.innerHTML += `<div class="axis__point" style="--percent:${percent}%;"><span>${guidelines[i]}</span></div>`;
   }
@@ -318,7 +318,7 @@ export const createChartGuidelines = function(chartElement,min,max,guidelines){
   for (var i = 0; i < guidelines.length; i++) {
 
     const value = parseFloat(guidelines[i].replace('£','').replace('%',''));
-    const percent = (100 * value) / max;
+    const percent = ((value - min) / max) * 100;
 
     chartGuidelines.innerHTML += `<div class="guideline" style="--percent:${percent}%;"></div>`;
   }
@@ -500,7 +500,7 @@ export const createLines = function(chartElement,min,max){
   let items = Array.from(chartElement.querySelectorAll('tbody tr'));
 
   let lines = Array();
-  let itemCount = items.length <= 100 ? items.length : 100;
+  let itemCount = items.length <= 1000 ? items.length : 1000;
   let spacer = 200/(itemCount - 1);
 
   // Creates the lines array from the fields array
