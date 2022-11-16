@@ -399,10 +399,10 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
         top: 100%;
         left: 50%;
         transform: translate(-50%,0);
-        width: auto;
+        width: fit-content;
         padding: 0;
         white-space: nowrap;
-        max-width: 120%;
+        max-width: 6rem;
         overflow: hidden;
         text-overflow: ellipsis;
         font-size: var(--label-size);
@@ -497,26 +497,29 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     }
 
     // Hide labels when it gets crowded
-    tbody:has(tr:nth-child(20)){
-      tr td:first-child {
-        display: none;
-      }
+    @container (min-width: 62em) {
 
-      tr:is(:first-child, :nth-child(5n)) td:first-child {
-        display: block;
-        max-width: 200%;
-      }
+      tbody:has(tr:nth-child(20)){
+        tr td:first-child {
+          display: none;
+        }
 
+        tr:is(:first-child, :nth-child(5n)) td:first-child {
+          display: block;
+          max-width: 6rem;
+        }
+
+      }
     }
 
     // Hide items when theres too many too display
-    tbody:has(tr:nth-child(41)){
+    tbody:has(tr:nth-child(101)){
 
       tr {
         display: none;
       }
 
-      tr:nth-last-child(-n+41) ~ tr {
+      tr:nth-last-child(-n+101) ~ tr {
         display: flex;
       }
     }
@@ -620,9 +623,9 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[va
     justify-content: space-between;
 
     tr {
-      width: 4rem;
-      margin-left: -2rem;
-      margin-right: -2rem;
+      width: 1rem;
+      margin-left: -0.5rem;
+      margin-right: -0.5rem;
       padding: 0;
 
       &:first-child td:first-child {
@@ -639,6 +642,8 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[va
 
       td:first-child {
         left: 50%!important;
+        width: 4rem;
+
       }
 
       td:not(:first-child) {
