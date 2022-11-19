@@ -1,0 +1,27 @@
+$chart-colour-1: #0071F1!default;
+$chart-colour-2: #009B9B!default;
+$chart-colour-3: #24B300!default;
+$chart-colour-4: #FFB32B!default;
+$chart-colour-5: #F51A5A!default;
+$chart-colour-6: #FA6400!default;
+$chart-colour-7: #963CE1!default;
+$chart-colour-8: #8D8D8D!default;
+$chart-colour-9: #067EB3!default;
+$chart-colour-10: #D24712!default;
+
+$chart-colors: ();
+$chart-colors: map-merge((
+  1: $chart-colour-1,
+  2: $chart-colour-2,
+  3: $chart-colour-3,
+  4: $chart-colour-4,
+  5: $chart-colour-5,
+  6: $chart-colour-6,
+  7: $chart-colour-7,
+  8: $chart-colour-8,
+  9: $chart-colour-9,
+  10: $chart-colour-10
+), $chart-colors);
+
+$chart-height: 56.25%!default;
+$chart-height-lg: 42.86%!default;

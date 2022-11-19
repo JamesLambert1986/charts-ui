@@ -1,6 +1,6 @@
 import { ucfirst, unsnake } from './helpers.js'
 
-function chart(chartElement,min,max,type,guidelines) {
+function chart(chartElement,min,max,type,guidelines,targets) {
 
   const chartID = `chart-${Date.now()}`;
   let table = chartElement.querySelector('table');
@@ -16,6 +16,10 @@ function chart(chartElement,min,max,type,guidelines) {
   }
   if(typeof guidelines == 'undefined' && chartElement.hasAttribute('data-guidelines')){
     guidelines = chartElement.getAttribute('data-guidelines').split(',');
+  }
+
+  if(typeof targets == 'undefined' && chartElement.hasAttribute('data-targets')){
+    targets = JSON.parse(chartElement.getAttribute('data-targets'));
   }
 
 
@@ -39,6 +43,17 @@ function chart(chartElement,min,max,type,guidelines) {
     chartElement.append(chartInner);
   }
 
+  // set the longest label attr so that the bar chart knows what margin to set on the left
+  let longestLabel = '';
+  const chartInner = chartElement.querySelector('.chart__inner');
+  Array.from(table.querySelectorAll('tbody tr td:first-child')).forEach((td, index) => {
+
+    if(td.innerText.length > longestLabel.length){
+      longestLabel = td.innerText;
+    }
+  });
+  chartInner.setAttribute('data-longest-label',longestLabel);
+
   // Create chart key if the one isn't already created
   if(!chartElement.querySelector('.chart__key')){
     createChartKey(chartID,chartElement);
@@ -54,6 +69,10 @@ function chart(chartElement,min,max,type,guidelines) {
   if(guidelines){
     createChartYaxis(chartElement,min,max,guidelines);
     createChartGuidelines(chartElement,min,max,guidelines);
+  }
+
+  if(targets){
+    createTargets(chartElement,min,max,targets);
   }
 
   // Make sure table cells have enough data attached to them to display the chart data
@@ -320,11 +339,29 @@ export const createChartGuidelines = function(chartElement,min,max,guidelines){
     const value = parseFloat(guidelines[i].replace('£','').replace('%',''));
     const percent = ((value - min) / max) * 100;
 
-    chartGuidelines.innerHTML += `<div class="guideline" style="--percent:${percent}%;"></div>`;
+    chartGuidelines.innerHTML += `<div class="guideline" style="--percent:${percent}%;"><span>${guidelines[i]}</span></div>`;
   }
 
   tableWrapper.prepend(chartGuidelines);
 
+}
+
+
+export const createTargets = function(chartElement,min,max,targets){
+
+  let chartGuidelines = chartElement.querySelector('.chart__guidelines');
+
+  if(!chartGuidelines){
+    return;
+  }
+
+  Object.keys(targets).forEach(key => {
+
+    const value = parseFloat(targets[key].replace('£','').replace('%',''));
+    const percent = ((value - min) / max) * 100;
+
+    chartGuidelines.innerHTML += `<div class="guideline guideline--target" style="--percent:${percent}%;"><span>${key}</span></div>`;
+  });
 }
 
 export const deleteCellData = function(chartElement){

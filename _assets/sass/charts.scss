@@ -1,35 +1,5 @@
 @use "sass:math";
-
-// #region Sass vars
-$chart-colour-1: #0071F1!default;
-$chart-colour-2: #009B9B!default;
-$chart-colour-3: #24B300!default;
-$chart-colour-4: #FFB32B!default;
-$chart-colour-5: #F51A5A!default;
-$chart-colour-6: #FA6400!default;
-$chart-colour-7: #963CE1!default;
-$chart-colour-8: #8D8D8D!default;
-$chart-colour-9: #067EB3!default;
-$chart-colour-10: #D24712!default;
-
-$chart-colors: ();
-$chart-colors: map-merge((
-  1: $chart-colour-1,
-  2: $chart-colour-2,
-  3: $chart-colour-3,
-  4: $chart-colour-4,
-  5: $chart-colour-5,
-  6: $chart-colour-6,
-  7: $chart-colour-7,
-  8: $chart-colour-8,
-  9: $chart-colour-9,
-  10: $chart-colour-10
-), $chart-colors);
-
-$chart-height: 56.25%!default;
-$chart-height-lg: 42.86%!default;
-
-// #endregion
+@import "_vars";
 
 // #region Functions and mixins
 @function rem($pixels, $context: 16)
@@ -260,11 +230,10 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
   position: relative;
   margin-bottom: 2rem;
 
+  @container (min-width: 62em) {
 
-    @container (min-width: 62em) {
-
-        --label-size: #{rem(14)};
-    }
+      --label-size: #{rem(14)};
+  }
 
   .chart__yaxis {
     margin-bottom: 2rem;
@@ -324,7 +293,6 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     width: 100%;
     height: calc(100% - 2rem);
     margin-bottom: 2rem;
-    z-index: var(--index-below);
     display: flex;
     flex-direction: column-reverse;
 
@@ -337,8 +305,28 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
       height: 0px;
       margin-bottom: -1px;
       border-bottom: 1px dashed #eeeeee;
+      pointer-events: none;
+      z-index: var(--index-below);
+
+      &:not(.guideline--target) span{
+        display: none;
+      } 
     }
 
+    .guideline--target {
+
+      border-bottom: 1px dashed #000000;
+      z-index: var(--index-above);
+      text-shadow: 1px solid white;
+
+      span {
+        position: absolute;
+        bottom: 0;
+        font-size: var(--label-size);
+        text-shadow: 1px 1px 2px rgba(255, 255, 255, 1);
+        background: rgba(255,255,255,0.6);
+      }
+    }
     [data-value="0"] {
       border-bottom: 1px solid var(--colour-primary);
 
@@ -558,6 +546,28 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     }
   }
 
+  .chart--display-data & {
+    table tbody tr {
+
+      td:not(:first-child) {
+        
+        span {
+          &:before {
+            display: none;
+          }
+          opacity: 1;
+          z-index: var(--index-above);
+          top: 50%;
+          transform: translate(-50%, -50%);
+          display: block;
+          height: fit-content;
+          background: none;
+        }
+      }
+
+    }
+  }
+
   .line,
   .pie {
     display: none;
@@ -580,7 +590,28 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 @mixin barchart($type) {
   input[type="radio"][value="#{$type}"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner {
 
-    :is(.chart__yaxis, .chart__guidelines) {
+    .chart__guidelines {
+      position: absolute;
+
+      .guideline {
+        bottom: auto;
+        left: var(--percent);
+        height: 100%;
+        border-left: 1px dashed #eee;
+        width: 0;
+
+        span{
+          display: block;
+          font-size: var(--label-size);
+          position: absolute;
+          top: 100%;
+          transform: translate(-50%,0.2em);
+        } 
+      }
+    }
+
+    .chart__yaxis {
+
       display: none;
     }
 
@@ -597,13 +628,13 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 
     table tbody tr {
       flex-direction: column;
-      height: 6rem;
       align-items: flex-start;
       margin-bottom: 0.5rem;
       padding: 0;
 
       td {
-        height: 100%;
+        
+        height: 3rem;
         bottom: 0;
         left: var(--bottom, 0%);
         width: var(--percent);
@@ -615,6 +646,30 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
         transform: none;
         display: block!important;
         max-height: 1.5rem;
+      }
+    }
+
+    &[data-longest-label] {
+      &:before {
+        display: block;
+        content: attr(data-longest-label);
+        font-size: var(--label-size);
+        padding-right: 0.5em;
+        opacity: 0;
+        pointer-events: none;
+      }   
+    }
+
+    &[data-longest-label] table tbody tr {
+      td:first-child {
+        position: absolute;
+        transform: translate(-100%, -50%);
+        display: block !important;
+        max-height: 1.5rem;
+        z-index: var(--index-above);
+        top: 50%;
+        left: 0;
+        padding-right: 0.5em;
       }
     }
   }
@@ -696,19 +751,50 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[va
         }
       }
 
+      &:before {
+        content: "";
+        border-left: 1px dashed #eeeeee;
+        height: 100%;
+        width: 0;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        height: 100%;
+        margin-left: -1px;
+        z-index: var(--index-below);
+        opacity: 0;
+      }
+
       &:hover {
         &:before {
-          content: "";
-          border-left: 1px dashed #eeeeee;
+          opacity: 1;
+        }
+      }
 
-          height: 100%;
-          width: 0;
+      &:is([data-event],[data-event-right]) {
+        &:before {
+          opacity: 1;
+          border-left: 1px dashed #000000;
+        }
+        &:after {
+          content: attr(data-event);
           position: absolute;
           top: 0;
           left: 50%;
-          height: 100%;
-          margin-left: -1px;
+          width: max-content;
           z-index: var(--index-below);
+          font-size: var(--label-size);
+          background: rgba(255,255,255,0.5);
+        }
+      }
+      &[data-event] {
+        &:after {
+          transform: translate(-50%,-0.5em);
+        }
+      }
+      &[data-event-right] {
+        &:after {
+          transform: translate(-101%,-0.5em);
         }
       }
     }

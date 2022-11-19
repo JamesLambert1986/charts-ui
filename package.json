@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "build": "sass _assets/sass/main.scss:_assets/css/style.min.css _assets/sass/charts.scss:_assets/css/charts.min.css --style=compressed",
-    "watch": "sass --watch _assets/sass/:_assets/css/ --style=compressed"
+    "watch": "sass --watch _assets/sass/:_assets/css/ _app/sass/:_app/css/ --style=compressed"
   },
   "dependencies": {
     "bootstrap": "^5.2.2",
