@@ -1,18 +1,23 @@
 @use "../../_assets/sass/_vars.scss" as *;
 
-
+// Default colours pulled from the main scss files
 :root {
-    --chart-colour-1: #{$chart-colour-1};
-    --chart-colour-2: #{$chart-colour-2};
-    --chart-colour-3: #{$chart-colour-3};
-    --chart-colour-4: #{$chart-colour-4};
-    --chart-colour-5: #{$chart-colour-5};
-    --chart-colour-6: #{$chart-colour-6};
-    --chart-colour-7: #{$chart-colour-7};
-    --chart-colour-8: #{$chart-colour-8};
-    --chart-colour-9: #{$chart-colour-9};
-    --chart-colour-10: #{$chart-colour-10};
+  --chart-colour-1: #{$chart-colour-1};
+  --chart-colour-2: #{$chart-colour-2};
+  --chart-colour-3: #{$chart-colour-3};
+  --chart-colour-4: #{$chart-colour-4};
+  --chart-colour-5: #{$chart-colour-5};
+  --chart-colour-6: #{$chart-colour-6};
+  --chart-colour-7: #{$chart-colour-7};
+  --chart-colour-8: #{$chart-colour-8};
+  --chart-colour-9: #{$chart-colour-9};
+  --chart-colour-10: #{$chart-colour-10};
 
-    --chart-height: #{$chart-height};
-    --chart-height-lg: #{$chart-height-lg};
+  --chart-height: #{$chart-height};
+  --chart-height-lg: #{$chart-height-lg};
+}
+
+// App styles
+.capturing *:is(.chart__options) {
+  display: none;
 }

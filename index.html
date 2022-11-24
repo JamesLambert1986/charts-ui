@@ -7,19 +7,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
     <title>BBC Charts UI Library</title>
+    <link rel="stylesheet" href="_app/css/app.css" />
     <link rel="stylesheet" href="_assets/css/main.css" />
     
     <script src="_assets/js/main.js" type="module" defer></script>
+    <script src="_app/js/livechart.js" type="module" defer></script>
+
   </head>
   <body>
     <div class="container">
-      <h1>BBC Charts UI Library</h1>
+      <h1>BBC GEL Charts UI Library</h1>
 
       <p>A multi-functional JS/CSS chart library with suitable and accessible fallbacks. With lots of configurable options and different views. <a href="./create">An image generator</a> is also available to help with the creation of image charts for when the library cannot be used.</p>
 
     <h2>Page contents</h2>
     <ul>
-      <li><a href="#bar">Principles</a></li>
+      <li><a href="#principles">Principles</a></li>
       <li><a href="#bar">Bar chart (Not started)</a></li>
         <li><a href="#column">Column chart</a></li>
         <li><a href="#responsive">Responsive chart</a></li>
@@ -43,46 +46,57 @@
 
     <h2 id="bar">Bar Chart</h2>
     
+    <div class="resize">
+      
     <figure class="chart chart--display-data" data-max="50" data-min="0" data-type="bar" data-guidelines="45%">
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Issue</th>
-                    <th>Democrat</th>
-                    <th>Republican</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Inflation</td>
-                    <td>45%</td>
-                    <td>18%</td>
-                </tr>
-                <tr>
-                    <td>Abortion</td>
-                    <td>12%</td>
-                    <td>43%</td>
-                </tr>
-                <tr>
-                    <td>Gun policy</td>
-                    <td>8%</td>
-                    <td>14%</td>
-                </tr>
-                <tr>
-                    <td>Immigration</td>
-                    <td>15%</td>
-                    <td>5%</td>
-                </tr>
-                <tr>
-                    <td>Crime</td>
-                    <td>13%</td>
-                    <td>10%</td>
-                </tr>
-            </tbody>
-        </table>
+      <table>
+          <thead>
+              <tr>
+                  <th>Issue</th>
+                  <th>Democrat</th>
+                  <th>Republican</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td>Inflation</td>
+                  <td>45%</td>
+                  <td>18%</td>
+              </tr>
+              <tr>
+                  <td>Abortion</td>
+                  <td>12%</td>
+                  <td>43%</td>
+              </tr>
+              <tr>
+                  <td>Gun policy</td>
+                  <td>8%</td>
+                  <td>14%</td>
+              </tr>
+              <tr>
+                  <td>Immigration</td>
+                  <td>15%</td>
+                  <td>5%</td>
+              </tr>
+              <tr>
+                  <td>Crime</td>
+                  <td>13%</td>
+                  <td>10%</td>
+              </tr>
+          </tbody>
+      </table>
+
+      <figcaption>
+        <p class="chart__title">National exit poll: Issues by party</p>
+        <p class="chart__strapline">Which issue mattered most in deciding how to vote</p>
+        <p>Sample size: 4,636 respondents.</p>
+        <p>Figures may not sum to 100 and all figures have a margin of error</p>
+        <p class="chart__source">Source: Edison Research/NEP via Reuters, 9 Nov, 00.18 EST (0.518 GMT)</p>
+      </figcaption>
     </figure>
 
+    </div>
 
     <p>Data copied from https://www.bbc.co.uk/news/world-us-canada-63556122</p>
 
@@ -1116,6 +1130,7 @@
       <ul>
           <li>Increase customisability</li>
           <li>Improve data resilience </li>
+          <li>Improve the key</li>
           <li>Event flags</li>
           <li>Unit tests</li>
           <li>React component</li>
@@ -1163,47 +1178,19 @@
 
           </li>
           <li>Import data to generator from BBC sources i.e. piano</li>
+          <li>Add HTML code previews to the examples</li>
       </ul>
 
     </div>
+    <!-- 
+      
+      # Bugs
 
-
-
-
-<script>
-
-function randomIntFromInterval(min, max) { // min and max included 
-  return Math.floor(Math.random() * (max - min + 1) + min)
-}
-
-let year = 2015;
-let updateChart;
-
-updateChart = setInterval(function () {
+      - Line chart 0% point doesn't have span and has the wrong percent
+      - displat-data class should show the data at the top/right of the bar
+      - Guidelines disappear when the chart is edited
     
-
-    let table = document.getElementById('autoUpdate');
-
-    let tbody = table.querySelector('tbody');
-
-
-    let growth = table.querySelector('tbody tr:last-child td:nth-child(2)');
-    let growthValue = parseInt(growth.getAttribute('data-numeric')) < 120 ? parseInt(growth.getAttribute('data-numeric')) : 110;
-
-    
-    let growth2 = table.querySelector('tbody tr:last-child td:nth-child(3)');
-    let growthValue2 = parseInt(growth2.getAttribute('data-numeric')) > 0 ? parseInt(growth2.getAttribute('data-numeric')) : 10;
-
-
-    tbody.innerHTML += `<tr><td>${year++}</td><td>£${growthValue + randomIntFromInterval(-5,10)}</td><td>£${growthValue2 + randomIntFromInterval(-10,5)}</td></tr>`;
-
-    if(year == 2051)
-        clearInterval(updateChart);
-
-}, 3000);
-
-</script>
-
+    -->
 
   </body>
 </html>

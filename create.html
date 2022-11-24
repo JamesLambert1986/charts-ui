@@ -7,218 +7,193 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
   
     <title>BBC Charts UI Library</title>
+    <link rel="stylesheet" href="_app/css/app.css" />
     <link rel="stylesheet" href="_app/css/create.css" />
     <link rel="stylesheet" href="_assets/css/main.css" />
     
     <script src="_app/js/lib/html2canvas.js"></script>
     <script src="_assets/js/main.js" type="module" defer></script>
-    <script src="_app/js/siteVars.js" type="module" defer></script>
+    <script src="_app/js/config.js" type="module" defer></script>
   </head>
   <body>
     <div class="container" id="container">
-        <h1>Create a BBC Chart</h1>
-        <p>This page will allow a user to create a chart and select how it looks. Then it can be turned into an image that can be saved.</p>
+      <a href="/" class="back">Back</a>
+      <h1>Create a BBC Chart</h1>
+      <p>This page will allow a user to create a chart and select how it looks. Then it can be turned into an image that can be saved.</p>
 
-<details id="chart-options">
-    <summary><h2 class="h4 d-inline-block">Chart options</h2></summary>
+      <details id="chart-options">
+          <summary><h2 class="h4 d-inline-block">Chart options</h2></summary>
 
-    <div class="mb-4">
-        <label class="form-label" for="chart-colour-1">Chart Colour 1</label>
-        <input class="form-control form-control-color" type="color" name="chart-colour-1" id="chart-colour-1" />
-    </div>
-    
-    <div class="mb-4">
-        <label class="form-label" for="chart-colour-2">Chart Colour 2</label>
-        <input class="form-control form-control-color" type="color" name="chart-colour-2" id="chart-colour-2" />
-    </div>
-    
-    <div class="mb-4">
-        <label class="form-label" for="chart-colour-3">Chart Colour 3</label>
-        <input class="form-control form-control-color" type="color" name="chart-colour-3" id="chart-colour-3" />
-    </div>
-    
-    <div class="mb-4">
-        <label class="form-label" for="chart-colour-4">Chart Colour 4</label>
-        <input class="form-control form-control-color" type="color" name="chart-colour-4" id="chart-colour-4" />
-    </div>
-    
-    <div class="mb-4">
-        <label class="form-label" for="chart-colour-5">Chart Colour 5</label>
-        <input class="form-control form-control-color" type="color" name="chart-colour-5" id="chart-colour-5" />
-    </div>
-    
-    <div class="mb-4">
-        <label class="form-label" for="chart-colour-6">Chart Colour 6</label>
-        <input class="form-control form-control-color" type="color" name="chart-colour-6" id="chart-colour-6" />
-    </div>
-    
-    <div class="mb-4">
-        <label class="form-label" for="chart-colour-7">Chart Colour 7</label>
-        <input class="form-control form-control-color" type="color" name="chart-colour-7" id="chart-colour-7" />
-    </div>
-    
-    <div class="mb-4">
-        <label class="form-label" for="chart-colour-8">Chart Colour 8</label>
-        <input class="form-control form-control-color" type="color" name="chart-colour-8" id="chart-colour-8" />
-    </div>
-    
-    <div class="mb-4">
-        <label class="form-label" for="chart-colour-9">Chart Colour 9</label>
-        <input class="form-control form-control-color" type="color" name="chart-colour-9" id="chart-colour-9" />
-    </div>
-    
-    <div class="mb-4">
-        <label class="form-label" for="chart-colour-10">Chart Colour 10</label>
-        <input class="form-control form-control-color" type="color" name="chart-colour-10" id="chart-colour-10" />
-    </div>
-    
+          <div class="mb-4">
+              <label class="form-label" for="chart-colour-1">Chart Colour 1</label>
+              <input class="form-control form-control-color" type="color" name="chart-colour-1" id="chart-colour-1" />
+          </div>
+          
+          <div class="mb-4">
+              <label class="form-label" for="chart-colour-2">Chart Colour 2</label>
+              <input class="form-control form-control-color" type="color" name="chart-colour-2" id="chart-colour-2" />
+          </div>
+          
+          <div class="mb-4">
+              <label class="form-label" for="chart-colour-3">Chart Colour 3</label>
+              <input class="form-control form-control-color" type="color" name="chart-colour-3" id="chart-colour-3" />
+          </div>
+          
+          <div class="mb-4">
+              <label class="form-label" for="chart-colour-4">Chart Colour 4</label>
+              <input class="form-control form-control-color" type="color" name="chart-colour-4" id="chart-colour-4" />
+          </div>
+          
+          <div class="mb-4">
+              <label class="form-label" for="chart-colour-5">Chart Colour 5</label>
+              <input class="form-control form-control-color" type="color" name="chart-colour-5" id="chart-colour-5" />
+          </div>
+          
+          <div class="mb-4">
+              <label class="form-label" for="chart-colour-6">Chart Colour 6</label>
+              <input class="form-control form-control-color" type="color" name="chart-colour-6" id="chart-colour-6" />
+          </div>
+          
+          <div class="mb-4">
+              <label class="form-label" for="chart-colour-7">Chart Colour 7</label>
+              <input class="form-control form-control-color" type="color" name="chart-colour-7" id="chart-colour-7" />
+          </div>
+          
+          <div class="mb-4">
+              <label class="form-label" for="chart-colour-8">Chart Colour 8</label>
+              <input class="form-control form-control-color" type="color" name="chart-colour-8" id="chart-colour-8" />
+          </div>
+          
+          <div class="mb-4">
+              <label class="form-label" for="chart-colour-9">Chart Colour 9</label>
+              <input class="form-control form-control-color" type="color" name="chart-colour-9" id="chart-colour-9" />
+          </div>
+          
+          <div class="mb-4">
+              <label class="form-label" for="chart-colour-10">Chart Colour 10</label>
+              <input class="form-control form-control-color" type="color" name="chart-colour-10" id="chart-colour-10" />
+          </div>
+          
 
-    <h3 class="h5">Chart type</h3>
-    <label for="chart-none">None</label>
-    <label for="chart-column">Column</label>
-    <label for="chart-bar">Bar</label>
-    <label for="chart-scatter">Scatter</label>
-    <label for="chart-line">Line</label>
-    <label for="chart-pie">Pie</label>
-    <label for="chart-stacked">Stacked</label>
-   
-
-
-    <div class="mb-4">
-        <label class="form-label" for="chart-height">Chart height</label>
-        <input class="form-control" type="number" min="1" max="100" name="chart-height" id="chart-height" />
-    </div>
-    <div class="mb-4">
-        <label class="form-label" for="chart-height-lg">Chart height Large</label>
-        <input class="form-control" type="number" min="1" max="100" name="chart-height-lg" id="chart-height-lg" />
-    </div>
-    
-
-    
-    <div class="mb-4">
-        <h3 class="h5">Chart classes</h3>
-
-        <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="chart--display-data" name="chart--display-data" id="chart--display-data" data-class>
-            <label class="form-check-label" for="chart--display-data">Display data</label>
-        </div>
-
-    </div>
-</details>
-
-        
+          <h3 class="h5">Chart type</h3>
+          <label for="chart-none">None</label>
+          <label for="chart-column">Column</label>
+          <label for="chart-bar">Bar</label>
+          <label for="chart-scatter">Scatter</label>
+          <label for="chart-line">Line</label>
+          <label for="chart-pie">Pie</label>
+          <label for="chart-stacked">Stacked</label>
         
 
 
-    <figure class="chart" data-max="100" data-min="0" id="chart">
-        <figcaption></figcaption>
+          <div class="mb-4">
+              <label class="form-label" for="chart-height">Chart height</label>
+              <input class="form-control" type="number" min="1" max="100" name="chart-height" id="chart-height" />
+          </div>
+          <div class="mb-4">
+              <label class="form-label" for="chart-height-lg">Chart height Large</label>
+              <input class="form-control" type="number" min="1" max="100" name="chart-height-lg" id="chart-height-lg" />
+          </div>
+          
 
-        <input type="radio" name="chart-type" value="none" id="chart-none" checked/>
-        <input type="radio" name="chart-type" value="column" id="chart-column"/>
-        <input type="radio" name="chart-type" value="bar" id="chart-bar"/>
-        <input type="radio" name="chart-type" value="scatter" id="chart-scatter"/>
-        <input type="radio" name="chart-type" value="line" id="chart-line"/>
-        <input type="radio" name="chart-type" value="pie" id="chart-pie"/>
-        <input type="radio" name="chart-type" value="stacked" id="chart-stacked"/>
+          
+          <div class="mb-4">
+              <h3 class="h5">Chart classes</h3>
 
-        <div class="chart__inner">
-            <div class="chart__yaxis" role="presentation">
-                <div class="axis__point" style="--value: 0; --percent:0%;"><span>£0</span></div>
-                <div class="axis__point" style="--value: 50; --percent:50%;"><span>£50</span></div>
-                <div class="axis__point" style="--value: 100; --percent:100%;"><span>£100</span></div>
-            </div>
-            <div class="table__wrapper" data-reorder="false">
-                
-                <table>
-                    <thead>
-                        <tr class="">
-                            <th>Year</th>
-                            <th>Growth</th>
-                            <th>Growth2</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td data-label="Year">2011</td>
-                            <td data-label="Growth" data-numeric="50" style="--bottom:0%;--percent:50%;"><span
-                                    data-group="2011" data-label="Growth" contenteditable="">£50.0</span></td>
-                            <td data-label="Growth2" data-numeric="50.1" style="--bottom:0%;--percent:50.1%;"><span
-                                    data-group="2011" data-label="Growth2" contenteditable="">£50.10</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Year">2012</td>
-                            <td data-label="Growth" data-numeric="75" style="--bottom:0%;--percent:75%;"><span
-                                    data-group="2012" data-label="Growth" contenteditable="">£75.00</span></td>
-                            <td data-label="Growth2" data-numeric="50.1" style="--bottom:0%;--percent:50.1%;"><span
-                                    data-group="2012" data-label="Growth2" contenteditable="">£50.10</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Year">2013</td>
-                            <td data-label="Growth" data-numeric="45" style="--bottom:0%;--percent:45%;"><span
-                                    data-group="2013" data-label="Growth" contenteditable="">£45.00</span></td>
-                            <td data-label="Growth2" data-numeric="57.1" style="--bottom:0%;--percent:57.10000000000001%;">
-                                <span data-group="2013" data-label="Growth2" contenteditable="">£57.10</span></td>
-                        </tr>
-                        <tr>
-                            <td data-label="Year">2014</td>
-                            <td data-label="Growth" data-numeric="35" style="--bottom:0%;--percent:35%;"><span
-                                    data-group="2014" data-label="Growth" contenteditable="">£35.00</span></td>
-                            <td data-label="Growth2" data-numeric="80.1" style="--bottom:0%;--percent:80.1%;"><span
-                                    data-group="2014" data-label="Growth2" contenteditable="">£80.10</span></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="chart__guidelines" role="presentation">
-                    <div data-value="0" class="guideline" style="--percent:0%;"></div>
-                    <div data-value="50" class="guideline" style="--percent:50%;"></div>
-                    <div data-value="100" class="guideline" style="--percent:100%;"></div>
-                </div>
-                <!---->
-            </div>
-        </div>
-    </figure>
+              <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="chart--display-data" name="chart--display-data" id="chart--display-data" data-class>
+                  <label class="form-check-label" for="chart--display-data">Display data</label>
+              </div>
+
+          </div>
+      </details>
+
+      <h2>Preview</h2>
+      <div class="resize">
+          <figure class="chart" data-max="100" data-min="0" id="chart">
+              <figcaption></figcaption>
+
+              <input type="radio" name="chart-type" value="none" id="chart-none"/>
+              <input type="radio" name="chart-type" value="column" id="chart-column" checked/>
+              <input type="radio" name="chart-type" value="bar" id="chart-bar"/>
+              <input type="radio" name="chart-type" value="scatter" id="chart-scatter"/>
+              <input type="radio" name="chart-type" value="line" id="chart-line"/>
+              <input type="radio" name="chart-type" value="pie" id="chart-pie"/>
+              <input type="radio" name="chart-type" value="stacked" id="chart-stacked"/>
+
+              <div class="chart__inner">
+                  <div class="chart__yaxis" role="presentation">
+                      <div class="axis__point" style="--value: 0; --percent:0%;"><span>£0</span></div>
+                      <div class="axis__point" style="--value: 50; --percent:50%;"><span>£50</span></div>
+                      <div class="axis__point" style="--value: 100; --percent:100%;"><span>£100</span></div>
+                  </div>
+                  <div class="table__wrapper" data-reorder="false">
+                      
+                      <table>
+                          <thead>
+                              <tr class="">
+                                  <th>Year</th>
+                                  <th>Growth</th>
+                                  <th>Growth2</th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td data-label="Year">2011</td>
+                                  <td data-label="Growth" data-numeric="50" style="--bottom:0%;--percent:50%;"><span
+                                          data-group="2011" data-label="Growth" contenteditable="">£50.0</span></td>
+                                  <td data-label="Growth2" data-numeric="50.1" style="--bottom:0%;--percent:50.1%;"><span
+                                          data-group="2011" data-label="Growth2" contenteditable="">£50.10</span></td>
+                              </tr>
+                              <tr>
+                                  <td data-label="Year">2012</td>
+                                  <td data-label="Growth" data-numeric="75" style="--bottom:0%;--percent:75%;"><span
+                                          data-group="2012" data-label="Growth" contenteditable="">£75.00</span></td>
+                                  <td data-label="Growth2" data-numeric="50.1" style="--bottom:0%;--percent:50.1%;"><span
+                                          data-group="2012" data-label="Growth2" contenteditable="">£50.10</span></td>
+                              </tr>
+                              <tr>
+                                  <td data-label="Year">2013</td>
+                                  <td data-label="Growth" data-numeric="45" style="--bottom:0%;--percent:45%;"><span
+                                          data-group="2013" data-label="Growth" contenteditable="">£45.00</span></td>
+                                  <td data-label="Growth2" data-numeric="57.1" style="--bottom:0%;--percent:57.10000000000001%;">
+                                      <span data-group="2013" data-label="Growth2" contenteditable="">£57.10</span></td>
+                              </tr>
+                              <tr>
+                                  <td data-label="Year">2014</td>
+                                  <td data-label="Growth" data-numeric="35" style="--bottom:0%;--percent:35%;"><span
+                                          data-group="2014" data-label="Growth" contenteditable="">£35.00</span></td>
+                                  <td data-label="Growth2" data-numeric="80.1" style="--bottom:0%;--percent:80.1%;"><span
+                                          data-group="2014" data-label="Growth2" contenteditable="">£80.10</span></td>
+                              </tr>
+                          </tbody>
+                      </table>
+                      <div class="chart__guidelines" role="presentation">
+                          <div data-value="0" class="guideline" style="--percent:0%;"></div>
+                          <div data-value="50" class="guideline" style="--percent:50%;"></div>
+                          <div data-value="100" class="guideline" style="--percent:100%;"></div>
+                      </div>
+                      <!---->
+                  </div>
+              </div>
+          </figure>
+      </div>
 
 
-    <button id="create">Create image</button>
+      <button class="btn btn-secondary mb-3" id="deleteRow">Delete row</button>
+      <button class="btn btn-secondary mb-3" id="deleteColumn">Delete column</button>
+      <button class="btn btn-secondary mb-3" id="addRow">Add row</button>
+      <button class="btn btn-secondary mb-3" id="addColumn">Add Column</button>
 
-    <h2>Preview</h2>
-    <p>If you are happy with the results right click on the image below and 'Save image as'.</p>
-    <div id="preview">
+      <hr class="border-0" />
+
+      <button class="btn btn-primary mb-5" id="create">Create image</button>
+
+      <h2>Generated image</h2>
+      <p>If you are happy with the results right click on the image below and 'Save image as'.</p>
+      <div id="generated">
+      </div>
+
     </div>
-
-    </div>
-
-<style>
-    .capturing *:is(.chart__options) {
-        display: none;
-    }
-</style>
-
-<script>
-
-let btn = document.getElementById('create');
-let chart = document.getElementById('chart');
-let preview = document.getElementById('preview');
-
-
-btn.addEventListener('click', function() {
-    
-    chart.classList.add('capturing');
-
-    html2canvas(chart).then(canvas => {
-        preview.innerHTML = '';
-        preview.appendChild(canvas);
-
-        chart.classList.remove('capturing');
-    });
-
-});
-
-
-</script>
-
-
-
-
   </body>
 </html>
