@@ -49,12 +49,18 @@
   --label-size: #{rem(12)};
   --pie-size: calc(50% - 1.4rem);
   --line-thickness: 1px;
+  --yaxis-width: 0;
+  --yaxis-point-display: none;
+  --yaxis-last-point-transform: translate(0,-100%);
 
   @container (min-width: 36em) {
 
     --chart-height-resp: var(--chart-height-lg-set);
     --pie-size: calc(33.333% - 1.4rem);
     --line-thickness: 0.8px;
+    --yaxis-width: auto;
+    --yaxis-point-display: block;
+    --yaxis-last-point-transform: translate(0,-50%);
   }
   
   @container (min-width: 62em) {
@@ -303,10 +309,11 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
   margin-bottom: 1rem;
 
   .chart__yaxis {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     display: flex;
     flex-direction: column-reverse;
     width: 0;
+    width: var(--yaxis-width);
 
     .axis__point {
       
@@ -316,7 +323,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
       white-space: nowrap;
 
       &:not(:last-child){
-        display: none;
+        display: var(--yaxis-point-display);
       }
 
       span {
@@ -329,27 +336,9 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 
       &:last-child span {
 
-        transform: translate(0,-100%);
+        transform: var(--yaxis-last-point-transform);
       }
     }
-
-    @container (min-width: 36em) {
-
-        width: auto;
-
-      .axis__point {
-
-        &:not(:last-child){
-          display: block;
-        }
-
-        &:last-child span {
-  
-          transform: translate(0,-50%);
-        }
-      }
-    }
-
   }
 
   .chart__guidelines {
