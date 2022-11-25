@@ -21,3 +21,7 @@
 .capturing *:is(.chart__options) {
   display: none;
 }
+
+body [contenteditable] {
+  pointer-events: all!important;
+}

@@ -14,8 +14,14 @@ function chart(chartElement,min,max,type,guidelines,targets) {
   if(typeof type == 'undefined'){
     type = chartElement.getAttribute('data-type') ? chartElement.getAttribute('data-type') : 'column';
   }
-  if(typeof guidelines == 'undefined' && chartElement.hasAttribute('data-guidelines')){
-    guidelines = chartElement.getAttribute('data-guidelines').split(',');
+  if(typeof guidelines == 'undefined'){
+
+    if(chartElement.hasAttribute('data-guidelines')){
+      guidelines = chartElement.getAttribute('data-guidelines').split(',');
+    }
+    else if(chartElement.querySelector('.chart__yaxis')){
+      chartElement.setAttribute('data-guidelines', Array.from(chartElement.querySelectorAll('.chart__yaxis .axis__point')).map((element) => element.innerText));
+    }
   }
 
   if(typeof targets == 'undefined' && chartElement.hasAttribute('data-targets')){
@@ -152,6 +158,11 @@ function chart(chartElement,min,max,type,guidelines,targets) {
         if(guidelines){
           createChartYaxis(chartElement,min,max,guidelines);
           createChartGuidelines(chartElement,min,max,guidelines);
+
+          if(chartElement.hasAttribute('data-targets')){
+            targets = JSON.parse(chartElement.getAttribute('data-targets'));
+            createTargets(chartElement,min,max,targets);
+          }
         }
 
         deleteCellData(chartElement);
@@ -360,7 +371,8 @@ export const createTargets = function(chartElement,min,max,targets){
     const value = parseFloat(targets[key].replace('£','').replace('%',''));
     const percent = ((value - min) / max) * 100;
 
-    chartGuidelines.innerHTML += `<div class="guideline guideline--target" style="--percent:${percent}%;"><span>${key}</span></div>`;
+    if(!Number.isNaN(percent))
+      chartGuidelines.innerHTML += `<div class="guideline guideline--target" style="--percent:${percent}%;"><span>${key}</span></div>`;
   });
 }
 

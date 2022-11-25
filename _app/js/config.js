@@ -12,6 +12,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const addRow = document.getElementById('addRow');
   const addColumn = document.getElementById('addColumn');
 
+  const addTarget = document.getElementById('addTarget');
+  const deleteTarget = document.getElementById('deleteTarget');
+  const setTargets = document.getElementById('setTargets');
+
   const btn = document.getElementById('create');
   const generated = document.getElementById('generated');
 
@@ -55,12 +59,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Reset to default class
       chart.className = 'chart';
+
+      document.getElementById('chart-height').removeAttribute('disabled');
+      document.getElementById('chart-height-lg').removeAttribute('disabled');
     
       // If checked add class
       Array.from(document.querySelectorAll('#chart-options input[data-class]:checked')).forEach((checkbox, index) => {
 
         let checkboxID = checkbox.getAttribute('id');
         chart.classList.add(checkboxID);
+
+        if(checkboxID == 'chart--short' || checkboxID == 'chart--tall'){
+          document.getElementById('chart-height').setAttribute('disabled','disabled');
+          document.getElementById('chart-height-lg').setAttribute('disabled','disabled');
+        }
       });
     });
   });
@@ -112,6 +124,45 @@ document.addEventListener("DOMContentLoaded", function () {
         if(chosenCell)
           chosenCell.remove();
       });
+    }
+  });
+
+
+
+  // Add target 
+  addTarget.addEventListener('click', function() {
+    
+    const target = document.querySelector('.chart-targets > *:last-child');
+    const clone = target.cloneNode(true);
+    target.parentNode.insertBefore(clone, target.nextSibling);
+  });
+
+  deleteTarget.addEventListener('click', function() {
+    
+    const target = document.querySelector('.chart-targets > *:last-child:not(:first-child)');
+    
+    if(target)
+      target.remove();
+  });
+
+  setTargets.addEventListener('click', function() {
+    
+    let targetsStr = "";
+
+    Array.from(document.querySelectorAll('.chart-targets > *')).forEach((target, index) => {
+
+      let value = target.querySelector('[name="chart-target"]').value;
+      let label = target.querySelector('[name="chart-target-text"]').value;
+
+      if(index != 0)
+        targetsStr += `, `;
+
+      targetsStr += `"${label}":"${value}"`
+    });
+
+    if(targetsStr != ""){
+
+      chart.setAttribute('data-targets', `{${targetsStr}}`);
     }
   });
 

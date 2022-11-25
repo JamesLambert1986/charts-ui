@@ -1,6 +1,11 @@
 @use "sass:math";
 @import "_vars";
 
+$bar-chart: 'input[type=radio][value=bar]:not([value=none]):not([value=pie]):checked~.chart__inner';
+$scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"]):checked ~ .chart__inner';
+$line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
+$pie-chart: 'input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .chart__inner';
+
 // #region Functions and mixins
 @function rem($pixels, $context: 16)
 {
@@ -29,13 +34,6 @@
   
   // CSS vars that can be overwritten by declaring them without the -set on the end of the variable i.e. --chart-colour-1: red; would overwrite --chart-colour-1-set
   --body-colour-set: var(--body-colour, white);
-  --index-below: -1;
-  --index-base: 0;
-  --index-focus: 2;
-  --index-above: 10;
-  --index-floating: 100;
-  --index-menu: 200;
-  --index-overlay: 1000;
   --chart-height-set: var(--chart-height, #{$chart-height});
   --chart-height-lg-set: var(--chart-height-lg, #{$chart-height-lg});
   --chart-height-resp: var(--chart-height-set);
@@ -45,6 +43,13 @@
   }
 
   // Non-configurable css vars
+  --index-below: -1;
+  --index-base: 0;
+  --index-focus: 2;
+  --index-above: 10;
+  --index-floating: 100;
+  --index-menu: 200;
+  --index-overlay: 1000;
   --key-label-width: 100%;
   --label-size: #{rem(12)};
   --pie-size: calc(50% - 1.4rem);
@@ -459,8 +464,9 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 
         @container (min-width: 62em) {
     
-            display: block;
-          //max-width: 95%;
+          display: block;
+          left: 50%!important;
+          transform: translate(-50%,0)!important;
         }
       }
 
@@ -468,6 +474,22 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
       &:last-child td:first-child {
 
         display: block;
+      }
+
+      
+      &:first-child td:first-child {
+
+        left: 0%;
+        transform: translate(0,0);
+        display: block;
+        text-align: left;
+      }
+      &:last-child td:first-child {
+
+        left: 100%;
+        transform: translate(-100%,0);
+        display: block;
+        text-align: right;
       }
 
       td:not(:first-child) {
@@ -535,11 +557,10 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
           
           left: 50%;
           transform: translate(-50%,0);
+          text-align: center;
         }
-        
-        }
+      }
 
-    
       td:first-child {
         &[data-label]:before {
           display: none;
@@ -557,9 +578,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 
         tr:is(:first-child, :nth-child(5n)) td:first-child {
           display: block!important;
-          max-width: 6rem;
         }
-
       }
 
       tbody:has(tr:nth-child(50)){
@@ -571,7 +590,6 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 
         tr:is(:first-child, :nth-child(10n)) td:first-child {
           display: block!important;
-          max-width: 6rem;
         }
       }
 
@@ -584,9 +602,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 
         tr:is(:first-child, :nth-child(20n)) td:first-child {
           display: block!important;
-          max-width: 6rem;
         }
-
       }
     }
 
@@ -603,28 +619,6 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     }
   }
 
-  .chart--display-data & {
-    table tbody tr {
-
-      td:not(:first-child) {
-        
-        span {
-          &:before {
-            display: none;
-          }
-          opacity: 1;
-          z-index: var(--index-above);
-          top: 50%;
-          transform: translate(-50%, -50%);
-          display: block;
-          height: fit-content;
-          background: none;
-        }
-      }
-
-    }
-  }
-
   .line,
   .pie {
     display: none;
@@ -633,7 +627,6 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 // #endregion
 
 // #region Stacked column chart
-
 input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:checked ~ .chart__inner {
   table tbody tr {
     flex-direction: column-reverse;
@@ -720,12 +713,12 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
     &[data-longest-label] table tbody tr {
       td:first-child {
         position: absolute;
-        transform: translate(-100%, -50%);
+        transform: translate(-100%, -50%)!important;
         display: block !important;
         max-height: 1.5rem;
         z-index: var(--index-above);
         top: 50%;
-        left: 0;
+        left: 0!important;
         padding-right: 0.5em;
       }
     }
@@ -733,23 +726,16 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 }
 
 .chart {
-
   @include barchart('bar');
 
-
   @container (max-width: 36em) {
-
-
     @include barchart('responsive');
   }
-
 }
-
-
 // #endregion
 
 // #region Line and scatter chart
-input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"]):checked ~ .chart__inner {
+#{$scatter-line-chart} {
 
   table tbody {
     justify-content: space-between;
@@ -760,24 +746,9 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[va
       margin-right: -0.5rem;
       padding: 0;
 
-      &:first-child td:first-child {
-
-        transform: translate(0,0);
-        display: block;
-        text-align: left;
-      }
-      &:last-child td:first-child {
-
-        left: 100%;
-        transform: translate(-100%,0);
-        display: block;
-        text-align: right;
-      }
-
       td:first-child {
         left: 50%!important;
         width: 4rem;
-
       }
 
       td:not(:first-child) {
@@ -849,7 +820,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[va
   }
 }
 // Lines
-input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner {
+#{$line-chart} {
 
   .lines ~ table tbody {
 
@@ -877,7 +848,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked
 // #endregion
 
 // #region Pie chart
-input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .chart__inner {
+#{$pie-chart} {
 
   margin-bottom: 2rem;
 
@@ -973,6 +944,72 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
   .line,
   .pie {
     display: none;
+  }
+}
+// #endregion
+
+// #region Display data modifier class
+.chart--display-data {
+  table tbody tr {
+
+    td:not(:first-child) {
+      
+      span {
+        &:before {
+          display: none;
+        }
+        opacity: 1!important;
+        z-index: var(--index-above);
+        top: 0%;
+        transform: translate(-50%, 0%)!important;
+        display: block!important;
+        height: fit-content;
+
+        background: none;
+        margin: 0;
+      }
+    }
+  }
+
+  #{$bar-chart} table tbody tr td:not(:first-child) {
+    span {
+      top: 50%;
+      right: 0;
+      left: auto;
+      transform: translate(0%, -50%)!important;
+    }
+  }
+
+  #{$scatter-line-chart} table tbody tr td:not(:first-child) {
+    span {
+      bottom: 0.25rem;
+      top: auto;
+    }
+  }
+
+  #{$line-chart} .lines~table tbody tr td:not(:first-child):not(:hover) {
+    opacity: 1;
+  }
+}
+// #endregion
+
+// #region Aspect ration modifier classes
+.chart--short {
+  --chart-height-set: 33.33%;
+  --chart-height-lg-set: 33.33%;
+}
+
+.chart--tall {
+  --chart-height-set: 56.25%;
+  --chart-height-lg-set: 56.25%;
+}
+.chart--square {
+  --chart-height-set: 100%;
+  --chart-height-lg-set: 100%;
+}
+.chart--hide-guidelines {
+  *:is(.chart__yaxis, .chart__guidelines) {
+    display: none!important;
   }
 }
 // #endregion
