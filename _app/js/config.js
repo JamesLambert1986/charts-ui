@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const chart = document.getElementById('chart');
   const tbody = chart.querySelector('table tbody');
 
+  const chartTypeSelect = document.getElementById('chart-type-select');
 
 
   const deleteRow = document.getElementById('deleteRow');
@@ -32,6 +33,18 @@ document.addEventListener("DOMContentLoaded", function () {
       chart.style.setProperty(`--${inputID}`, input.value);
     });
   });
+
+  // Update chart type
+  chartTypeSelect.addEventListener('change', function() {
+    
+    const input = document.getElementById(this.value);
+    const e = new Event("change");
+
+    input.checked = true;
+    input.dispatchEvent(e);
+  });
+
+
 
   // Update the chart classes to change the view of the chart
   Array.from(document.querySelectorAll('#chart-options input[data-class]')).forEach((input, index) => {

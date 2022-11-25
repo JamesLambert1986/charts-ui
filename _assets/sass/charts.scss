@@ -47,15 +47,21 @@
   // Non-configurable css vars
   --key-label-width: 100%;
   --label-size: #{rem(12)};
+  --pie-size: calc(50% - 1.4rem);
+  --line-thickness: 1px;
 
   @container (min-width: 36em) {
 
     --chart-height-resp: var(--chart-height-lg-set);
+    --pie-size: calc(33.333% - 1.4rem);
+    --line-thickness: 0.8px;
   }
   
   @container (min-width: 62em) {
 
-      --label-size: #{rem(14)};
+    --label-size: #{rem(14)};
+    --pie-size: calc(25% - 1.5rem);
+    --line-thickness: 0.5px;
   }
 
   &:has(.chart__options){
@@ -64,8 +70,6 @@
   }
   
   margin-bottom: 2rem;
-
-
   display: flex;
   flex-direction: column;
 
@@ -107,6 +111,7 @@
 .chart__source {
   border-top: 1px solid black;
   position: relative;
+  padding-top: rem(4);
   padding-right: rem(70);
 
   &:after {
@@ -227,7 +232,7 @@
 .chart__key {
 
   padding: 0.75rem 0 0 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
   background: var(--colour-key-bg, rgb(220, 220, 220));
   display: flex;
   overflow: auto;
@@ -295,7 +300,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
   display: block;
   display: flex;
   position: relative;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 
   .chart__yaxis {
     margin-bottom: 2rem;
@@ -353,8 +358,8 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     top: 0;
     left: 0;
     width: 100%;
-    height: calc(100% - 2rem);
-    margin-bottom: 2rem;
+    height: calc(100% - 1rem);
+    margin-bottom: 1rem;
     display: flex;
     flex-direction: column-reverse;
     pointer-events: none;
@@ -402,7 +407,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 
   .table__wrapper {
 
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
     padding-right: 0;
     margin: 0;
     overflow: visible;
@@ -757,19 +762,6 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 // #region Line and scatter chart
 input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"]):checked ~ .chart__inner {
 
-  --line-thickness: 1px;
-
-
-  @container (min-width: 36em) {
-
-      --line-thickness: 0.8px;
-  }
-
-  @container (min-width: 62em) {
-
-      --line-thickness: 0.5px;
-  }
-
   table tbody {
     justify-content: space-between;
 
@@ -888,7 +880,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked
     left: 0;
     stroke-width: var(--line-thickness);
     width: 100%;
-    height: calc(100% - 2rem);
+    height: calc(100% - 1rem);
     pointer-events: none;
     z-index: var(--index-above)
   }
@@ -922,16 +914,7 @@ input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .chart__inner {
     min-width: rem(200);
     flex: 1 1 auto;
     display: inline-block;
-
-    @container (min-width: 36em) {
-
-      max-width: calc(33.333% - 1.4rem);
-    }
-
-    @container (min-width: 62em) {
-
-      max-width: calc(25% - 1.5rem);
-    }
+    max-width: var(--pie-size);
 
     &:first-child {
       margin-left: 0;

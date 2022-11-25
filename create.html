@@ -21,83 +21,86 @@
       <h1>Create a BBC Chart</h1>
       <p>This page will allow a user to create a chart and select how it looks. Then it can be turned into an image that can be saved.</p>
 
-      <details id="chart-options">
-          <summary><h2 class="h4 d-inline-block">Chart options</h2></summary>
-
-          <div class="mb-4">
-              <label class="form-label" for="chart-colour-1">Chart Colour 1</label>
+      <details id="chart-options" class="mb-3">
+        <summary><h2 class="h4 d-inline-block">Chart options</h2></summary>
+        <div class="row row-cols-2 row-cols-md-5">
+          <div class="col mb-4">
+              <label class="form-label text-nowrap" for="chart-colour-1">Chart Colour 1</label>
               <input class="form-control form-control-color" type="color" name="chart-colour-1" id="chart-colour-1" />
           </div>
           
-          <div class="mb-4">
-              <label class="form-label" for="chart-colour-2">Chart Colour 2</label>
+          <div class="col mb-4">
+              <label class="form-label text-nowrap" for="chart-colour-2">Chart Colour 2</label>
               <input class="form-control form-control-color" type="color" name="chart-colour-2" id="chart-colour-2" />
           </div>
           
-          <div class="mb-4">
-              <label class="form-label" for="chart-colour-3">Chart Colour 3</label>
+          <div class="col mb-4">
+              <label class="form-label text-nowrap" for="chart-colour-3">Chart Colour 3</label>
               <input class="form-control form-control-color" type="color" name="chart-colour-3" id="chart-colour-3" />
           </div>
           
-          <div class="mb-4">
-              <label class="form-label" for="chart-colour-4">Chart Colour 4</label>
+          <div class="col mb-4">
+              <label class="form-label text-nowrap" for="chart-colour-4">Chart Colour 4</label>
               <input class="form-control form-control-color" type="color" name="chart-colour-4" id="chart-colour-4" />
           </div>
           
-          <div class="mb-4">
-              <label class="form-label" for="chart-colour-5">Chart Colour 5</label>
+          <div class="col mb-4">
+              <label class="form-label text-nowrap" for="chart-colour-5">Chart Colour 5</label>
               <input class="form-control form-control-color" type="color" name="chart-colour-5" id="chart-colour-5" />
           </div>
           
-          <div class="mb-4">
-              <label class="form-label" for="chart-colour-6">Chart Colour 6</label>
+          <div class="col mb-4">
+              <label class="form-label text-nowrap" for="chart-colour-6">Chart Colour 6</label>
               <input class="form-control form-control-color" type="color" name="chart-colour-6" id="chart-colour-6" />
           </div>
           
-          <div class="mb-4">
-              <label class="form-label" for="chart-colour-7">Chart Colour 7</label>
+          <div class="col mb-4">
+              <label class="form-label text-nowrap" for="chart-colour-7">Chart Colour 7</label>
               <input class="form-control form-control-color" type="color" name="chart-colour-7" id="chart-colour-7" />
           </div>
           
-          <div class="mb-4">
-              <label class="form-label" for="chart-colour-8">Chart Colour 8</label>
+          <div class="col mb-4">
+              <label class="form-label text-nowrap" for="chart-colour-8">Chart Colour 8</label>
               <input class="form-control form-control-color" type="color" name="chart-colour-8" id="chart-colour-8" />
           </div>
           
-          <div class="mb-4">
-              <label class="form-label" for="chart-colour-9">Chart Colour 9</label>
+          <div class="col mb-4">
+              <label class="form-label text-nowrap" for="chart-colour-9">Chart Colour 9</label>
               <input class="form-control form-control-color" type="color" name="chart-colour-9" id="chart-colour-9" />
           </div>
           
-          <div class="mb-4">
-              <label class="form-label" for="chart-colour-10">Chart Colour 10</label>
+          <div class="col mb-4">
+              <label class="form-label text-nowrap" for="chart-colour-10">Chart Colour 10</label>
               <input class="form-control form-control-color" type="color" name="chart-colour-10" id="chart-colour-10" />
           </div>
-          
+        </div>  
 
-          <h3 class="h5">Chart type</h3>
-          <label for="chart-none">None</label>
-          <label for="chart-column">Column</label>
-          <label for="chart-bar">Bar</label>
-          <label for="chart-scatter">Scatter</label>
-          <label for="chart-line">Line</label>
-          <label for="chart-pie">Pie</label>
-          <label for="chart-stacked">Stacked</label>
-        
+        <div class="mb-4">
+          <label class="form-label" for="chart-type-select">Chart type</label>
+          <select class="form-select" id="chart-type-select">
 
-
-          <div class="mb-4">
+            <option value="chart-none">None</option>
+            <option value="chart-column" selected>Column</option>
+            <option value="chart-bar">Bar</option>
+            <option value="chart-scatter">Scatter</option>
+            <option value="chart-line">Line</option>
+            <option value="chart-pie">Pie</option>
+            <option value="chart-stacked">Stacked</option>
+          </select>
+        </div>
+        <div class="row row-cols-sm-2">
+          <div class="col mb-4">
               <label class="form-label" for="chart-height">Chart height</label>
               <input class="form-control" type="number" min="1" max="100" name="chart-height" id="chart-height" />
           </div>
-          <div class="mb-4">
+          <div class="col mb-4">
               <label class="form-label" for="chart-height-lg">Chart height Large</label>
               <input class="form-control" type="number" min="1" max="100" name="chart-height-lg" id="chart-height-lg" />
           </div>
-          
+        </div>
 
           
-          <div class="mb-4">
+          <div class="mb-5 pb-4">
               <h3 class="h5">Chart classes</h3>
 
               <div class="form-check">
@@ -108,7 +111,6 @@
           </div>
       </details>
 
-      <h2>Preview</h2>
       <div class="resize">
           <figure class="chart" data-max="100" data-min="0" id="chart">
               <figcaption></figcaption>
