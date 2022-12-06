@@ -6,6 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
+    <link rel="shortcut icon" href="favicon.svg?v=2">
+
     <title>BBC Charts UI Library</title>
     <link rel="stylesheet" href="_app/css/app.css" />
     <link rel="stylesheet" href="_assets/css/main.css" />
@@ -15,34 +17,56 @@
 
   </head>
   <body>
+
+    <header>
+      
+      <nav class="navbar navbar-expand-lg" id="menu">
+        <div class="container">
+
+          <a href="./" rel="home" class="me-3" aria-current="page">Charts UI library</a>
+          <a href="#menu" class="navbar-toggler">
+
+            <span class="navbar-toggler-icon"></span>
+          </a>
+          <a href="#close" class="navbar-toggler d-lg-none">
+            <span class="navbar-toggler-icon"></span>
+          </a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100">
+              <li class="nav-item"><a href="./get-started" class="nav-link">Get started</a></li>
+              <li class="nav-item"><a href="./principles" class="nav-link">Principles</a></li>
+              <li class="nav-item"><a href="./roadmap" class="nav-link">Roadmap</a></li>
+              <li class="nav-item"><a href="./create" class="nav-link">Generator</a></li>
+              <li class="nav-item ms-lg-auto"><a href="mailto:james.lambert@bbc.co.uk" class="nav-link">Feedback</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      
+    </header>
+    <main>
+      <div class="bg-primary text-white py-4 mb-4">
+        <div class="container">
+          <h1>GEL Charts UI Library</h1>
+
+          <p>A multi-functional JS/CSS chart library with suitable and accessible fallbacks. With lots of configurable options and different views. <a href="./create" class="text-white">An image generator</a> is also available to help with the creation of image charts for when the library cannot be used.</p>
+
+        </div>
+      </div>
+
+    </main>
     <div class="container">
-      <h1>BBC GEL Charts UI Library</h1>
-
-      <p>A multi-functional JS/CSS chart library with suitable and accessible fallbacks. With lots of configurable options and different views. <a href="./create">An image generator</a> is also available to help with the creation of image charts for when the library cannot be used.</p>
-
-    <h2>Page contents</h2>
+      
+    <h2>Chart types</h2>
     <ul>
-      <li><a href="#principles">Principles</a></li>
-      <li><a href="#bar">Bar chart (Not started)</a></li>
+      <li><a href="#bar">Bar chart</a></li>
         <li><a href="#column">Column chart</a></li>
         <li><a href="#responsive">Responsive chart</a></li>
         <li><a href="#scatter">Scatter chart</a></li>
         <li><a href="#line">Line chart</a></li>
         <li><a href="#switcher">Chart with switcher</a></li>
         <li><a href="#live">Live line chart</a></li>
-        <li><a href="#roadmap">Roadmap</a></li>
     </ul>
-
-      <h2 id="principles">Principles</h2>
-      <ul>
-          <li>Data is interchangeable between charts</li>
-          <li>Minimal JS needed for chart to function</li>
-          <li>Add as much or as little html as you want to create the chart (JS functions can populate the bits missing)</li>
-          <li>CSS Vars can be used to customise the chart (Sass vars can also be used)</li>
-          <li>Interaction to show/hide datasets</li>
-          <li>Charts update when the data is changed; allowing for live charts</li>
-          <li>Semantic structure and accessible by default</li>
-      </ul>
 
     <h2 id="bar">Bar Chart</h2>
     
@@ -1122,56 +1146,6 @@
         </table>
     </figure>
 
-
-
-
-      <h2 id="roadmap">Roadmap</h2>
-
-      <ul>
-          <li>Increase customisability</li>
-          <li>Improve data resilience </li>
-          <li>Unit tests</li>
-          <li>React component</li>
-          <li>JS function to populate chart options</li>
-          <li>Update styles to match GEL</li>
-          <li>Improve bar chart (Move labels to the side, fix hover states, Guidelines)</li>
-          <li>Re-do pie charts to use conic gradient and not SVG</li>
-          <li>Auto increment guidelines</li>
-          <li>Create new chart types
-            <ul>
-              <li>Area chart</li>
-              <li>Bubble chart</li>
-              <li>Polar</li>
-              <li>Radar</li>
-              <li>Logarithmic Axis</li>
-              <li>Mixed charts</li>
-              <li>Comparison chart (Match stats - https://www.bbc.co.uk/sport/football/63523923)</li>
-            </ul>
-          </li>
-          <li>Download as CSV</li>
-          <li>Time series (https://www.bbc.co.uk/news/science-environment-63502762 - See the China's Carbo emissions chart for example)</li>
-          <li>Utility classes
-            <ul>
-              <li>Display data</li>
-              <li>Control aspect ratio</li>
-              <li>Hide guidelines</li>
-            </ul>
-          </li>
-          <li>Make the image generator functional
-            <ul>
-              <li>Customise colours</li>
-              <li>Add rows/columns</li>
-              <li>Update column names</li>
-              <li>Copy HTML code button</li>
-              <li>BBC watermark</li>
-              <li>Add Text to images</li>
-            </ul>
-          </li>
-          <li>Import CSV</li>
-          <li>Import data to generator from BBC sources i.e. piano</li>
-          <li>Add HTML code previews to the examples</li>
-          <li>IE11 fallbacks and other fallbacks</li>
-      </ul>
 
     </div>
     <!-- 
