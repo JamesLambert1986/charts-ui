@@ -45,11 +45,30 @@
       
     </header>
     <main>
-      <div class="bg-primary text-white py-4 mb-4">
+      <div class="bg-primary text-white py-4">
         <div class="container">
           <h1>GEL Charts UI Library</h1>
 
-          <p>A multi-functional JS/CSS chart library with suitable and accessible fallbacks. With lots of configurable options and different views. <a href="./create" class="text-white">An image generator</a> is also available to help with the creation of image charts for when the library cannot be used.</p>
+          <p class="mb-0">A multi-functional JS/CSS chart library with suitable and accessible fallbacks. With lots of configurable options and different views. <a href="./create" class="text-white">An image generator</a> is also available to help with the creation of image charts for when the library cannot be used.</p>
+
+        </div>
+      </div>
+      
+      <div class="bg-primary text-white border-top border-white mb-4">
+        <div class="container d-flex align-items-end">
+          <input type="checkbox" name="expand-submenu" id="expand-submenu" class="d-none" />
+          <nav class="navbar expand-submenu py-0 flex-fill" id="submenu">
+            <ul class="navbar-nav me-auto mb-0 w-100 flex-row flex-wrap">
+              <li class="nav-item"><a href="#bar" class="nav-link ps-0 pe-3">Bar</a></li>
+              <li class="nav-item"><a href="#column" class="nav-link pe-3">Column</a></li>
+              <li class="nav-item"><a href="#responsive" class="nav-link pe-3">Responsive</a></li>
+              <li class="nav-item"><a href="#scatter" class="nav-link pe-3">Scatter</a></li>
+              <li class="nav-item"><a href="#line" class="nav-link pe-3">Line</a></li>
+              <li class="nav-item"><a href="#switcher" class="nav-link pe-3">Chart with switcher</a></li>
+              <li class="nav-item"><a href="#live" class="nav-link pe-3">Live line chart</a></li>
+            </ul>
+          </nav>
+          <label for="expand-submenu" class="nav-link px-2 ms-auto d-md-none"><span>More</span><span>Less</span></label>
 
         </div>
       </div>
@@ -57,16 +76,6 @@
     </main>
     <div class="container">
       
-    <h2>Chart types</h2>
-    <ul>
-      <li><a href="#bar">Bar chart</a></li>
-        <li><a href="#column">Column chart</a></li>
-        <li><a href="#responsive">Responsive chart</a></li>
-        <li><a href="#scatter">Scatter chart</a></li>
-        <li><a href="#line">Line chart</a></li>
-        <li><a href="#switcher">Chart with switcher</a></li>
-        <li><a href="#live">Live line chart</a></li>
-    </ul>
 
     <h2 id="bar">Bar Chart</h2>
     

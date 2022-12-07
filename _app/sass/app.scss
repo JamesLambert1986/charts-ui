@@ -47,6 +47,12 @@ ul {
 details {
     margin-bottom: 3rem;
 }
+
+.text-white a {
+  &:not(:hover):not(:focus) {
+    color: white;
+  }
+}
 // #endregion
 
 :root {
@@ -100,6 +106,43 @@ header {
 }
 
 // #endregion
+
+
+input:not(:checked) + .expand-submenu {
+  height: rem(38);
+  overflow: hidden;
+}
+
+.expand-submenu + label.nav-link {
+  height: rem(38);
+  line-height: rem(38);
+  display: inline-block;
+  outline: 1px solid white;
+  margin-right: -0.75rem;
+  white-space: nowrap;
+
+  &:before {
+    content: "";
+    display: inline-block;
+    height: 0.75em;
+    aspect-ratio: 32/32;
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3e%3cpath d='M1 7.5h30V1.9H1v5.6zm0 22.6h30v-5.6H1v5.6zm0-11.3h30v-5.6H1v5.6z' fill='white'%3e%3c/path%3e%3c/svg%3e");
+    background-size: 100% 100%;
+    margin-inline-end: rem(8);
+  }
+
+  span:nth-child(2){
+    display: none;
+  }
+
+  input:checked ~ & span:nth-child(1){
+    display: none;
+  }
+  input:checked ~ & span:nth-child(2){
+    display: inline-block;
+  }
+}
+
 
 .resize {
   resize: both;
