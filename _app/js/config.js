@@ -239,6 +239,15 @@ document.addEventListener("DOMContentLoaded", function () {
       generated.appendChild(canvas);
       chart.classList.remove('capturing');
       genWrapper.scrollIntoView();
+
+
+      const link = document.createElement('a');
+  link.download = 'download.png';
+  link.href = canvas.toDataURL();
+  link.click();
+  link.delete;
+
+  
     });
   });
 });
