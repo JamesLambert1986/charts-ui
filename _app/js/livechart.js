@@ -7,21 +7,25 @@ document.addEventListener("DOMContentLoaded", function () {
   let year = 2015;
   let updateChart;
 
-  updateChart = setInterval(function () {
-    
-    let table = document.getElementById('autoUpdate');
-    let tbody = table.querySelector('tbody');
 
-    let growth = table.querySelector('tbody tr:last-child td:nth-child(2)');
-    let growthValue = parseInt(growth.getAttribute('data-numeric')) < 120 ? parseInt(growth.getAttribute('data-numeric')) : 110;
+  let table = document.getElementById('autoUpdate');
 
-    let growth2 = table.querySelector('tbody tr:last-child td:nth-child(3)');
-    let growthValue2 = parseInt(growth2.getAttribute('data-numeric')) > 0 ? parseInt(growth2.getAttribute('data-numeric')) : 10;
+  if(table){
+    updateChart = setInterval(function () {
 
-    tbody.innerHTML += `<tr><td>${year++}</td><td>£${growthValue + randomIntFromInterval(-5,10)}</td><td>£${growthValue2 + randomIntFromInterval(-10,5)}</td></tr>`;
+      let tbody = table.querySelector('tbody');
 
-    if(year == 2051)
-      clearInterval(updateChart);
+      let growth = table.querySelector('tbody tr:last-child td:nth-child(2)');
+      let growthValue = parseInt(growth.getAttribute('data-numeric')) < 120 ? parseInt(growth.getAttribute('data-numeric')) : 110;
 
-  }, 3000);
+      let growth2 = table.querySelector('tbody tr:last-child td:nth-child(3)');
+      let growthValue2 = parseInt(growth2.getAttribute('data-numeric')) > 0 ? parseInt(growth2.getAttribute('data-numeric')) : 10;
+
+      tbody.innerHTML += `<tr><td>${year++}</td><td>£${growthValue + randomIntFromInterval(-5,10)}</td><td>£${growthValue2 + randomIntFromInterval(-10,5)}</td></tr>`;
+
+      if(year == 2051)
+        clearInterval(updateChart);
+
+    }, 3000);
+  }
 });

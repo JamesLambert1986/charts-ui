@@ -2,24 +2,28 @@
 <html lang="en">
   <head>
     
+    <!-- #region:HEAD -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-  
+
+    <link rel="shortcut icon" href="favicon.svg?cache=1670587162289">
+
     <title>BBC Charts UI Library</title>
-    <link rel="stylesheet" href="_app/css/app.css" />
-    <link rel="stylesheet" href="_app/css/create.css" />
-    <link rel="stylesheet" href="_assets/css/main.css" />
-    
-    <script src="_app/js/lib/html2canvas.js"></script>
-    <script src="_assets/js/main.js" type="module" defer></script>
-    <script src="_app/js/config.js" type="module" defer></script>
+    <link rel="stylesheet" href="_app/css/app.css?cache=1670587162289" />
+    <link rel="stylesheet" href="_assets/css/main.css?cache=1670587162289" />
+
+    <script src="_assets/js/main.js?cache=1670587162289" type="module" defer></script>
+    <!-- #endregion:HEAD -->
+
+    <link rel="stylesheet" href="_app/css/create.css?cache=1670587162289" />
+    <script src="_app/js/lib/html2canvas.js?cache=1670587162289"></script>
+    <script src="_app/js/config.js?cache=1670587162289" type="module" defer></script>
+
   </head>
   <body>
-
-
+    <!-- #region:HEADER -->
     <header>
-      
       <nav class="navbar navbar-expand-lg" id="menu">
         <div class="container">
 
@@ -36,20 +40,27 @@
               <li class="nav-item"><a href="./get-started" class="nav-link">Get started</a></li>
               <li class="nav-item"><a href="./principles" class="nav-link">Principles</a></li>
               <li class="nav-item"><a href="./roadmap" class="nav-link">Roadmap</a></li>
-              <li class="nav-item"><a href="./create" class="nav-link active" aria-current="page">Generator</a></li>
+              <li class="nav-item"><a href="./create" class="nav-link">Generator</a></li>
               <li class="nav-item ms-lg-auto"><a href="mailto:james.lambert@bbc.co.uk" class="nav-link">Feedback</a></li>
             </ul>
           </div>
         </div>
       </nav>
-      
     </header>
+    <!-- #endregion:HEADER -->
 
+    <div class="bg-primary text-white py-4 mb-4">
+      <div class="container">
+        <h1>Chart generator</h1>
+
+        <p>This page will allow a user to create a chart and select how it looks. Then it can be turned into an image that can be saved.</p>
+
+      </div>
+    </div>
 
     <div class="container pt-4" id="container">
 
-      <p>This page will allow a user to create a chart and select how it looks. Then it can be turned into an image that can be saved.</p>
-
+      <h2>Chart Preview</h2>
       <div class="resize">
           <figure class="chart" data-max="100" data-min="0" id="chart">
               <figcaption></figcaption>
@@ -124,7 +135,7 @@
 
 
       <details id="chart-options" class="mb-3">
-        <summary><h2 class="d-inline-block">Chart options</h2></summary>
+        <summary><h2 class="h3 d-inline-block">Chart options</h2></summary>
         <div class="row row-cols-2 row-cols-md-5">
           <div class="col mb-4">
               <label class="form-label text-nowrap" for="chart-colour-1">Chart Colour 1</label>
@@ -239,8 +250,8 @@
         <hr class="border-0 mb-4" />
       </details>
       
-      <details id="chart-options" class="mb-3">
-        <summary><h2 class="d-inline-block">Update data</h2></summary>
+      <details id="chart-data" class="mb-3" open>
+        <summary><h2 class="h3 d-inline-block">Update data</h2></summary>
 
         <button class="btn btn-secondary mb-3" id="deleteRow">Delete row</button>
         <button class="btn btn-secondary mb-3" id="deleteColumn">Delete column</button>
@@ -248,21 +259,58 @@
         <button class="btn btn-secondary mb-3" id="addColumn">Add Column</button>
   
         <hr class="border-0" />
-  
-        <h3 class="h4 d-inline-block">Guidelines</h3>
-        <div class="chart-guidelines">
-          <div class="row" data-target>
+
+        <h3 class="h4 d-inline-block">Update min/max values</h3>
+        <div id="chart-events">
+          <div class="row" >
             <div class="col-12 col-sm-6 mb-4">
-              <label class="form-label" for="chart-target-text">Target label</label>
-              <input class="form-control" type="text" name="chart-target-text" id="chart-target-text" />
+              <label class="form-label" for="chart-min">Min value</label>
+              <input class="form-control" type="text" name="chart-min" value="£0" />
+            </div>
+            <div class="col-12 col-sm-6 mb-4">
+              <label class="form-label" for="chart-max">Max value</label>
+              <input class="form-control" type="text" name="chart-max" value="£100" />
             </div>
           </div>
         </div>
 
+        <button id="setValues" class="btn btn-secondary">Set values</button>
+
+
+
         <hr class="border-0" />
   
+        <h3 class="h4 d-inline-block">Guidelines</h3>
+        <div id="chart-guidelines">
+          <div class="row" data-guideline>
+            <div class="col-12 col-sm-8 mb-4">
+              <label class="form-label">Guideline value</label>
+              <input class="form-control" type="text" name="chart-guideline" value="£0" />
+            </div>
+          </div>
+          <div class="row" data-guideline>
+            <div class="col-12 col-sm-8 mb-4">
+              <label class="form-label">Guideline value</label>
+              <input class="form-control" type="text" name="chart-guideline" value="£50" />
+            </div>
+          </div>
+          <div class="row" data-guideline>
+            <div class="col-12 col-sm-8 mb-4">
+              <label class="form-label">Guideline value</label>
+              <input class="form-control" type="text" value="£100" name="chart-guideline"  />
+            </div>
+          </div>
+        </div>
+  
+        <button class="btn btn-link ps-0" data-add-config="chart-guidelines">Add guidelines</button>
+        <button class="btn btn-link ps-0" data-delete-config="chart-guidelines">Delete guidelines</button>
+        <button id="setGuidelines" class="btn btn-secondary">Set Guidelines</button>
+
+
+        <hr class="border-0" />
+
         <h3 class="h4 d-inline-block">Targets</h3>
-        <div class="chart-targets">
+        <div id="chart-targets">
           <div class="row" data-target>
             <div class="col-12 col-sm-6 mb-4">
               <label class="form-label" for="chart-target-text">Target label</label>
@@ -275,9 +323,29 @@
           </div>
         </div>
 
-        <button id="addTarget" class="btn btn-link ps-0">Add target</button>
-        <button id="deleteTarget" class="btn btn-link ps-0">Delete target</button>
+        <button class="btn btn-link ps-0" data-add-config="chart-targets">Add target</button>
+        <button class="btn btn-link ps-0" data-delete-config="chart-targets">Delete target</button>
         <button id="setTargets" class="btn btn-secondary">Set targets</button>
+
+        <hr class="border-0 mb-4" />
+
+        <h3 class="h4 d-inline-block">Events</h3>
+        <div id="chart-events">
+          <div class="row" data-event>
+            <div class="col-12 col-sm-6 mb-4">
+              <label class="form-label" for="chart-event-text">Event label</label>
+              <input class="form-control" type="text" name="chart-event-text" />
+            </div>
+            <div class="col-12 col-sm-6 mb-4">
+              <label class="form-label" for="chart-event">Event value (This should match a rows first cell)</label>
+              <input class="form-control" type="text" name="chart-event" />
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-link ps-0" data-add-config="chart-events">Add event</button>
+        <button class="btn btn-link ps-0" data-delete-config="chart-events">Delete event</button>
+        <button id="setEvents" class="btn btn-secondary">Set events</button>
 
         <hr class="border-0 mb-4" />
       </details>
@@ -293,15 +361,6 @@
       </div>
 
     </div>
-
-
-    <!-- 
-      
-      # Bugs
-
-      - Chart key doesn't re-create once new columns added
-      
-    -->
 
   </body>
 </html>

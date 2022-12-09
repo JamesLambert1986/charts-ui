@@ -1,6 +1,6 @@
 import { ucfirst, unsnake } from './helpers.js'
 
-function chart(chartElement,min,max,type,guidelines,targets) {
+function chart(chartElement,min,max,type,guidelines,targets,events) {
 
   const chartID = `chart-${Date.now()}`;
   let table = chartElement.querySelector('table');
@@ -26,6 +26,9 @@ function chart(chartElement,min,max,type,guidelines,targets) {
 
   if(typeof targets == 'undefined' && chartElement.hasAttribute('data-targets')){
     targets = JSON.parse(chartElement.getAttribute('data-targets'));
+  }
+  if(typeof events == 'undefined' && chartElement.hasAttribute('data-events')){
+    events = JSON.parse(chartElement.getAttribute('data-events'));
   }
 
 
@@ -79,6 +82,9 @@ function chart(chartElement,min,max,type,guidelines,targets) {
 
   if(targets){
     createTargets(chartElement,min,max,targets);
+  }
+  if(events){
+    createEvents(chartElement,events);
   }
 
   // Make sure table cells have enough data attached to them to display the chart data
@@ -152,7 +158,7 @@ function chart(chartElement,min,max,type,guidelines,targets) {
 
       if(mutation.type === 'attributes'){
 
-        guidelines = chartElement.getAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : [];
+        let guidelines = chartElement.getAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : [];
         
         // Y Axis and Guidelines
         if(guidelines){
@@ -163,6 +169,11 @@ function chart(chartElement,min,max,type,guidelines,targets) {
             targets = JSON.parse(chartElement.getAttribute('data-targets'));
             createTargets(chartElement,min,max,targets);
           }
+        }
+
+        if(chartElement.hasAttribute('data-events')){
+          events = JSON.parse(chartElement.getAttribute('data-events'));
+          createEvents(chartElement,events);
         }
 
         deleteCellData(chartElement);
@@ -373,6 +384,44 @@ export const createTargets = function(chartElement,min,max,targets){
 
     if(!Number.isNaN(percent))
       chartGuidelines.innerHTML += `<div class="guideline guideline--target" style="--percent:${percent}%;"><span>${key}</span></div>`;
+  });
+}
+
+export const createEvents = function(chartElement,events){
+
+  console.log('hey')
+  let tbody = chartElement.querySelector('tbody');
+
+  Object.keys(events).forEach(key => {
+
+
+    const value = events[key];
+
+    Array.from(chartElement.querySelectorAll('tbody tr[data-event]')).forEach((tr, index) => {
+
+      tr.removeAttribute('data-event');
+      tr.removeAttribute('data-right-event');
+      tr.removeAttribute('data-left-event');
+    });
+
+    Array.from(chartElement.querySelectorAll('tbody tr td:first-child')).forEach((td, index) => {
+      
+      if(td.innerText == key){
+
+        const parent = td.parentNode;
+
+        parent.setAttribute('data-event',value);
+
+        if(parent.offsetLeft > tbody.clientWidth * 0.75){
+
+          parent.setAttribute('data-event-right','true');
+        }
+        else if(parent.offsetLeft < tbody.clientWidth * 0.25){
+
+          parent.setAttribute('data-event-left','true');
+        }
+      }
+    });
   });
 }
 

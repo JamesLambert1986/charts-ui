@@ -12,9 +12,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const addRow = document.getElementById('addRow');
   const addColumn = document.getElementById('addColumn');
 
-  const addTarget = document.getElementById('addTarget');
-  const deleteTarget = document.getElementById('deleteTarget');
+
+  
+  const setValues = document.getElementById('setValues');
+  const setGuidelines = document.getElementById('setGuidelines');
   const setTargets = document.getElementById('setTargets');
+  const setEvents = document.getElementById('setEvents');
 
   const btn = document.getElementById('create');
   const generated = document.getElementById('generated');
@@ -128,28 +131,66 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 
+  // Add and delete config rows 
+  Array.from(document.querySelectorAll('[data-add-config]')).forEach(function(element) {
 
-  // Add target 
-  addTarget.addEventListener('click', function() {
-    
-    const target = document.querySelector('.chart-targets > *:last-child');
-    const clone = target.cloneNode(true);
-    target.parentNode.insertBefore(clone, target.nextSibling);
+    element.addEventListener('click', function() {
+      
+      const configID = element.getAttribute('data-add-config');
+
+      const target = document.querySelector(`#${configID} > *:last-child`);
+      const clone = target.cloneNode(true);
+      target.parentNode.insertBefore(clone, target.nextSibling);
+    });
   });
 
-  deleteTarget.addEventListener('click', function() {
+  Array.from(document.querySelectorAll('[data-delete-config]')).forEach(function(element) {
+    element.addEventListener('click', function() {
+      
+      const configID = element.getAttribute('data-delete-config');
+      const target = document.querySelector(`#${configID} > *:last-child:not(:first-child)`);
+      
+      if(target)
+        target.remove();
+    });
+  });
+
+
+  setValues.addEventListener('click', function() {
     
-    const target = document.querySelector('.chart-targets > *:last-child:not(:first-child)');
+    let min = document.querySelector('[name="chart-min"]').value.replace('£','').replace('%','');
+    let max = document.querySelector('[name="chart-max"]').value.replace('£','').replace('%','');
+
+    chart.setAttribute('data-min', min);
+    chart.setAttribute('data-max', max);
+  });
+
+
+  setGuidelines.addEventListener('click', function() {
     
-    if(target)
-      target.remove();
+    let targetsStr = "";
+
+    Array.from(document.querySelectorAll('#chart-guidelines > *')).forEach((target, index) => {
+
+      let value = target.querySelector('[name="chart-guideline"]').value;
+
+      if(index != 0)
+        targetsStr += `, `;
+
+      targetsStr += `${value}`;
+    });
+
+    if(targetsStr != ""){
+
+      chart.setAttribute('data-guidelines', `${targetsStr}`);
+    }
   });
 
   setTargets.addEventListener('click', function() {
     
     let targetsStr = "";
 
-    Array.from(document.querySelectorAll('.chart-targets > *')).forEach((target, index) => {
+    Array.from(document.querySelectorAll('#chart-targets > *')).forEach((target, index) => {
 
       let value = target.querySelector('[name="chart-target"]').value;
       let label = target.querySelector('[name="chart-target-text"]').value;
@@ -163,6 +204,27 @@ document.addEventListener("DOMContentLoaded", function () {
     if(targetsStr != ""){
 
       chart.setAttribute('data-targets', `{${targetsStr}}`);
+    }
+  });
+
+  setEvents.addEventListener('click', function() {
+    
+    let targetsStr = "";
+
+    Array.from(document.querySelectorAll('#chart-events > *')).forEach((event, index) => {
+
+      let value = event.querySelector('[name="chart-event"]').value;
+      let label = event.querySelector('[name="chart-event-text"]').value;
+
+      if(index != 0)
+        targetsStr += `, `;
+
+      targetsStr += `"${value}":"${label}"`
+    });
+
+    if(targetsStr != ""){
+
+      chart.setAttribute('data-events', `{${targetsStr}}`);
     }
   });
 

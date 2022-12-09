@@ -812,6 +812,11 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
           transform: translate(-101%,-0.5em);
         }
       }
+      &[data-event-left] {
+        &:after {
+          transform: translate(1%,-0.5em);
+        }
+      }
     }
   }
 
