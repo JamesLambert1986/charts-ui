@@ -242,12 +242,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
       const link = document.createElement('a');
-  link.download = 'download.png';
-  link.href = canvas.toDataURL();
-  link.click();
-  link.delete;
+      link.download = 'download.png';
+      link.href = canvas.toDataURL();
+      link.innerHTML = 'Download image';
 
-  
+      link.classList.add('btn');
+      link.classList.add('btn-primary');
+      link.classList.add('mt-3');
+
+      genWrapper.append(link);
+
     });
   });
 });
