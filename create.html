@@ -49,6 +49,7 @@
     </header>
     <!-- #endregion:HEADER -->
 
+    <main>
     <div class="bg-primary text-white py-4 mb-4">
       <div class="container">
         <h1>Chart generator</h1>
@@ -250,7 +251,7 @@
         <hr class="border-0 mb-4" />
       </details>
       
-      <details id="chart-data" class="mb-3" open>
+      <details id="chart-data" class="mb-3">
         <summary><h2 class="h3 d-inline-block">Update data</h2></summary>
 
         <button class="btn btn-secondary mb-3" id="deleteRow">Delete row</button>
@@ -351,16 +352,17 @@
       </details>
 
 
-
       <button class="btn btn-primary mb-5" id="create">Create image</button>
 
-      <h2>Generated image</h2>
-      <p>If you are happy with the results right click on the image below and 'Save image as'.</p>
-
-      <div id="generated">
-      </div>
 
     </div>
+      <div class="container pt-4" id="genWrapper">
+        <h2>Generated image</h2>
+        <p>If you are happy with the results right click on the image below and 'Save image as'.</p>
 
+        <div id="generated">
+        </div>
+      </div>
+    </main>
   </body>
 </html>

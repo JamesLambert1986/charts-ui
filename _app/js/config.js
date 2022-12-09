@@ -21,6 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const btn = document.getElementById('create');
   const generated = document.getElementById('generated');
+  const genWrapper = document.getElementById('genWrapper');
 
   // Set the colours on the chart element, use the root vars as default
   Array.from(document.querySelectorAll('#chart-options input:not([data-class])')).forEach((input, index) => {
@@ -236,11 +237,8 @@ document.addEventListener("DOMContentLoaded", function () {
     html2canvas(chart).then(canvas => {
       generated.innerHTML = '';
       generated.appendChild(canvas);
-
-      console.log(canvas);
       chart.classList.remove('capturing');
+      genWrapper.scrollIntoView();
     });
   });
-
-
 });
