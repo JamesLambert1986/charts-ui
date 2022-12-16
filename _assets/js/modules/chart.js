@@ -482,6 +482,10 @@ export const setCellData = function(chartElement,min,max){
 
 
 function getCoordinatesForPercent(percent) {
+
+  // This moves the start point to the top middle point like a clock
+  percent = percent - 0.25;
+
   const x = Math.cos(2 * Math.PI * percent);
   const y = Math.sin(2 * Math.PI * percent);
   return [x*100, y*100];
@@ -566,11 +570,11 @@ export const createPies = function(chartElement){
         ].join(' ');
 
         paths += `<path d="${pathData}"></path>`;
-        tooltips += `<foreignObject x="-70" y="-70" width="140" height="140" style="transform: rotate(90deg)"><div><span class="h5 mb-0"><span class="total d-block">${ucfirst(unsnake(title))}</span> ${ucfirst(unsnake(cell.getAttribute('data-label')))}<br/> ${cell.innerHTML}</span></div></foreignObject>`;
+        tooltips += `<foreignObject x="-70" y="-70" width="140" height="140" ><div><span class="h5 mb-0"><span class="total d-block">${ucfirst(unsnake(title))}</span> ${ucfirst(unsnake(cell.getAttribute('data-label')))}<br/> ${cell.innerHTML}</span></div></foreignObject>`;
       }
     });
 
-    returnString += `<div class="pie"><svg viewBox="-105 -105 210 210" style="transform: rotate(-90deg)" preserveAspectRatio="none">${paths}<foreignObject x="-70" y="-70" width="140" height="140" style="transform: rotate(90deg)"><div><span class="h5 mb-0">${title}</span></div></foreignObject>${tooltips}</svg></div>`
+    returnString += `<div class="pie"><svg viewBox="-105 -105 210 210" preserveAspectRatio="none">${paths}${tooltips}</svg><div><span class="h5 mb-0">${title}</span></div></div>`
   });
 
   pieWrapper.innerHTML = returnString;
