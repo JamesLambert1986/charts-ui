@@ -275,7 +275,7 @@ $pie-chart: 'input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .cha
   opacity: 0.25;
 }
 
-.chart > input[type="checkbox"]:not(:checked) ~ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner table tbody tr td:not(:first-child) {
+.chart > input[type="checkbox"]:not(:checked) ~ input[type="radio"]:not([value="none"]):checked ~ .chart__inner table tbody tr td:not(:first-child) {
   display: none;
 }
 
@@ -286,7 +286,7 @@ $pie-chart: 'input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .cha
 @for $i from 1 to 10 {
   
 
-  .chart > input[type="checkbox"]:nth-of-type(#{$i}):not(:checked) ~ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner table tbody tr td:not(:first-child):nth-child(#{$i+1}) {
+  .chart > input[type="checkbox"]:nth-of-type(#{$i}):not(:checked) ~ input[type="radio"]:not([value="none"]):checked ~ .chart__inner table tbody tr td:not(:first-child):nth-child(#{$i+1}) {
     display: block;
   }
 

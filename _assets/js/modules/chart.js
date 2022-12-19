@@ -389,7 +389,6 @@ export const createTargets = function(chartElement,min,max,targets){
 
 export const createEvents = function(chartElement,events){
 
-  console.log('hey')
   let tbody = chartElement.querySelector('tbody');
 
   Object.keys(events).forEach(key => {
@@ -481,10 +480,11 @@ export const setCellData = function(chartElement,min,max){
 }
 
 
-function getCoordinatesForPercent(percent) {
+function getCoordinatesForPercent(percent, pieCount) {
 
   // This moves the start point to the top middle point like a clock
-  percent = percent - 0.25;
+  if(pieCount > 1)
+    percent = percent - 0.25;
 
   const x = Math.cos(2 * Math.PI * percent);
   const y = Math.sin(2 * Math.PI * percent);
@@ -494,7 +494,6 @@ function getCoordinatesForPercent(percent) {
 export const createPies = function(chartElement){
 
   let returnString = '';
-
 
   let chartInner = chartElement.querySelector('.chart__inner');
 
@@ -518,6 +517,7 @@ export const createPies = function(chartElement){
     let total = 0;
     let titleKey = item.querySelectorAll('td')[0]
     let title = titleKey.innerHTML;
+    let pieCount = 0;
 
     // Work out the total amount
     Array.from(item.querySelectorAll('td')).forEach((cell, subindex) => {
@@ -533,6 +533,7 @@ export const createPies = function(chartElement){
         value = Number.parseInt(value);
 
         total += value;
+        pieCount++;
       }
     });
 
@@ -551,13 +552,13 @@ export const createPies = function(chartElement){
 
         let percent = value/total;
 
-        const [startX, startY] = getCoordinatesForPercent(cumulativePercent);
+        const [startX, startY] = getCoordinatesForPercent(cumulativePercent,pieCount);
 
         // each slice starts where the last slice ended, so keep a cumulative percent
         if(display != 'none')
           cumulativePercent += percent;
 
-        const [endX, endY] = getCoordinatesForPercent(cumulativePercent);
+        const [endX, endY] = getCoordinatesForPercent(cumulativePercent,pieCount);
 
         // if the slice is more than 50%, take the large arc (the long way around)
         const largeArcFlag = percent > .5 ? 1 : 0;
