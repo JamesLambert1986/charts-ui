@@ -3,7 +3,19 @@ import { ucfirst, unsnake } from './helpers.js'
 function chart(chartElement,min,max,type,guidelines,targets,events) {
 
   const chartID = `chart-${Date.now()}`;
+
+  if(chartElement.hasAttribute('data-csv') && !chartElement.hasAttribute('data-csv-loaded')){
+    let csvURL = chartElement.getAttribute('data-csv');
+
+    let csvData = getCSVData(chartElement, csvURL);
+
+    console.log('create the table')
+    return false;
+  }
+
+
   let table = chartElement.querySelector('table');
+
 
   if(typeof min == 'undefined'){
     min = chartElement.getAttribute('data-min');
@@ -32,6 +44,7 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
   }
 
 
+
   // Wrap the table with some divs to add functionality
   if(!chartElement.querySelector('.table__wrapper')){
 
@@ -52,6 +65,7 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
     chartElement.append(chartInner);
   }
 
+
   // set the longest label attr so that the bar chart knows what margin to set on the left
   let longestLabel = '';
   const chartInner = chartElement.querySelector('.chart__inner');
@@ -63,10 +77,21 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
   });
   chartInner.setAttribute('data-longest-label',longestLabel);
 
+  // set the longest data set attr so that the bar chart knows what margin to set on the left
+  let longestSet = '';
+  Array.from(table.querySelectorAll('thead tr th')).forEach((td, index) => {
+
+    if(td.innerText.length > longestSet.length){
+      longestSet = td.innerText;
+    }
+  });
+  chartInner.setAttribute('data-set-label',longestSet);
+
   // Create chart key if the one isn't already created
   if(!chartElement.querySelector('.chart__key')){
     createChartKey(chartID,chartElement);
   }
+
 
   // Create the required type input field if one isn't set
   if(!chartElement.querySelector(':scope > [type="radio"]:checked')){
@@ -89,6 +114,7 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
 
   // Make sure table cells have enough data attached to them to display the chart data
   setCellData(chartElement,min,max);
+
 
   // Create lines for line graph
   if(chartElement.querySelector(':scope > input[value="line"]:checked'))
@@ -259,14 +285,148 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
       observer2.observe(chartElement, { attributes: true });
     }
   };
-
+/*
   const observer = new MutationObserver(tableUpdated);
   const observer2 = new MutationObserver(attributesUpdated);
 
   observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
   observer2.observe(chartElement, { attributes: true });
+*/
+
+  if(chartElement.hasAttribute('data-series')){
+    
+    console.log('yes')
+    createSeries(chartElement);
+  }
+}
 
 
+function getCSVData(chartElement, csvURL){
+
+  var request = new XMLHttpRequest();
+  request.open('GET', csvURL, true);
+  request.send(null);
+  request.onreadystatechange = function () {
+
+    if (request.readyState === 4 && request.status === 200) {
+
+      var type = request.getResponseHeader('Content-Type');
+
+      if (type.indexOf("csv") != -1) {
+
+        const data = csvToObj(request.responseText);
+        
+        createTable(chartElement, data);
+
+        return true;
+      }
+    }
+  }
+}
+
+function csvToObj(data){
+
+  let newRows = [];
+  let rows = data.split('\n');
+
+  rows.forEach((row, index) => {
+
+    let newRow = [];
+    let cells = row.replace('\r','').split(',');
+
+    cells.forEach((cell, subIndex) => {
+      newRow.push(cell);
+    });
+    
+    newRows.push(newRow);
+  });
+
+  return newRows;
+}
+
+function createTable(chartElement,data){
+
+  let min = chartElement.getAttribute('data-min');
+  let max = chartElement.getAttribute('data-max');
+
+  const newTable = document.createElement("table");
+  const newThead = document.createElement("thead");
+  const newTheadRow = document.createElement("tr");
+  const newTbody = document.createElement("tbody");
+
+  const chartID = `chart-${Date.now()}`;
+
+
+
+  const chartInner = chartElement.querySelector('.chart__inner');
+  let chartKey = document.createElement("div");
+  let previousInput;
+  chartKey.setAttribute('class','chart__key');
+  chartKey.setAttribute('role','presentation');
+
+  chartElement.insertBefore(chartKey,chartInner);
+
+
+  let firstRow = data[0];
+
+  firstRow.forEach((cell, index) => {
+
+    const newHeading = document.createElement('th');
+    newHeading.innerHTML = cell;
+    newTheadRow.appendChild(newHeading);
+    if(index != 0){
+      previousInput = createChartKeyItem(chartID,index,cell,chartKey,chartElement,previousInput);
+    }
+  });
+
+  newThead.appendChild(newTheadRow);
+  newTable.appendChild(newThead);
+
+  data.forEach((row, index) => {
+
+    if(index != 0){
+      const newRow = document.createElement('tr');
+      newRow.setAttribute('data-label',row[0])
+      row.forEach((cell, subindex) => {
+
+        const newCell = document.createElement('td');
+        newCell.innerHTML =  cell ? cell : 0; // Temp solution
+
+        let callValue = parseFloat(cell.replace('£','').replace('%',''));
+
+        newCell.setAttribute('data-numeric',callValue);
+        newCell.setAttribute('data-label',firstRow[subindex]);
+
+        newCell.innerHTML = `<span data-group="${row[0]}" data-label="${firstRow[subindex]}">${cell}</span>`;
+
+        //const value = Number.parseFloat(td.getAttribute('data-numeric'));
+        let percent = ((callValue - min)/(max)) * 100;
+        if(isNaN(percent))
+          percent = 0;
+
+        let bottom = 0;
+
+        // If the value is negative the position below the 0 line
+        if(min < 0){
+          bottom = Math.abs((min)/(max)*100);
+          if(value < 0){
+            bottom = bottom - percent;
+          }
+        }
+        newCell.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--order:${10000 - parseInt(percent * 100)}`);
+    
+        newRow.appendChild(newCell);
+      });
+      newTbody.appendChild(newRow);
+    }
+  });
+
+  newTable.appendChild(newTbody);
+
+  chartElement.appendChild(newTable);
+
+  chartElement.setAttribute('data-csv-loaded', 'true');
+  chart(chartElement);
 }
 
 export const createChartKey = function(chartID, chartElement){
@@ -279,33 +439,42 @@ export const createChartKey = function(chartID, chartElement){
 
   chartElement.insertBefore(chartKey,chartInner);
 
-  Array.from(chartElement.querySelectorAll('thead th')).forEach((arrayElement, index) => {
+  let headings = Array.from(chartElement.querySelectorAll('thead th'));
+
+  headings.forEach((arrayElement, index) => {
 
     if(index != 0){
 
-      let firstChild = chartElement.querySelector(':scope > *');
-      let input = document.createElement('input');
-      input.setAttribute('name',`${chartID}-dataset-${index}`);
-      input.setAttribute('id',`${chartID}-dataset-${index}`);
-      input.setAttribute('checked',`checked`);
-      input.setAttribute('type',`checkbox`);
+      previousInput = createChartKeyItem(chartID,index,arrayElement.innerText,chartKey,chartElement,previousInput);
+    }
 
-      if(index == 1)
-        chartElement.prepend(input);
-      else
-        chartElement.insertBefore(input,previousInput.nextSibling);
-
-      previousInput = input;
-
-
-      let label = document.createElement('label');
-      label.setAttribute('class',`key`);
-      label.setAttribute('for',`${chartID}-dataset-${index}`);
-      label.innerHTML = `${arrayElement.innerText}`;
-      chartKey.append(label);
-
+    if(index == 50){
+      headings.length = index + 1;
     }
   });
+}
+
+function createChartKeyItem(chartID,index,text,chartKey,chartElement,previousInput){
+  let input = document.createElement('input');
+  input.setAttribute('name',`${chartID}-dataset-${index}`);
+  input.setAttribute('id',`${chartID}-dataset-${index}`);
+  input.setAttribute('checked',`checked`);
+  input.setAttribute('type',`checkbox`);
+
+  if(index == 1)
+    chartElement.prepend(input);
+  else
+    chartElement.insertBefore(input,previousInput.nextSibling);
+
+  previousInput = input;
+
+  let label = document.createElement('label');
+  label.setAttribute('class',`key`);
+  label.setAttribute('for',`${chartID}-dataset-${index}`);
+  label.innerHTML = `${text}`;
+  chartKey.append(label);
+
+  return previousInput;
 }
 
 export const createChartType = function(chartID,chartElement,type){
@@ -448,7 +617,7 @@ export const setCellData = function(chartElement,min,max){
     });
 
     // Add css vars to cells
-    Array.from(tr.querySelectorAll('td[data-numeric]:not([data-numeric="0"]):not(:first-child)')).forEach((td, index) => {
+    Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td, index) => {
 
       
       const label = td.getAttribute('data-label');
@@ -655,6 +824,85 @@ export const createLines = function(chartElement,min,max){
   });
 
   linesWrapper.innerHTML = returnString;
+}
+
+const createSeries = function(chartElement){
+
+  let currentRow = 1;
+  let seriesInterval;
+
+  let seriesControl = document.createElement('div');
+
+  let seriesPlayButton = document.createElement('button');
+  seriesPlayButton.innerHTML = 'Play';
+  seriesPlayButton.classList.add('seriesPlayButton');
+
+  let seriesPauseButton = document.createElement('button');
+  seriesPauseButton.innerHTML = 'Pause';
+  seriesPauseButton.classList.add('seriesPauseButton');
+
+
+  let seriesProgress = document.createElement('input');
+  seriesProgress.setAttribute('name','seriesProgress');
+  seriesProgress.setAttribute('type','range');
+  seriesProgress.setAttribute('min',1);
+  seriesProgress.setAttribute('step',1);
+  seriesProgress.setAttribute('value',1);
+  seriesProgress.setAttribute('max', Array.from(chartElement.querySelectorAll('tbody tr')).length);
+
+  seriesProgress.classList.add('seriesProgress');
+
+  let seriesCurrentRow = document.createElement('span');
+
+
+  seriesControl.append(seriesPlayButton);
+  seriesControl.append(seriesPauseButton);
+  seriesControl.append(seriesProgress);
+  seriesControl.append(seriesCurrentRow);
+
+  chartElement.append(seriesControl);
+
+  updateCurrent(currentRow);
+
+  function seriesPlay(){
+
+    seriesProgress.value = currentRow;
+    updateCurrent(currentRow);
+
+    if(currentRow == Array.from(chartElement.querySelectorAll(`tbody tr:not(:nth-child(${currentRow}))`)).length + 1){
+      clearInterval(seriesInterval);
+      return false;
+    }
+
+    currentRow++;
+  }
+
+  function updateCurrent(index) {
+    chartElement.querySelector(`tbody tr:nth-child(${index})`).classList.remove('d-none');
+    seriesCurrentRow.innerHTML = chartElement.querySelector(`tbody tr:nth-child(${index})`).getAttribute('data-label');
+
+    Array.from(chartElement.querySelectorAll(`tbody tr:not(:nth-child(${index}))`)).forEach((row, subindex) => {
+      row.classList.add('d-none');
+    });
+  }
+
+  
+  chartElement.querySelector('.seriesPlayButton').addEventListener('click', function() {
+    seriesInterval = setInterval(seriesPlay, 1000);
+  });
+
+  chartElement.querySelector('.seriesPauseButton').addEventListener('click', function() {
+    clearInterval(seriesInterval);
+  });
+  chartElement.querySelector('.seriesProgress').addEventListener('input', function() {
+  
+    clearInterval(seriesInterval);
+    let nthChild = this.value;
+
+    updateCurrent(nthChild);
+
+    currentRow = nthChild;
+  });
 }
 
 export default chart

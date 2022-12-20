@@ -142,19 +142,25 @@ $pie-chart: 'input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .cha
 // #region Apply chart colours
 @for $i from 1 to 10 {
   
-  .chart__key .key:nth-child(#{$i}),
-  input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner table tbody tr td:not(:first-child):nth-child(#{$i+1}) {
+  .chart__key .key:nth-child(10n - #{10 - $i}),
+  input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner table tbody tr td:not(:first-child):nth-child(10n - #{10 - ($i+1)}) {
     
     --chart-colour: var(#{'--chart-colour-'+$i+'-set'});
   }
 
-  input[value="line"]:checked ~ .chart__inner .line:nth-child(#{$i}) {
+  input[value="line"]:checked ~ .chart__inner .line:nth-child(10n - #{10 - $i}) {
     stroke: var(#{'--chart-colour-'+$i+'-set'});
     z-index: #{10 - $i};
   }
-  input[value="pie"]:checked ~ .chart__inner .pie path:nth-child(#{$i}) {
+  input[value="pie"]:checked ~ .chart__inner .pie path:nth-child(10n - #{10 - $i}) {
     fill: var(#{'--chart-colour-'+$i+'-set'});
   }
+}
+
+.chart__key .key:nth-child(10n),
+input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner table tbody tr td:not(:first-child):nth-child(10n + 1) {
+  
+  --chart-colour: var(#{'--chart-colour-10-set'});
 }
 // #endregion
 
@@ -732,6 +738,22 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
     @include barchart('responsive');
   }
 }
+
+.chart.chart--display-set-label input[type="radio"][value="bar"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner tbody tr td:before {
+  content: attr(data-label);
+  white-space: nowrap;
+  display: block;
+  position: absolute;
+  top: calc(50% - 0.5em);
+  right: calc(100% + 0.5em);
+  color: #000000;
+  font-size: var(--label-size);
+}
+
+.chart.chart--display-set-label input[type="radio"][value="bar"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner[data-set-label]:before {
+  content: attr(data-set-label);
+}
+
 // #endregion
 
 // #region Line and scatter chart
@@ -1036,6 +1058,36 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 }
 .chart--hide-guidelines {
   *:is(.chart__yaxis, .chart__guidelines) {
+    display: none!important;
+  }
+}
+// #endregion
+
+
+// #region Value order modifier class
+.chart--value-order tbody tr {
+  flex-wrap: nowrap;
+  display: flex;
+  justify-content: flex-start!important;
+}
+.chart--value-order tbody tr td{
+  order: var(--order,10000)!important;
+  display: flex;
+  flex-shrink: 0;
+}
+// #endregion
+
+// #region Crop height modifier class (Used for bar chart only currently)
+.chart--crop-10 .chart__inner {
+
+  overflow: hidden;
+  max-height: calc(10 * 3rem);
+}
+// #endregion
+
+// #region Hide key modifier class
+.chart--hide-key {
+  .chart__key {
     display: none!important;
   }
 }
