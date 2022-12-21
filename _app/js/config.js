@@ -1,10 +1,12 @@
+import { csvToObj, createTable, createSeries } from  '../../_assets/js/modules/chart.js';
+
 document.addEventListener("DOMContentLoaded", function () {
 
-  const chart = document.getElementById('chart');
-  const tbody = chart.querySelector('table tbody');
+  const chartWrapper = document.getElementById('chartWrapper');
+  let chart = document.getElementById('chart');
+  let tbody = chart.querySelector('table tbody');
 
   const chartTypeSelect = document.getElementById('chart-type-select');
-
 
   const deleteRow = document.getElementById('deleteRow');
   const deleteColumn = document.getElementById('deleteColumn');
@@ -12,16 +14,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const addRow = document.getElementById('addRow');
   const addColumn = document.getElementById('addColumn');
 
-
-  
   const setValues = document.getElementById('setValues');
   const setGuidelines = document.getElementById('setGuidelines');
   const setTargets = document.getElementById('setTargets');
   const setEvents = document.getElementById('setEvents');
+  const setSeries = document.getElementById('setSeries');
 
   const btn = document.getElementById('create');
   const generated = document.getElementById('generated');
   const genWrapper = document.getElementById('genWrapper');
+
+  const csvInput = document.getElementById('csvFile');
 
   // Set the colours on the chart element, use the root vars as default
   Array.from(document.querySelectorAll('#chart-options input:not([data-class])')).forEach((input, index) => {
@@ -229,6 +232,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 
+
+  setSeries.addEventListener('click', function() {
+    
+    chart.setAttribute('data-series', 'true');
+    createSeries(chart);
+  });
+
   // Create the image
   btn.addEventListener('click', function() {
       
@@ -254,4 +264,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
   });
+
+  // Upload CSV file
+  csvInput.addEventListener('input', function(e) {
+    e.preventDefault();
+    const input = csvFile.files[0];
+
+    const reader = new FileReader();
+    reader.addEventListener('load', (e) => {
+      const text = e.target.result;
+      const data = csvToObj(text);
+
+      chart.remove();
+      chartWrapper.innerHTML = `<figure class="chart" data-min="0" data-max="3000" id="chart"></figure>`;
+      chart = document.getElementById('chart');
+      createTable(chart, data);
+      tbody = chart.querySelector('table tbody');
+
+      console.log(data);
+    });
+    reader.readAsText(input);
+    
+  });
+
 });

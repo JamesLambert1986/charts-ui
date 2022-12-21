@@ -7,19 +7,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" href="favicon.svg?cache=1671616660590">
+    <link rel="shortcut icon" href="favicon.svg?cache=1671634734788">
 
     <title>BBC Charts UI Library</title>
-    <link rel="stylesheet" href="_app/css/app.css?cache=1671616660590" />
-    <link rel="stylesheet" href="_assets/css/main.css?cache=1671616660590" />
+    <link rel="stylesheet" href="_app/css/app.css?cache=1671634734788" />
+    <link rel="stylesheet" href="_assets/css/main.css?cache=1671634734788" />
 
-    <script src="_assets/js/main.js?cache=1671616660590" type="module" defer></script>
-    <script src="_app/js/app.js?cache=1671616660590" type="module" defer></script>
+    <script src="_assets/js/main.js?cache=1671634734788" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1671634734788" type="module" defer></script>
     <!-- #endregion:HEAD -->
 
-    <link rel="stylesheet" href="_app/css/create.css?cache=1671616660590" />
-    <script src="_app/js/lib/html2canvas.js?cache=1671616660590"></script>
-    <script src="_app/js/config.js?cache=1671616660590" type="module" defer></script>
+    <link rel="stylesheet" href="_app/css/create.css?cache=1671634734788" />
+    <script src="_app/js/lib/html2canvas.js?cache=1671634734788"></script>
+    <script src="_app/js/config.js?cache=1671634734788" type="module" defer></script>
 
   </head>
   <body>
@@ -64,7 +64,7 @@
     <div class="container pt-4" id="container">
 
       <h2>Chart Preview</h2>
-      <div class="resize">
+      <div class="resize" id="chartWrapper">
           <figure class="chart" data-max="100" data-min="0" id="chart">
               <figcaption></figcaption>
 
@@ -265,7 +265,7 @@
         <hr class="border-0 mb-4" />
       </details>
       
-      <details id="chart-data" class="mb-3">
+      <details id="chart-data" class="mb-3" open>
         <summary><h2 class="h3 d-inline-block">Update data</h2></summary>
 
         <button class="btn btn-secondary mb-3" id="deleteRow">Delete row</button>
@@ -275,6 +275,11 @@
   
         <hr class="border-0" />
 
+        <div class="mb-4">
+          <label for="csvFile" class="form-label h4 d-inline-block">Upload CSV file</label>
+          <input class="form-control" type="file" id="csvFile" name="csvFile" accept="text/csv">
+        </div>
+        
         <h3 class="h4 d-inline-block">Update min/max values</h3>
         <div id="chart-events">
           <div class="row" >
@@ -363,6 +368,18 @@
         <button id="setEvents" class="btn btn-secondary">Set events</button>
 
         <hr class="border-0 mb-4" />
+
+        <h3 class="h4 d-inline-block">Set as series</h3>
+        <div id="chart-events">
+          <div class="row" data-event>
+            <p>TO DO - config options here</p>
+          </div>
+
+        </div>
+        <button id="setSeries" class="btn btn-secondary">Set series</button>
+
+
+
       </details>
 
 
@@ -370,11 +387,12 @@
 
 
     </div>
-      <div class="container pt-4" id="genWrapper">
-        <h2>Generated image</h2>
-        <div id="generated">
-        </div>
+
+    <div class="container pt-4" id="genWrapper">
+      <h2>Generated image</h2>
+      <div id="generated">
       </div>
+    </div>
     </main>
   </body>
 </html>

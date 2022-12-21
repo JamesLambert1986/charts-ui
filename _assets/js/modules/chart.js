@@ -285,13 +285,12 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
       observer2.observe(chartElement, { attributes: true });
     }
   };
-/*
+
   const observer = new MutationObserver(tableUpdated);
   const observer2 = new MutationObserver(attributesUpdated);
 
   observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
   observer2.observe(chartElement, { attributes: true });
-*/
 
   if(chartElement.hasAttribute('data-series')){
     
@@ -324,7 +323,7 @@ function getCSVData(chartElement, csvURL){
   }
 }
 
-function csvToObj(data){
+export const csvToObj = function(data){
 
   let newRows = [];
   let rows = data.split('\n');
@@ -344,7 +343,7 @@ function csvToObj(data){
   return newRows;
 }
 
-function createTable(chartElement,data){
+export const createTable = function(chartElement,data){
 
   let min = chartElement.getAttribute('data-min');
   let max = chartElement.getAttribute('data-max');
@@ -826,7 +825,7 @@ export const createLines = function(chartElement,min,max){
   linesWrapper.innerHTML = returnString;
 }
 
-const createSeries = function(chartElement){
+export const createSeries = function(chartElement){
 
   let currentRow = 1;
   let seriesInterval;
