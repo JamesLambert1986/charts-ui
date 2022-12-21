@@ -713,6 +713,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
         padding-right: 0.5em;
         opacity: 0;
         pointer-events: none;
+        white-space: nowrap;
       }   
     }
 
@@ -737,21 +738,6 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
   @container (max-width: 36em) {
     @include barchart('responsive');
   }
-}
-
-.chart.chart--display-set-label input[type="radio"][value="bar"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner tbody tr td:before {
-  content: attr(data-label);
-  white-space: nowrap;
-  display: block;
-  position: absolute;
-  top: calc(50% - 0.5em);
-  right: calc(100% + 0.5em);
-  color: #000000;
-  font-size: var(--label-size);
-}
-
-.chart.chart--display-set-label input[type="radio"][value="bar"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner[data-set-label]:before {
-  content: attr(data-set-label);
 }
 
 // #endregion
@@ -997,6 +983,60 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 }
 // #endregion
 
+// #region Series control buttons
+.chart .series__controls {
+  display: flex;
+}
+
+.chart .series__play-btn,
+.chart .series__pause-btn {
+
+  background: none;
+  border: none;
+  padding: 0;
+  margin-inline-end: 1rem;
+  margin-block-end: 1rem;
+
+  &:before {
+    content: "";
+    height: rem(16);
+    width: rem(16);
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3e%3cpath d='M29 16 5.8 1v30L29 16z'%3e%3c/path%3e%3c/svg%3e");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    vertical-align: bottom;
+    margin-bottom: rem(3);
+    margin-right: rem(6);
+  }
+}
+
+.chart .series__pause-btn {
+  &:before {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3e%3cpath d='M7 3h6v26H7zm12 0h6v26h-6z'%3e%3c/path%3e%3c/svg%3e");
+  }
+}
+
+.chart .series__progress {
+  flex-grow: 1;
+  height: 1.5rem;
+  margin-inline-end: 1rem;
+  margin-block-end: 1rem;
+  accent-color: black;
+}
+
+.chart .series__current {
+  line-height: 1.5rem;
+  margin-inline-end: 0;
+  margin-block-end: 1rem;
+}
+
+// #endregion
+
+// ******************************************
+// MODIFIER CLASSES
+// ******************************************
+
 // #region Display data modifier class
 .chart--display-data {
   table tbody tr {
@@ -1063,7 +1103,6 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 }
 // #endregion
 
-
 // #region Value order modifier class
 .chart--value-order tbody tr {
   flex-wrap: nowrap;
@@ -1091,4 +1130,25 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
     display: none!important;
   }
 }
+// #endregion
+
+// #region Display set label modifier class
+// For bar chart
+.chart.chart--display-set-label input[type="radio"][value="bar"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner tbody tr td:before {
+  content: attr(data-label);
+  white-space: nowrap;
+  display: block;
+  position: absolute;
+  top: calc(50% - 0.5em);
+  right: calc(100% + 0.5em);
+  color: #000000;
+  font-size: var(--label-size);
+}
+
+.chart.chart--display-set-label input[type="radio"][value="bar"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner[data-set-label]:before {
+  content: attr(data-set-label);
+}
+
+// For column chart
+// TODO
 // #endregion

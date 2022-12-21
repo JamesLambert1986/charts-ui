@@ -832,28 +832,29 @@ const createSeries = function(chartElement){
   let seriesInterval;
 
   let seriesControl = document.createElement('div');
+  seriesControl.classList.add('series__controls')
 
   let seriesPlayButton = document.createElement('button');
   seriesPlayButton.innerHTML = 'Play';
-  seriesPlayButton.classList.add('seriesPlayButton');
+  seriesPlayButton.classList.add('series__play-btn');
 
   let seriesPauseButton = document.createElement('button');
   seriesPauseButton.innerHTML = 'Pause';
-  seriesPauseButton.classList.add('seriesPauseButton');
-
+  seriesPauseButton.classList.add('series__pause-btn');
+  seriesPauseButton.classList.add('d-none');
 
   let seriesProgress = document.createElement('input');
-  seriesProgress.setAttribute('name','seriesProgress');
+  seriesProgress.setAttribute('name','series__progress');
   seriesProgress.setAttribute('type','range');
   seriesProgress.setAttribute('min',1);
   seriesProgress.setAttribute('step',1);
   seriesProgress.setAttribute('value',1);
   seriesProgress.setAttribute('max', Array.from(chartElement.querySelectorAll('tbody tr')).length);
 
-  seriesProgress.classList.add('seriesProgress');
+  seriesProgress.classList.add('series__progress');
 
   let seriesCurrentRow = document.createElement('span');
-
+  seriesCurrentRow.classList.add('series__current');
 
   seriesControl.append(seriesPlayButton);
   seriesControl.append(seriesPauseButton);
@@ -887,16 +888,22 @@ const createSeries = function(chartElement){
   }
 
   
-  chartElement.querySelector('.seriesPlayButton').addEventListener('click', function() {
+  seriesPlayButton.addEventListener('click', function() {
     seriesInterval = setInterval(seriesPlay, 1000);
+    seriesPlayButton.classList.add('d-none');
+    seriesPauseButton.classList.remove('d-none');
   });
 
-  chartElement.querySelector('.seriesPauseButton').addEventListener('click', function() {
+  seriesPauseButton.addEventListener('click', function() {
     clearInterval(seriesInterval);
+    seriesPlayButton.classList.remove('d-none');
+    seriesPauseButton.classList.add('d-none');
   });
-  chartElement.querySelector('.seriesProgress').addEventListener('input', function() {
+  seriesProgress.addEventListener('input', function() {
   
     clearInterval(seriesInterval);
+    seriesPlayButton.classList.remove('d-none');
+    seriesPauseButton.classList.add('d-none');
     let nthChild = this.value;
 
     updateCurrent(nthChild);
