@@ -34,6 +34,7 @@ $pie-chart: 'input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .cha
   
   // CSS vars that can be overwritten by declaring them without the -set on the end of the variable i.e. --chart-colour-1: red; would overwrite --chart-colour-1-set
   --body-colour-set: var(--body-colour, white);
+  --body-colour-set: var(--text-colour, black);
   --chart-height-set: var(--chart-height, #{$chart-height});
   --chart-height-lg-set: var(--chart-height-lg, #{$chart-height-lg});
   --chart-height-resp: var(--chart-height-set);
@@ -1064,8 +1065,13 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
     span {
       top: 50%;
       right: 0;
-      left: auto;
+      left: 0;
       transform: translate(0%, -50%)!important;
+      text-align: right;
+      width: calc(100% - 0.4rem);
+      min-width: fit-content;
+      padding: 0 0.1rem;
+      border-radius: 0;
     }
   }
 
@@ -1116,7 +1122,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 }
 // #endregion
 
-// #region Crop height modifier class (Used for bar chart only currently)
+// #region Crop height modifier classes (Used for bar chart only currently)
 .chart--crop-10 .chart__inner {
 
   overflow: hidden;
