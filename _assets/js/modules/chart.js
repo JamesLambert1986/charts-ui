@@ -289,13 +289,16 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
   const observer = new MutationObserver(tableUpdated);
   const observer2 = new MutationObserver(attributesUpdated);
 
-  observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
-  observer2.observe(chartElement, { attributes: true });
-
   if(chartElement.hasAttribute('data-series')){
     
     console.log('yes')
     createSeries(chartElement);
+  }
+  else {
+    
+
+    observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
+    observer2.observe(chartElement, { attributes: true });
   }
 }
 
@@ -385,7 +388,8 @@ export const createTable = function(chartElement,data){
 
     if(index != 0){
       const newRow = document.createElement('tr');
-      newRow.setAttribute('data-label',row[0])
+      newRow.setAttribute('data-label',row[0]);
+
       row.forEach((cell, subindex) => {
 
         const newCell = document.createElement('td');
@@ -398,22 +402,6 @@ export const createTable = function(chartElement,data){
 
         newCell.innerHTML = `<span data-group="${row[0]}" data-label="${firstRow[subindex]}">${cell}</span>`;
 
-        //const value = Number.parseFloat(td.getAttribute('data-numeric'));
-        let percent = ((callValue - min)/(max)) * 100;
-        if(isNaN(percent))
-          percent = 0;
-
-        let bottom = 0;
-
-        // If the value is negative the position below the 0 line
-        if(min < 0){
-          bottom = Math.abs((min)/(max)*100);
-          if(value < 0){
-            bottom = bottom - percent;
-          }
-        }
-        newCell.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--order:${10000 - parseInt(percent * 100)}`);
-    
         newRow.appendChild(newCell);
       });
       newTbody.appendChild(newRow);
@@ -646,11 +634,11 @@ export const setCellData = function(chartElement,min,max){
             bottom = bottom - percent;
           }
         }
-        td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;`);
+        td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--order:${10000 - parseInt(percent * 100)};`);
 
         if(tr.hasAttribute('data-max')){
           let comparison = ((value - min)/(rowMax)) * 100;
-          td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--comparison:${comparison}%;`);
+          td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--comparison:${comparison}%;--order:${10000 - parseInt(comparison * 100)};`);
         }
       }
 
