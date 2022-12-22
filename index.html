@@ -7,17 +7,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" href="favicon.svg?cache=1671634734788">
+    <link rel="shortcut icon" href="favicon.svg?cache=1671695009657">
 
     <title>BBC Charts UI Library</title>
-    <link rel="stylesheet" href="_app/css/app.css?cache=1671634734788" />
-    <link rel="stylesheet" href="_assets/css/main.css?cache=1671634734788" />
+    <link rel="stylesheet" href="_app/css/app.css?cache=1671695009657" />
+    <link rel="stylesheet" href="_assets/css/main.css?cache=1671695009657" />
 
-    <script src="_assets/js/main.js?cache=1671634734788" type="module" defer></script>
-    <script src="_app/js/app.js?cache=1671634734788" type="module" defer></script>
+    <script src="_assets/js/main.js?cache=1671695009657" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1671695009657" type="module" defer></script>
     <!-- #endregion:HEAD -->
     
-    <script src="_app/js/livechart.js?cache=1671634734788" type="module" defer></script>
+    <script src="_app/js/livechart.js?cache=1671695009657" type="module" defer></script>
   </head>
   <body>
     <!-- #region:HEADER -->
@@ -66,9 +66,11 @@
               <li class="nav-item"><a href="#bar" class="nav-link ps-0 pe-3">Bar</a></li>
               <li class="nav-item"><a href="#column" class="nav-link pe-3">Column</a></li>
               <li class="nav-item"><a href="#responsive" class="nav-link pe-3">Responsive</a></li>
+              <li class="nav-item"><a href="#stacked" class="nav-link pe-3">Stacked</a></li>
               <li class="nav-item"><a href="#scatter" class="nav-link pe-3">Scatter</a></li>
               <li class="nav-item"><a href="#line" class="nav-link pe-3">Line</a></li>
               <li class="nav-item"><a href="#pie" class="nav-link pe-3">Pie</a></li>
+              <li class="nav-item"><a href="#comparison" class="nav-link pe-3">Comparison chart</a></li>
               <li class="nav-item"><a href="#switcher" class="nav-link pe-3">Chart with switcher</a></li>
               <li class="nav-item"><a href="#live" class="nav-link pe-3">Live line chart</a></li>
               <li class="nav-item"><a href="#series-based" class="nav-link pe-3">Series-based chart</a></li>
@@ -79,7 +81,6 @@
         </div>
       </div>
 
-    </main>
     <div class="container">
       
 
@@ -359,6 +360,96 @@
     </figure>
 
 
+    <h2 id="stacked">Stacked chart</h2>
+    
+    <figure class="chart" data-max="2500000" data-type="stacked" data-min="0" data-guidelines="0,500000,1000000,1500000,2000000,2500000">
+ 
+        <table>
+            <thead>
+                <tr class="">
+                    <th>Year</th>
+                    <th>Lofts</th>
+                    <th>Cavity walls</th>
+                    <th>Solid walls</th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr>
+                  <td data-label="Year">2010</td>
+                  <td data-label="Lofts">1200000</td>
+                  <td data-label="Cavity walls">300000</td>
+                  <td data-label="Solid walls">50000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2011</td>
+                  <td data-label="Lofts">1150000</td>
+                  <td data-label="Cavity walls">360000</td>
+                  <td data-label="Solid walls">70000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2012</td>
+                  <td data-label="Lofts">1550000</td>
+                  <td data-label="Cavity walls">700000</td>
+                  <td data-label="Solid walls">120000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2013</td>
+                  <td data-label="Lofts">120000</td>
+                  <td data-label="Cavity walls">120000</td>
+                  <td data-label="Solid walls">20000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2014</td>
+                  <td data-label="Lofts">170000</td>
+                  <td data-label="Cavity walls">170000</td>
+                  <td data-label="Solid walls">50000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2015</td>
+                  <td data-label="Lofts">120000</td>
+                  <td data-label="Cavity walls">120000</td>
+                  <td data-label="Solid walls">20000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2016</td>
+                  <td data-label="Lofts">100000</td>
+                  <td data-label="Cavity walls">90000</td>
+                  <td data-label="Solid walls">20000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2017</td>
+                  <td data-label="Lofts">100000</td>
+                  <td data-label="Cavity walls">110000</td>
+                  <td data-label="Solid walls">20000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2018</td>
+                  <td data-label="Lofts">100000</td>
+                  <td data-label="Cavity walls">90000</td>
+                  <td data-label="Solid walls">20000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2019</td>
+                  <td data-label="Lofts">80000</td>
+                  <td data-label="Cavity walls">70000</td>
+                  <td data-label="Solid walls">20000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2020</td>
+                  <td data-label="Lofts">80000</td>
+                  <td data-label="Cavity walls">70000</td>
+                  <td data-label="Solid walls">20000</td>
+              </tr>
+              <tr>
+                  <td data-label="Year">2021</td>
+                  <td data-label="Lofts">80000</td>
+                  <td data-label="Cavity walls">90000</td>
+                  <td data-label="Solid walls">20000</td>
+              </tr>
+            </tbody>
+        </table>
+    </figure>
+    <p>Data copied from https://www.bbc.co.uk/news/58160547</p>
 
 
     <h2 id="scatter">Scatter Chart</h2>
@@ -948,96 +1039,58 @@
     </figure>
 
 
-    <h2>Stacked chart</h2>
-    
-    <figure class="chart" data-max="2500000" data-type="stacked" data-min="0" data-guidelines="0,500000,1000000,1500000,2000000,2500000">
- 
-        <table>
-            <thead>
-                <tr class="">
-                    <th>Year</th>
-                    <th>Lofts</th>
-                    <th>Cavity walls</th>
-                    <th>Solid walls</th>
-                </tr>
-            </thead>
-            <tbody>
-              <tr>
-                  <td data-label="Year">2010</td>
-                  <td data-label="Lofts">1200000</td>
-                  <td data-label="Cavity walls">300000</td>
-                  <td data-label="Solid walls">50000</td>
+    <h2 id="comparison">Comparison chart</h2>
+
+
+    <figure class="chart chart--display-data" data-max="100" data-min="0" data-type="comparison">
+      <figcaption><p class="chart__title">Match Stats</p></figcaption>
+
+      <table>
+          <thead>
+              <tr class="">
+                  <th>Stat</th>
+                  <th>Newcastle</th>
+                  <th>Chelsea</th>
+                  <th>Total</th>
               </tr>
-              <tr>
-                  <td data-label="Year">2011</td>
-                  <td data-label="Lofts">1150000</td>
-                  <td data-label="Cavity walls">360000</td>
-                  <td data-label="Solid walls">70000</td>
-              </tr>
-              <tr>
-                  <td data-label="Year">2012</td>
-                  <td data-label="Lofts">1550000</td>
-                  <td data-label="Cavity walls">700000</td>
-                  <td data-label="Solid walls">120000</td>
-              </tr>
-              <tr>
-                  <td data-label="Year">2013</td>
-                  <td data-label="Lofts">120000</td>
-                  <td data-label="Cavity walls">120000</td>
-                  <td data-label="Solid walls">20000</td>
-              </tr>
-              <tr>
-                  <td data-label="Year">2014</td>
-                  <td data-label="Lofts">170000</td>
-                  <td data-label="Cavity walls">170000</td>
-                  <td data-label="Solid walls">50000</td>
-              </tr>
-              <tr>
-                  <td data-label="Year">2015</td>
-                  <td data-label="Lofts">120000</td>
-                  <td data-label="Cavity walls">120000</td>
-                  <td data-label="Solid walls">20000</td>
-              </tr>
-              <tr>
-                  <td data-label="Year">2016</td>
-                  <td data-label="Lofts">100000</td>
-                  <td data-label="Cavity walls">90000</td>
-                  <td data-label="Solid walls">20000</td>
-              </tr>
-              <tr>
-                  <td data-label="Year">2017</td>
-                  <td data-label="Lofts">100000</td>
-                  <td data-label="Cavity walls">110000</td>
-                  <td data-label="Solid walls">20000</td>
-              </tr>
-              <tr>
-                  <td data-label="Year">2018</td>
-                  <td data-label="Lofts">100000</td>
-                  <td data-label="Cavity walls">90000</td>
-                  <td data-label="Solid walls">20000</td>
-              </tr>
-              <tr>
-                  <td data-label="Year">2019</td>
-                  <td data-label="Lofts">80000</td>
-                  <td data-label="Cavity walls">70000</td>
-                  <td data-label="Solid walls">20000</td>
-              </tr>
-              <tr>
-                  <td data-label="Year">2020</td>
-                  <td data-label="Lofts">80000</td>
-                  <td data-label="Cavity walls">70000</td>
-                  <td data-label="Solid walls">20000</td>
-              </tr>
-              <tr>
-                  <td data-label="Year">2021</td>
-                  <td data-label="Lofts">80000</td>
-                  <td data-label="Cavity walls">90000</td>
-                  <td data-label="Solid walls">20000</td>
-              </tr>
-            </tbody>
-        </table>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Possession</td>
+              <td>49%</td>
+              <td>51%</td>
+              <td>100%</td>
+            </tr>
+            <tr>
+              <td>Shots</td>
+              <td>10</td>
+              <td>5</td>
+              <td>15</td>
+            </tr>
+            <tr>
+              <td>Shots on Target</td>
+              <td>3</td>
+              <td>2</td>
+              <td>5</td>
+            </tr>
+            <tr>
+              <td>Corners</td>
+              <td>5</td>
+              <td>3</td>
+              <td>8</td>
+            </tr>
+            <tr>
+              <td>Fouls</td>
+              <td>14</td>
+              <td>11</td>
+              <td>25</td>
+            </tr>
+          </tbody>
+      </table>
     </figure>
-    <p>Data copied from https://www.bbc.co.uk/news/58160547</p>
+
+    <p>Data from https://www.bbc.co.uk/sport/football/63523923</p>
+
 
     <h2 id="switcher">With chart options</h2>
 
@@ -1177,6 +1230,9 @@
 
 
     </div>
+
+
+    </main>
     <!-- 
       
       # Bugs

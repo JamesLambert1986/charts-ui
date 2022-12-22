@@ -470,6 +470,7 @@ function createChartKeyItem(chartID,index,text,chartKey,chartElement,previousInp
   let label = document.createElement('label');
   label.setAttribute('class',`key`);
   label.setAttribute('for',`${chartID}-dataset-${index}`);
+  label.setAttribute('data-label',`${text}`);
   label.innerHTML = `${text}`;
   chartKey.append(label);
 
@@ -615,6 +616,13 @@ export const setCellData = function(chartElement,min,max){
       td.setAttribute('data-label',chartElement.querySelectorAll('thead th')[index].innerText);
     });
 
+    if(tr.querySelector('[data-label="Total"]')){
+      tr.setAttribute('data-max',tr.querySelector('[data-label="Total"][data-numeric]').getAttribute('data-numeric'));
+    }
+
+    let rowMax = tr.hasAttribute('data-max') ? tr.getAttribute('data-max') : max;
+
+
     // Add css vars to cells
     Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td, index) => {
 
@@ -627,7 +635,6 @@ export const setCellData = function(chartElement,min,max){
 
       if(!td.hasAttribute('style')){
         
-
         const value = Number.parseFloat(td.getAttribute('data-numeric'));
         let percent = ((value - min)/(max)) * 100;
         let bottom = 0;
@@ -640,6 +647,11 @@ export const setCellData = function(chartElement,min,max){
           }
         }
         td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;`);
+
+        if(tr.hasAttribute('data-max')){
+          let comparison = ((value - min)/(rowMax)) * 100;
+          td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--comparison:${comparison}%;`);
+        }
       }
 
 

@@ -1,10 +1,13 @@
 @use "sass:math";
 @import "_vars";
 
-$bar-chart: 'input[type=radio][value=bar]:not([value=none]):not([value=pie]):checked~.chart__inner';
-$scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"]):checked ~ .chart__inner';
-$line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
-$pie-chart: 'input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .chart__inner';
+$bar-chart: '.chart input[type=radio]:where([value="bar"],[value="comparison"]):not([value=none]):not([value=pie]):checked~.chart__inner';
+$comparison-chart: '.chart input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__inner';
+$comparison-chart-key: '.chart input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__key';
+$responsive-chart: '.chart input[type=radio][value="responsive"]:not([value=none]):not([value=pie]):checked~.chart__inner';
+$scatter-line-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"]):checked ~ .chart__inner';
+$line-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
+$pie-chart: '.chart input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .chart__inner';
 
 // #region Functions and mixins
 @function rem($pixels, $context: 16)
@@ -34,7 +37,7 @@ $pie-chart: 'input[type="radio"]:not([value="none"])[value="pie"]:checked ~ .cha
   
   // CSS vars that can be overwritten by declaring them without the -set on the end of the variable i.e. --chart-colour-1: red; would overwrite --chart-colour-1-set
   --body-colour-set: var(--body-colour, white);
-  --body-colour-set: var(--text-colour, black);
+  --text-colour-set: var(--text-colour, black);
   --chart-height-set: var(--chart-height, #{$chart-height});
   --chart-height-lg-set: var(--chart-height-lg, #{$chart-height-lg});
   --chart-height-resp: var(--chart-height-set);
@@ -644,8 +647,8 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 // #endregion
 
 // #region bar chart and responsive chart
-@mixin barchart($type) {
-  input[type="radio"][value="#{$type}"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner {
+@mixin barchart($selector) {
+  #{$selector} {
 
     .chart__guidelines {
       position: absolute;
@@ -733,12 +736,11 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
   }
 }
 
-.chart {
-  @include barchart('bar');
 
-  @container (max-width: 36em) {
-    @include barchart('responsive');
-  }
+@include barchart($bar-chart);
+
+@container (max-width: 36em) {
+  @include barchart($responsive-chart);
 }
 
 // #endregion
@@ -966,6 +968,52 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
     path:nth-child(9):hover ~ foreignObject:nth-of-type(9){
       display: block;
     }
+  }
+}
+// #endregion
+
+// #region Comparison chart
+#{$comparison-chart-key} {
+  label {
+    pointer-events: none;
+  }
+  [data-label="Total"] {
+    display: none;
+  }
+}
+
+#{$comparison-chart} {
+
+  &::before {
+    display: none;
+  }
+
+  table tbody tr {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  table tbody tr td:first-child {
+    width: 100%!important;
+    position: static!important;
+    transform: none!important;
+    text-align: left;
+    font-weight: bold;
+  }
+  table tbody tr td:not(:first-child) {
+    width: var(--comparison);
+
+    span {
+      left: 0;
+      transform: none !important;
+    }
+    &:nth-child(3) span{
+      left: auto;
+      right: 0;
+    }
+  }
+  table tbody tr td[data-label="Total"] {
+    display: none;
   }
 }
 // #endregion
