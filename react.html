@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="favicon.svg?cache=1671783639919">
+
+    <title>Chart React component | BBC Charts UI Library</title>
+    <link rel="stylesheet" href="_app/css/app.css?cache=1671783639919" />
+
+
+    <link rel="stylesheet" href="_assets/css/tables.css?cache=1671783639919" />
+    <link rel="stylesheet" href="_assets/css/charts.css?cache=1671783639919" />
+
+    <!-- Load React from CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin></script>
+    
+    
+     
+    <script data-type="module" data-presets="react" type="text/babel" defer>
+      const { useRef, useEffect } = React
+
+      // #region Chart module 
+      import chart from './_assets/js/modules/chart.js';
+      import { createChartKey, createChartType, deleteCellData, setCellData, createChartYaxis, createChartGuidelines, createLines, createPies, setEventObservers } from './_assets/js/modules/chart.js';
+      /* Remove comments import './_assets/css/charts.scss'; */
+
+      function Chart(props) {
+
+        const chartRef = useRef();
+
+        useEffect(() => {
+
+          const chartElement = chartRef.current;
+
+          if(!chartElement.querySelector('.chart__key')){
+            createChartKey(chartElement);
+          }
+
+          if(props.guidelines){
+            createChartYaxis(chartElement, props.min, props.max, props.guidelines.split(','));
+            createChartGuidelines(chartElement, props.min, props.max, props.guidelines.split(','));
+          }
+          
+          deleteCellData(chartElement);
+          setCellData(chartElement, props.min, props.max);
+
+          // create lines
+          if(chartElement.querySelector('.lines'))
+            chartElement.querySelector('.lines').remove();
+          if(props.type == "line")
+            createLines(chartElement, props.min, props.max);
+
+          // Create pies
+          if(chartElement.querySelector('.pies'))
+            chartElement.querySelector('.pies').remove();
+          if(props.type == "pie")
+            createPies(chartElement);
+
+          //setEventObservers(chartElement, props.min, props.max, props.guidelines);
+        });
+
+        return (
+          <figure className="chart" ref={chartRef}>
+            <input type="radio" name="chart-type" value={props.type} defaultChecked></input>
+            <div className="chart__inner">
+              <div className="table__wrapper">
+                {props.children}
+              </div>
+            </div>
+          </figure>
+        );
+      }
+      // #endregion 
+
+      function ExamplePage() {
+        return (
+        <>
+          <div className="bg-primary text-white py-4 mb-4">
+            <div className="container">
+              <h1 className="mb-3">Chart react component</h1>
+
+              <p className="mb-0">This component is designed to be imported into react environments and to maintain all of the functionality of the vanilla library. The chart can be updated by using the react dev tools to update the prop data which will update the chart.</p>
+            </div>
+          </div>
+          <div className="container">
+            <Chart min="0" max="100" guidelines="£0,£50,£100" type="bar">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Year</th>
+                    <th>Growth</th>
+                    <th>Growth2</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                      <td>2011</td>
+                      <td>£50.0</td>
+                      <td>£50.10</td>
+                  </tr>
+                  <tr>
+                      <td>2012</td>
+                      <td>£75.00</td>
+                      <td>£50.10</td>
+                  </tr>
+                  <tr>
+                      <td>2013</td>
+                      <td>£45.00</td>
+                      <td>£57.10</td>
+                  </tr>
+                  <tr>
+                      <td>2014</td>
+                      <td>£35.00</td>
+                      <td>£80.10</td>
+                  </tr>
+                </tbody>
+              </table>
+            </Chart>
+          </div>
+        </>
+        );
+      }
+
+      const container = document.getElementById('root');
+      const root = ReactDOM.createRoot(container);
+      root.render(<ExamplePage />);
+    </script>
+
+  </head>
+  <body>
+    <!-- #region:HEADER -->
+    <header>
+      <nav class="navbar navbar-expand-lg" id="menu">
+        <div class="container">
+
+          <a href="./" rel="home" class="me-3">Charts UI library</a>
+          <a href="#menu" class="navbar-toggler">
+
+            <span class="navbar-toggler-icon"></span>
+          </a>
+          <a href="#close" class="navbar-toggler d-lg-none">
+            <span class="navbar-toggler-icon"></span>
+          </a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100">
+              <li class="nav-item"><a href="./" class="nav-link">Examples</a></li>
+              <li class="nav-item"><a href="./get-started" class="nav-link">Get started</a></li>
+              <li class="nav-item"><a href="./principles" class="nav-link">Principles</a></li>
+              <li class="nav-item"><a href="./roadmap" class="nav-link">Roadmap</a></li>
+              <li class="nav-item"><a href="./create" class="nav-link">Generator</a></li>
+              <li class="nav-item ms-lg-auto"><a href="mailto:james.lambert@bbc.co.uk" class="nav-link nav-feedback">Feedback</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <!-- #endregion:HEADER -->
+    
+    <main id="root">
+      <div class="bg-primary text-white py-4">
+        <div class="container">
+          <h1>Loading chart react component example...</h1>
+        </div>
+      </div>
+    </main>
+      
+  </body>
+</html>

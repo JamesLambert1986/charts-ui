@@ -7,17 +7,16 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" href="favicon.svg?cache=1671695009657">
+    <link rel="shortcut icon" href="favicon.svg?cache=1671783639919">
 
     <title>BBC Charts UI Library</title>
-    <link rel="stylesheet" href="_app/css/app.css?cache=1671695009657" />
-    <link rel="stylesheet" href="_assets/css/main.css?cache=1671695009657" />
+    <link rel="stylesheet" href="_app/css/app.css?cache=1671783639919" />
+    <link rel="stylesheet" href="_assets/css/main.css?cache=1671783639919" />
 
-    <script src="_assets/js/main.js?cache=1671695009657" type="module" defer></script>
-    <script src="_app/js/app.js?cache=1671695009657" type="module" defer></script>
+    <script src="_assets/js/main.js?cache=1671783639919" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1671783639919" type="module" defer></script>
     <!-- #endregion:HEAD -->
     
-    <script src="_app/js/livechart.js?cache=1671695009657" type="module" defer></script>
   </head>
   <body>
     <!-- #region:HEADER -->
@@ -72,11 +71,10 @@
               <li class="nav-item"><a href="#pie" class="nav-link pe-3">Pie</a></li>
               <li class="nav-item"><a href="#comparison" class="nav-link pe-3">Comparison chart</a></li>
               <li class="nav-item"><a href="#switcher" class="nav-link pe-3">Chart with switcher</a></li>
-              <li class="nav-item"><a href="#live" class="nav-link pe-3">Live line chart</a></li>
-              <li class="nav-item"><a href="#series-based" class="nav-link pe-3">Series-based chart</a></li>
+              <li class="nav-item"><a href="#more" class="nav-link pe-3">More examples</a></li>
             </ul>
           </nav>
-          <label for="expand-submenu" class="nav-link px-2 ms-auto d-md-none"><span>More</span><span>Less</span></label>
+          <label for="expand-submenu" class="nav-link px-2 ms-auto d-lg-none"><span>More</span><span>Less</span></label>
 
         </div>
       </div>
@@ -1177,58 +1175,13 @@
     </figure>
 
 
-    <h2 id="live">Live chart</h2>
-    
-    <figure class="chart" data-max="100" data-min="0" data-type="line" data-guidelines="£0,£50,£100" id="autoUpdate">
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Year</th>
-                    <th>Growth</th>
-                    <th>Growth2</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>2011</td>
-                    <td>£50.00</td>
-                    <td>£50.10</td>
-                </tr>
-                <tr>
-                    <td>2012</td>
-                    <td>£75.00</td>
-                    <td>£50.10</td>
-                </tr>
-                <tr>
-                    <td>2013</td>
-                    <td>£45.00</td>
-                    <td>£57.10</td>
-                </tr>
-                <tr>
-                    <td>2014</td>
-                    <td>£35.00</td>
-                    <td>£80.10</td>
-                </tr>
-            </tbody>
-        </table>
-    </figure>
-
-    <h2 id="series-based">Series based chart (Beta)</h2>
-    <p>Display a series of rows on an incremental based display. </p>
-    <figure class="chart chart--crop-10 chart--display-data chart--display-set-label chart--value-order chart--hide-key chart--hide-total" data-max="3000" data-min="0" data-type="bar" id="timeBased" data-csv="_app/data/National_Carbon_Emissions_2021v1.0.csv" data-series="true">
-
-      <figcaption>
-        <p class="chart__title">How China's carbon emissions have grown</p>
-        <p class="chart__strapline">National carbon emissions (million tonnes of carbon per year)</p>
-        <p class="chart__source">Source: Global Carbon Project 2021</p>
-      </figcaption>
-
-
-    </figure>
-    <p>Data copied from https://www.bbc.co.uk/news/science-environment-63502762</p>
-
-
+      <h2 id="more">More examples</h2>
+      <ul>
+        <li><a href="./live">Live chart</a></li>
+        <li><a href="./series">Series based chart</a></li>
+        <li><a href="./react">React component</a></li>
+      </ul>
     </div>
 
 

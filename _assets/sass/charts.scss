@@ -1024,6 +1024,7 @@ input[type="radio"][value="none"]:checked ~ .chart__key {
 }
 input[type="radio"][value="none"]:checked ~ .chart__inner {
 
+  .chart__guidelines,
   .chart__yaxis,
   .line,
   .pie {

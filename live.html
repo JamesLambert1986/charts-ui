@@ -16,10 +16,10 @@
     <script src="_assets/js/main.js?cache=1671783639919" type="module" defer></script>
     <script src="_app/js/app.js?cache=1671783639919" type="module" defer></script>
     <!-- #endregion:HEAD -->
-
+    
+    <script src="_app/js/livechart.js?cache=1671783639919" type="module" defer></script>
   </head>
   <body>
-
     <!-- #region:HEADER -->
     <header>
       <nav class="navbar navbar-expand-lg" id="menu">
@@ -47,31 +47,70 @@
       </nav>
     </header>
     <!-- #endregion:HEADER -->
-
+    
     <main>
-      <div class="bg-primary text-white py-4 mb-4">
+      <div class="bg-primary text-white py-4">
         <div class="container">
-          <h1>Geting started</h1>
+          <h1>Live chart</h1>
 
-          <p>With using the chart library or it's assets.</p>
+          <p class="mb-0">...</p>
 
         </div>
       </div>
-      <div class="container">
-        <h2>Install via NPM</h2>
-        <p>...</p>
-      </div>
-      <div class="container">
-        <h2>Developer notes</h2>
-        <ul>
-          <li>This library is meant to compliment the BBC's design system but is written to be standalone so that it has a high level of resilience.</li>
-          <li>Bootstrap has been used for the documentation site but is <strong>NOT</strong> a dependency for this library.</li>
-        </ul>
-      </div>
-    </main>
+      
+     
+
+    <div class="container pt-3">
       
 
+    
+    <figure class="chart" data-max="100" data-min="0" data-type="line" data-guidelines="£0,£50,£100" id="autoUpdate">
 
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Growth</th>
+                    <th>Growth2</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>2011</td>
+                    <td>£50.00</td>
+                    <td>£50.10</td>
+                </tr>
+                <tr>
+                    <td>2012</td>
+                    <td>£75.00</td>
+                    <td>£50.10</td>
+                </tr>
+                <tr>
+                    <td>2013</td>
+                    <td>£45.00</td>
+                    <td>£57.10</td>
+                </tr>
+                <tr>
+                    <td>2014</td>
+                    <td>£35.00</td>
+                    <td>£80.10</td>
+                </tr>
+            </tbody>
+        </table>
+    </figure>
+
+    
+    </div>
+
+
+    </main>
+    <!-- 
+      
+      # Bugs
+
+      - Line chart 0% point doesn't have span and has the wrong percent
+      - Border bottom on the 0% guideline
+    -->
 
   </body>
 </html>

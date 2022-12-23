@@ -16,10 +16,10 @@
     <script src="_assets/js/main.js?cache=1671783639919" type="module" defer></script>
     <script src="_app/js/app.js?cache=1671783639919" type="module" defer></script>
     <!-- #endregion:HEAD -->
-
+    
+    <script src="_app/js/livechart.js?cache=1671783639919" type="module" defer></script>
   </head>
   <body>
-
     <!-- #region:HEADER -->
     <header>
       <nav class="navbar navbar-expand-lg" id="menu">
@@ -47,31 +47,34 @@
       </nav>
     </header>
     <!-- #endregion:HEADER -->
-
+    
     <main>
-      <div class="bg-primary text-white py-4 mb-4">
+      <div class="bg-primary text-white py-4">
         <div class="container">
-          <h1>Geting started</h1>
+          <h1>Series based chart (Beta)</h1>
 
-          <p>With using the chart library or it's assets.</p>
-
+          <p>Display a series of rows on an incremental based display. </p>
         </div>
       </div>
-      <div class="container">
-        <h2>Install via NPM</h2>
-        <p>...</p>
-      </div>
-      <div class="container">
-        <h2>Developer notes</h2>
-        <ul>
-          <li>This library is meant to compliment the BBC's design system but is written to be standalone so that it has a high level of resilience.</li>
-          <li>Bootstrap has been used for the documentation site but is <strong>NOT</strong> a dependency for this library.</li>
-        </ul>
-      </div>
-    </main>
       
 
+    <div class="container pt-3">
+      
+      <figure class="chart chart--crop-10 chart--display-data chart--display-set-label chart--value-order chart--hide-key chart--hide-total" data-max="3000" data-min="0" data-type="bar" id="timeBased" data-csv="_app/data/National_Carbon_Emissions_2021v1.0.csv" data-series="true">
 
+        <figcaption>
+          <p class="chart__title">How China's carbon emissions have grown</p>
+          <p class="chart__strapline">National carbon emissions (million tonnes of carbon per year)</p>
+          <p class="chart__source">Source: Global Carbon Project 2021</p>
+        </figcaption>
+
+
+      </figure>
+      
+    <p>Data copied from https://www.bbc.co.uk/news/science-environment-63502762</p>
+
+      </div>
+    </main>
 
   </body>
 </html>

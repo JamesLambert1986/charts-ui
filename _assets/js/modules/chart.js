@@ -1,5 +1,8 @@
 import { ucfirst, unsnake } from './helpers.js'
 
+let observer;
+let observer2;
+
 function chart(chartElement,min,max,type,guidelines,targets,events) {
 
   const chartID = `chart-${Date.now()}`;
@@ -89,13 +92,13 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
 
   // Create chart key if the one isn't already created
   if(!chartElement.querySelector('.chart__key')){
-    createChartKey(chartID,chartElement);
+    createChartKey(chartElement);
   }
 
 
   // Create the required type input field if one isn't set
   if(!chartElement.querySelector(':scope > [type="radio"]:checked')){
-    createChartType(chartID,chartElement,type);
+    createChartType(chartElement,type);
   }
 
 
@@ -155,7 +158,21 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
 
   }
 
-  // event observers 
+
+
+  if(chartElement.hasAttribute('data-series')){
+    
+    createSeries(chartElement);
+  }
+  else {
+    setEventObservers(chartElement,min,max,guidelines);
+  }
+}
+
+export const setEventObservers = function(chartElement,min,max,guidelines) {
+
+  let table = chartElement.querySelector('table');
+
   const attributesUpdated = (mutationList, observer) => {
     for (const mutation of mutationList) {
 
@@ -286,21 +303,15 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
     }
   };
 
+
   const observer = new MutationObserver(tableUpdated);
   const observer2 = new MutationObserver(attributesUpdated);
 
-  if(chartElement.hasAttribute('data-series')){
-    
-    console.log('yes')
-    createSeries(chartElement);
-  }
-  else {
-    
+  observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
+  observer2.observe(chartElement, { attributes: true });
+};
 
-    observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
-    observer2.observe(chartElement, { attributes: true });
-  }
-}
+// event observers 
 
 
 function getCSVData(chartElement, csvURL){
@@ -416,8 +427,9 @@ export const createTable = function(chartElement,data){
   chart(chartElement);
 }
 
-export const createChartKey = function(chartID, chartElement){
+export const createChartKey = function(chartElement){
 
+  const chartID = `chart-${Date.now()}`;
   const chartInner = chartElement.querySelector('.chart__inner');
   let chartKey = document.createElement("div");
   let previousInput;
@@ -465,8 +477,9 @@ function createChartKeyItem(chartID,index,text,chartKey,chartElement,previousInp
   return previousInput;
 }
 
-export const createChartType = function(chartID,chartElement,type){
+export const createChartType = function(chartElement,type){
 
+  const chartID = `chart-${Date.now()}`;
   const chartKey = chartElement.querySelector('.chart__key');
   const chartType = document.createElement('input');
 
