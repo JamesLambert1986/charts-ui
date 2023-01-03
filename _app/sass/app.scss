@@ -212,17 +212,3 @@ details[open] summary:has(> h2:first-child):before {
   max-width: 100%;
   min-width: 20rem;
 }
-
-#genWrapper:not(:has(canvas)){
-
-  display: none;
-
-}
-#genWrapper {
-  padding-bottom: 5rem;
-
-  canvas {
-    max-width: 100%;
-    height: auto!important;
-  }
-}

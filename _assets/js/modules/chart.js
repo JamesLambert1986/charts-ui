@@ -16,9 +16,7 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
     return false;
   }
 
-
   let table = chartElement.querySelector('table');
-
 
   if(typeof min == 'undefined'){
     min = chartElement.getAttribute('data-min');
@@ -116,7 +114,19 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
   }
 
   // Make sure table cells have enough data attached to them to display the chart data
-  setCellData(chartElement,min,max);
+  let secondTable = chartElement.querySelector(':scope > table');
+  if(secondTable){
+
+    let secondMin = chartElement.getAttribute('data-second-min');
+    let secondMax = chartElement.getAttribute('data-second-max');
+    
+
+    setCellData(chartElement, secondTable,secondMin,secondMax);
+  }
+
+  setCellData(chartElement, table,min,max,secondTable);
+
+
 
 
   // Create lines for line graph
@@ -124,7 +134,7 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
     createLines(chartElement,min,max);
 
   // Create pies
-  if(chartElement.querySelector(':scope > input[value="pie"]:checked'))
+  if(chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
     createPies(chartElement);
 
   // Event handlers
@@ -133,7 +143,7 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
   for (var i = 0; i < showData.length; i++) {
     showData[i].addEventListener('change', function() {
       
-      if(chartElement.querySelector(':scope > input[value="pie"]:checked'))
+      if(chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
         createPies(chartElement);
     });
   }
@@ -150,6 +160,7 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
             createLines(chartElement,min,max)
             break;
           case "pie":
+          case "polar":
             createPies(chartElement)
             break;
         }
@@ -222,7 +233,7 @@ export const setEventObservers = function(chartElement,min,max,guidelines) {
         deleteCellData(chartElement);
       }
 
-      setCellData(chartElement,min,max);
+      setCellData(chartElement, table,min,max);
 
       // Create lines for line graph
       if(chartElement.querySelector(':scope > input[value="line"]:checked'))
@@ -287,7 +298,7 @@ export const setEventObservers = function(chartElement,min,max,guidelines) {
       }
 
       deleteCellData(chartElement);
-      setCellData(chartElement,min,max);
+      setCellData(chartElement, table,min,max);
 
       // Create lines for line graph
       if(chartElement.querySelector(':scope > input[value="line"]:checked'))
@@ -438,7 +449,7 @@ export const createChartKey = function(chartElement){
 
   chartElement.insertBefore(chartKey,chartInner);
 
-  let headings = Array.from(chartElement.querySelectorAll('thead th'));
+  let headings = Array.from(chartInner.querySelectorAll('thead th'));
 
   headings.forEach((arrayElement, index) => {
 
@@ -595,14 +606,26 @@ export const createEvents = function(chartElement,events){
 }
 
 export const deleteCellData = function(chartElement){
+  Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr, index) => {
+    tr.removeAttribute('style');
+    tr.removeAttribute('data-label');
+    tr.removeAttribute('data-max');
+  });
   Array.from(chartElement.querySelectorAll('tbody tr td')).forEach((td, index) => {
     td.removeAttribute('style');
+    td.removeAttribute('data-label');
+    td.removeAttribute('data-numeric');
+  });
+  Array.from(chartElement.querySelectorAll('tbody tr td span')).forEach((span, index) => {
+    let content = span.innerHTML;
+    let parent = span.parentNode;
+    parent.innerHTML = content;
   });
 }
 
-export const setCellData = function(chartElement,min,max){
+export const setCellData = function(chartElement,table,min,max,secondTable){
 
-  Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr, index) => {
+  Array.from(table.querySelectorAll('tbody tr')).forEach((tr, index) => {
 
     let group = tr.querySelector('td:first-child, th:first-child') ? tr.querySelector('td:first-child, th:first-child').innerHTML : '';
 
@@ -614,7 +637,7 @@ export const setCellData = function(chartElement,min,max){
     // Set the data label value if not set
     Array.from(tr.querySelectorAll('td:not([data-label])')).forEach((td, index) => {
 
-      td.setAttribute('data-label',chartElement.querySelectorAll('thead th')[index].innerText);
+      td.setAttribute('data-label',table.querySelectorAll('thead th')[index].innerText);
     });
 
     if(tr.querySelector('[data-label="Total"]')){
@@ -625,7 +648,7 @@ export const setCellData = function(chartElement,min,max){
 
 
     // Add css vars to cells
-    Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td, index) => {
+    Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td, tdIndex) => {
 
       
       const label = td.getAttribute('data-label');
@@ -647,14 +670,33 @@ export const setCellData = function(chartElement,min,max){
             bottom = bottom - percent;
           }
         }
+        td.setAttribute('data-percent',percent)
         td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--order:${10000 - parseInt(percent * 100)};`);
 
         if(tr.hasAttribute('data-max')){
           let comparison = ((value - min)/(rowMax)) * 100;
           td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--comparison:${comparison}%;--order:${10000 - parseInt(comparison * 100)};`);
         }
+
       }
 
+      // Second table 
+      if(secondTable && secondTable.querySelector(`tbody tr:nth-child(${index+1}) td[data-percent]:nth-child(${tdIndex+2})`)){
+        
+        let matchingTD = secondTable.querySelector(`tbody tr:nth-child(${index+1}) td[data-percent]:nth-child(${tdIndex+2})`);
+
+        let secondPercent = matchingTD.getAttribute('data-percent');
+        td.style.cssText += `--second-percent:${secondPercent}%;`
+
+        td.setAttribute('data-second',matchingTD.innerText);
+        td.setAttribute('data-second-label',chartElement.getAttribute('data-second-label'));
+
+        let span = td.querySelector('span');
+        span.setAttribute('data-second',matchingTD.innerText);
+        span.setAttribute('data-second-label',chartElement.getAttribute('data-second-label'));
+
+        chartElement
+      }
 
     });
   });
@@ -690,7 +732,7 @@ export const createPies = function(chartElement){
   }
 
 
-  Array.from(chartElement.querySelectorAll('tbody tr')).forEach((item, index) => {
+  Array.from(chartInner.querySelectorAll('tbody tr')).forEach((item, index) => {
 
     let paths = '';
     let tooltips = '';
@@ -751,8 +793,8 @@ export const createPies = function(chartElement){
           `L 0 0`, // Line
         ].join(' ');
 
-        paths += `<path d="${pathData}"></path>`;
-        tooltips += `<foreignObject x="-70" y="-70" width="140" height="140" ><div><span class="h5 mb-0"><span class="total d-block">${ucfirst(unsnake(title))}</span> ${ucfirst(unsnake(cell.getAttribute('data-label')))}<br/> ${cell.innerHTML}</span></div></foreignObject>`;
+        paths += `<path d="${pathData}" style="${cell.getAttribute('style')}"></path>`;
+        tooltips += `<foreignObject x="-70" y="-70" width="140" height="140" ><div><span class="h5 mb-0"><span class="total d-block">${ucfirst(unsnake(title))}</span> ${ucfirst(unsnake(cell.getAttribute('data-label')))}<br/> ${cell.innerHTML}${cell.hasAttribute('data-second') ? `${cell.getAttribute('data-second-label')}: ${cell.getAttribute('data-second')}` : ''}</span></div></foreignObject>`;
       }
     });
 

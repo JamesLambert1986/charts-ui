@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- #region:HEAD -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="favicon.svg?cache=1672760825738">
+
+    <title>BBC Charts UI Library</title>
+    <link rel="stylesheet" href="_app/css/app.css?cache=1672760825738" />
+    <link rel="stylesheet" href="_assets/css/main.css?cache=1672760825738" />
+
+    <script src="_assets/js/main.js?cache=1672760825738" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1672760825738" type="module" defer></script>
+    <!-- #endregion:HEAD -->
+    
+  </head>
+  <body>
+    <!-- #region:HEADER -->
+    <header>
+      <nav class="navbar navbar-expand-lg" id="menu">
+        <div class="container">
+
+          <a href="./" rel="home" class="me-3">Charts UI library</a>
+          <a href="#menu" class="navbar-toggler">
+
+            <span class="navbar-toggler-icon"></span>
+          </a>
+          <a href="#close" class="navbar-toggler d-lg-none">
+            <span class="navbar-toggler-icon"></span>
+          </a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100">
+              <li class="nav-item"><a href="./" class="nav-link">Examples</a></li>
+              <li class="nav-item"><a href="./get-started" class="nav-link">Get started</a></li>
+              <li class="nav-item"><a href="./principles" class="nav-link">Principles</a></li>
+              <li class="nav-item"><a href="./roadmap" class="nav-link">Roadmap</a></li>
+              <li class="nav-item"><a href="./create" class="nav-link">Generator</a></li>
+              <li class="nav-item ms-lg-auto"><a href="mailto:james.lambert@bbc.co.uk" class="nav-link nav-feedback">Feedback</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <!-- #endregion:HEADER -->
+    
+    <main>
+      <div class="bg-primary text-white py-4">
+        <div class="container">
+          <h1>Charts with a third set of data</h1>
+
+          <p class="mb-0">With the use of an additional table we can add an extra dimension to the charts.</p>
+
+        </div>
+      </div>
+      
+      
+
+      <div class="container pt-3">
+        
+
+        <h2>Bubble chart</h2>
+        <figure class="chart" data-max="100" data-min="0" data-type="bubble" data-guidelines="£0,£50,£100" data-second-max="230" data-second-min="0" data-second-label="Transactions">
+
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Growth</th>
+                <th>Growth2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2011</td>
+                <td>£50.00</td>
+                <td>£50.10</td>
+              </tr>
+              <tr>
+                <td>2012</td>
+                <td>£75.00</td>
+                <td>£50.10</td>
+              </tr>
+              <tr>
+                <td>2013</td>
+                <td>£45.00</td>
+                <td>£57.10</td>
+              </tr>
+              <tr>
+                <td>2014</td>
+                <td>£35.00</td>
+                <td>£80.10</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+          <table>
+            <thead>
+              <tr>
+                <th>Year</th>
+                <th>Growth</th>
+                <th>Growth2</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2011</td>
+                <td>120</td>
+                <td>200</td>
+              </tr>
+              <tr>
+                <td>2012</td>
+                <td>50</td>
+                <td>210</td>
+              </tr>
+              <tr>
+                <td>2013</td>
+                <td>150</td>
+                <td>170</td>
+              </tr>
+              <tr>
+                <td>2014</td>
+                <td>230</td>
+                <td>140</td>
+              </tr>
+            </tbody>
+          </table>
+        </figure>
+
+
+
+    <h2 id="pie">Polar chart</h2>
+    
+    <figure class="chart" data-max="100" data-min="0" data-type="polar" data-second-max="230" data-second-min="0" data-second-label="Transactions">
+
+      <table>
+          <thead>
+              <tr class="">
+                  <th>Year</th>
+                  <th>Growth</th>
+                  <th>Growth2</th>
+                  <th>Growth3</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr>
+                  <td data-label="Year" data-numeric="2011">2011</td>
+                  <td data-label="Growth" data-numeric="50" >£50.0</td>
+                  <td data-label="Growth2" data-numeric="50.1">£50.10</td>
+                  <td data-label="Growth2" data-numeric="50.1">£50.10</td>
+              </tr>
+              <tr>
+                  <td data-label="Year" data-numeric="2012">2012</td>
+                  <td data-label="Growth" data-numeric="75">£75.00</td>
+                  <td data-label="Growth2" data-numeric="50.1">£50.10</td>
+                  <td data-label="Growth2" data-numeric="50.1">£50.10</td>
+              </tr>
+              <tr>
+                  <td data-label="Year" data-numeric="2013">2013</td>
+                  <td data-label="Growth" data-numeric="45">£45.00</td>
+                  <td data-label="Growth2" data-numeric="57.1">£57.10</td>
+                  <td data-label="Growth2" data-numeric="57.1">£57.10</td>
+              </tr>
+          </tbody>
+      </table>
+
+
+      <table>
+        <thead>
+          <tr>
+            <th>Transactions</th>
+            <th>Growth</th>
+            <th>Growth2</th>
+            <th>Growth3</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2011</td>
+            <td>120</td>
+            <td>200</td>
+            <td>60</td>
+          </tr>
+          <tr>
+            <td>2012</td>
+            <td>50</td>
+            <td>210</td>
+            <td>100</td>
+          </tr>
+          <tr>
+            <td>2013</td>
+            <td>150</td>
+            <td>170</td>
+            <td>200</td>
+          </tr>
+          <tr>
+            <td>2014</td>
+            <td>230</td>
+            <td>140</td>
+            <td>100</td>
+          </tr>
+        </tbody>
+      </table>
+    </figure>
+
+
+      
+      </div>
+
+
+    </main>
+  </body>
+</html>

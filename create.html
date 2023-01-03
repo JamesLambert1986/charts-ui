@@ -7,19 +7,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" href="favicon.svg?cache=1671783639919">
+    <link rel="shortcut icon" href="favicon.svg?cache=1672760825738">
 
     <title>BBC Charts UI Library</title>
-    <link rel="stylesheet" href="_app/css/app.css?cache=1671783639919" />
-    <link rel="stylesheet" href="_assets/css/main.css?cache=1671783639919" />
+    <link rel="stylesheet" href="_app/css/app.css?cache=1672760825738" />
+    <link rel="stylesheet" href="_assets/css/main.css?cache=1672760825738" />
 
-    <script src="_assets/js/main.js?cache=1671783639919" type="module" defer></script>
-    <script src="_app/js/app.js?cache=1671783639919" type="module" defer></script>
+    <script src="_assets/js/main.js?cache=1672760825738" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1672760825738" type="module" defer></script>
     <!-- #endregion:HEAD -->
 
-    <link rel="stylesheet" href="_app/css/create.css?cache=1671783639919" />
-    <script src="_app/js/lib/html2canvas.js?cache=1671783639919"></script>
-    <script src="_app/js/config.js?cache=1671783639919" type="module" defer></script>
+    <link rel="stylesheet" href="_app/css/create.css?cache=1672760825738" />
+    <script src="_app/js/lib/html2canvas.js?cache=1672760825738"></script>
+    <script src="_app/js/config.js?cache=1672760825738" type="module" defer></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify-html.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
 
   </head>
   <body>
@@ -61,7 +70,7 @@
       </div>
     </div>
 
-    <div class="container pt-4" id="container">
+    <div class="container pt-4 pt-3" id="container">
 
       <h2>Chart Preview</h2>
       <div class="resize" id="chartWrapper">
@@ -75,6 +84,7 @@
               <input type="radio" name="chart-type" value="line" id="chart-line"/>
               <input type="radio" name="chart-type" value="pie" id="chart-pie"/>
               <input type="radio" name="chart-type" value="stacked" id="chart-stacked"/>
+              <input type="radio" name="chart-type" value="comparison" id="chart-comparison"/>
 
               <div class="chart__inner">
                   <div class="chart__yaxis" role="presentation">
@@ -202,6 +212,7 @@
             <option value="chart-line">Line</option>
             <option value="chart-pie">Pie</option>
             <option value="chart-stacked">Stacked</option>
+            <option value="chart-comparison">Comparison</option>
           </select>
         </div>
         <div class="row row-cols-sm-2">
@@ -265,7 +276,7 @@
         <hr class="border-0 mb-4" />
       </details>
       
-      <details id="chart-data" class="mb-3" open>
+      <details id="chart-data" class="mb-3">
         <summary><h2 class="h3 d-inline-block">Update data</h2></summary>
 
         <button class="btn btn-secondary mb-3" id="deleteRow">Delete row</button>
@@ -383,16 +394,44 @@
       </details>
 
 
-      <button class="btn btn-primary mb-5" id="create">Create image</button>
-
-
+      
     </div>
 
-    <div class="container pt-4" id="genWrapper">
-      <h2>Generated image</h2>
-      <div id="generated">
+      <div class="actionButtons bg-light border-top">
+        <div class="container pt-2" >
+          <button class="btn btn-primary mb-2" id="create">Create image</button>
+
+          <button class="btn btn-primary mb-2" id="createHTML">Create HTML</button>
+          <button class="btn btn-primary mb-2" id="createStandalone">Create standalone HTML</button>
+          <!--<button class="btn btn-secondary mb-2" id="saveOptions" disabled>Save options</button>-->
+          <button class="btn btn-secondary mb-2" id="exportCSV">Export CSV</button>
+
+
+        </div>
       </div>
-    </div>
+
+      <div class="container" id="genWrapper">
+        <h2 class="mt-3">Generated image</h2>
+        <div id="generated" class="mb-3">
+        </div>
+      </div>
+
+      <div class="container" id="htmlWrapper">
+        <h2 class="mt-3">HTML Preview</h2>
+        <div id="htmlPreview" class="mb-3">
+        </div>
+
+        <button class="btn btn-primary" id="copyHTML" data-clipboard-target="#htmlCode">Copy HTML</button>
+      </div>
+
+      <div class="container" id="standaloneWrapper">
+        <h2 class="mt-3">Standalone HTML Preview</h2>
+        <div id="standalonePreview" class="mb-3">
+        </div>
+
+        <button class="btn btn-primary" id="copyStandaloneHTML" data-clipboard-target="#standaloneCode">Copy standalone HTML</button>
+      </div>
+
     </main>
   </body>
 </html>

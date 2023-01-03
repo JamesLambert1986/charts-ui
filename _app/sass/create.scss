@@ -25,3 +25,52 @@
 body [contenteditable] {
   pointer-events: all!important;
 }
+
+
+#genWrapper:not(:has(canvas)){
+
+  display: none;
+}
+
+#genWrapper {
+  padding-bottom: 5rem;
+
+  canvas {
+    max-width: 100%;
+    height: auto!important;
+  }
+}
+
+#htmlWrapper,
+#standaloneWrapper {
+
+  padding-bottom: 5rem;
+}
+
+#htmlWrapper:not(:has(pre)){
+  display: none;
+}
+
+#standaloneWrapper:not(:has(pre)){
+  display: none;
+}
+
+.actionButtons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  .container {
+    white-space: nowrap;
+    overflow: auto;
+  }
+}
+
+body {
+  padding-bottom: 6rem;
+}
+
+pre code{
+  max-height: 50vh;
+}
