@@ -5,9 +5,10 @@ $bar-chart: '.chart input[type=radio]:where([value="bar"],[value="comparison"]):
 $comparison-chart: '.chart input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__inner';
 $comparison-chart-key: '.chart input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__key';
 $responsive-chart: '.chart input[type=radio][value="responsive"]:not([value=none]):not([value=pie]):checked~.chart__inner';
-$scatter-line-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"]):checked ~ .chart__inner';
+$scatter-line-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"]):checked ~ .chart__inner';
 $line-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
 $bubble-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"])[value="bubble"]:checked ~ .chart__inner';
+$radar-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"])[value="radar"]:checked ~ .chart__inner';
 $pie-chart: '.chart input[type="radio"]:not([value="none"]):is([value="pie"],[value="polar"]):checked ~ .chart__inner';
 $polar-chart: '.chart input[type="radio"]:not([value="none"])[value="polar"]:checked ~ .chart__inner';
 
@@ -154,8 +155,9 @@ $polar-chart: '.chart input[type="radio"]:not([value="none"])[value="polar"]:che
     --chart-colour: var(#{'--chart-colour-'+$i+'-set'});
   }
 
-  input[value="line"]:checked ~ .chart__inner .line:nth-child(10n - #{10 - $i}) {
-    stroke: var(#{'--chart-colour-'+$i+'-set'});
+  input:is([value="line"],[value="radar"]):checked ~ .chart__inner .line:nth-child(10n - #{10 - $i}) {
+    color: var(#{'--chart-colour-'+$i+'-set'});
+    stroke: currentColor;
     z-index: #{10 - $i};
   }
   input:is([value="pie"],[value="polar"]):checked ~ .chart__inner .pie path:nth-child(10n - #{10 - $i}) {
@@ -291,7 +293,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
   display: none;
 }
 
-.chart > input[type="checkbox"]:not(:checked) ~ .chart__inner .lines .line {
+.chart > input[type="checkbox"]:not(:checked) ~ .chart__inner :is(.lines, .radar) .line {
   display: none!important;
 }
 
@@ -311,7 +313,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     opacity: 1;
   }
   
-  input:nth-of-type(#{$i}):not(:checked) ~ .chart__inner .lines .line:nth-child(#{$i}) {
+  input:nth-of-type(#{$i}):not(:checked) ~ .chart__inner :is(.lines,.radar) .line:nth-child(#{$i}) {
     display: block!important;
   }
 }
@@ -1111,6 +1113,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
   }
 }
 // #endregion
+
 // #region Polar chart
 #{$polar-chart} {
 
@@ -1142,7 +1145,112 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 }
 // #endregion
 
+// #region Radar chart
+#{$radar-chart} {
 
+  .chart__yaxis {
+    margin: 0;
+    position: absolute;
+    height: calc(50% - 0.5rem);
+    left: 50%;
+    top: 0;
+    width: 0;
+
+    .axis__point span {
+      width: fit-content;
+      transform: translate(-50%, 10%);
+    }
+  }
+
+  .chart__guidelines {
+    display: none;
+  }
+
+  table tbody tr td:first-child {
+    top: auto;
+    bottom: 100%;
+    width: fit-content;
+    display: block;
+    transform: translate(-50%, 0);
+    z-index: var(--index-below);
+  }
+
+  @for $i from 1 to 16 {
+
+    tbody:has(tr:nth-child(#{$i}):last-child) {
+      --items: #{$i};
+      --part: calc( 360deg / var(--items) );
+    }
+  }
+  
+  @for $i from 1 to 16 {
+
+    tbody tr:nth-child(#{$i}) {
+      --index: #{$i};
+    }
+  }
+
+  table {
+    padding-top: 60%;
+  }
+
+
+  tbody tr {
+    --skew: calc( 90deg - var(--part) );
+    border-bottom: 1px solid #8a2be2;
+    height: 50%;
+    left: 50%;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    transform: rotate(calc((var(--part)*var(--index, 1)) - var(--part)));
+    transform-origin: 100% 100%;
+    width: 0%!important;
+    margin: 0!important;
+
+    &:before {
+      opacity: 1!important;
+      border-left: 1px dashed #000000!important;
+    }
+
+    td:not(:first-child) {
+      transform: rotate(calc(var(--part) * ((var(--index, 1) - 1) * -1)));
+      z-index: var(--index-above);
+    }
+  }
+
+  :is(.radar, .radar__guidelines) .line {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%,0);
+    stroke-width: var(--line-thickness);
+    width: auto;
+    aspect-ratio: 1/1;
+    height: calc(100% - 1rem);
+    pointer-events: none;
+    z-index: var(--index-below);
+
+    path {
+      fill: currentColor;
+      fill-opacity: 0.5;
+    }
+  }
+  
+  .radar__guidelines .line {
+
+    --line-thickness: 0.1px;
+    color: #000000;
+    z-index: var(--index-below);
+
+    path {
+      fill-opacity: 0;
+      stroke-dasharray: 0.5px;
+    }
+  }
+}
+// #endregion
 
 
 // ******************************************

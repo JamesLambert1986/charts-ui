@@ -137,6 +137,9 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
   if(chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
     createPies(chartElement);
 
+  if(chartElement.querySelector(':scope > input[value="radar"]:checked'))
+    createRadar(chartElement,min,max);
+
   // Event handlers
   const showData = chartElement.querySelectorAll(':scope > input[type="checkbox"]');
 
@@ -964,6 +967,151 @@ export const createSeries = function(chartElement){
 
     currentRow = nthChild;
   });
+}
+
+
+export const createRadar = function (chartElement,min,max){
+
+  let returnString = '';
+
+  let tableWrapper = chartElement.querySelector('.table__wrapper');
+  let radarWrapper = chartElement.querySelector('.radar');
+  let radarGuidelines = chartElement.querySelector('.radar__guidelines');
+
+  if(!radarWrapper){
+
+    radarWrapper = document.createElement("div");
+    radarWrapper.setAttribute('class','radar');
+    tableWrapper.prepend(radarWrapper);
+  }
+
+  let items = Array.from(chartElement.querySelectorAll('tbody tr'));
+
+  let lines = Array();
+  let itemCount = items.length <= 1000 ? items.length : 1000;
+  let spacer = 100/(itemCount - 1);
+
+  // Creates the lines array from the fields array
+  Array.from(chartElement.querySelectorAll('thead th')).forEach((field, index) => {
+
+    if(index != 0){
+
+      lines[index-1] = '';
+    }
+  });
+
+  // populate the lines array from the items array
+  let counter = 0;
+  Array.from(chartElement.querySelectorAll('tbody tr')).forEach((item, index) => {
+
+    const display = getComputedStyle(item).display;
+
+    if(display != "none"){
+
+      Array.from(item.querySelectorAll('td')).forEach((cell, subindex) => {
+
+        if(subindex != 0){
+
+          let value = cell.getAttribute('data-numeric');
+
+          value = value.replace('£','');
+          value = value.replace('%','');
+          value = Number.parseFloat(value) - min;
+
+          const percent = (value/max) * 100;
+
+          let command = counter == 0 ? 'M' : 'L';
+
+          let x = 50;
+          let y = 50 - (percent/2);
+
+          let deg = 360 / itemCount;
+          var angleInRadians = ((deg*counter)-90) * Math.PI / 180.0
+
+          if(counter != 0){
+
+            x = 50 + (((percent/2)) * Math.cos(angleInRadians));
+            y = 50 + (((percent/2)) * Math.sin(angleInRadians));
+          }
+
+
+          lines[subindex-1] += `${command} ${x} ${y} `;
+
+        }
+      });
+
+      counter++;
+    }
+
+  });
+
+  lines.forEach((line, index) => {
+
+    returnString += `
+<svg viewBox="0 0 100 100" class="line" preserveAspectRatio="none">
+  <path fill="none" d="${line}z"></path>
+</svg>`
+  });
+
+  radarWrapper.innerHTML = returnString;
+
+
+  // guidelines
+
+  if(!radarGuidelines){
+
+    radarGuidelines = document.createElement("div");
+    radarGuidelines.setAttribute('class','radar__guidelines');
+    tableWrapper.prepend(radarGuidelines);
+  }
+
+
+
+  Array.from(chartElement.querySelectorAll('.chart__guidelines .guideline')).forEach((guideline, index) => {
+
+    let value = guideline.innerText;
+
+    value = value.replace('£','');
+    value = value.replace('%','');
+    value = Number.parseFloat(value) - min;
+
+    const percent = (value/max) * 100;
+
+    console.log(percent);
+
+    let line = '';
+
+    Array.from(chartElement.querySelectorAll('tbody tr')).forEach((row, index) => {
+
+      let command = index == 0 ? 'M' : 'L';
+
+      let x = 50;
+      let y = 50 - (percent/2);
+
+      let deg = 360 / itemCount;
+      var angleInRadians = ((deg*index)-90) * Math.PI / 180.0
+
+      if(counter != 0){
+
+        x = 50 + (((percent/2)) * Math.cos(angleInRadians));
+        y = 50 + (((percent/2)) * Math.sin(angleInRadians));
+      }      
+        
+      line += `${command} ${x} ${y} `;
+    });
+
+
+
+    let returnString = `
+    <svg viewBox="0 0 100 100" class="line" preserveAspectRatio="none">
+      <path fill="none" d="${line}z"></path>
+    </svg>`;
+
+
+    radarGuidelines.innerHTML += returnString;
+
+  });
+
 }
 
 export default chart
