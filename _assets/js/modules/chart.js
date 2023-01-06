@@ -149,6 +149,9 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
       if(chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
         createPies(chartElement);
     });
+
+    if(chartElement.querySelector(':scope > input[value="radar"]:checked'))
+      createRadar(chartElement,min,max);
   }
 
   if(chartElement.querySelector(':scope > input[type="radio"]')){
@@ -165,6 +168,8 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
           case "pie":
           case "polar":
             createPies(chartElement)
+          case "radar":
+            createRadar(chartElement,min,max);
             break;
         }
       });

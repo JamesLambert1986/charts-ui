@@ -85,6 +85,7 @@
               <input type="radio" name="chart-type" value="pie" id="chart-pie"/>
               <input type="radio" name="chart-type" value="stacked" id="chart-stacked"/>
               <input type="radio" name="chart-type" value="comparison" id="chart-comparison"/>
+              <input type="radio" name="chart-type" value="radar" id="chart-radar"/>
 
               <div class="chart__inner">
                   <div class="chart__yaxis" role="presentation">
@@ -134,9 +135,9 @@
                           </tbody>
                       </table>
                       <div class="chart__guidelines" role="presentation">
-                          <div data-value="0" class="guideline" style="--percent:0%;"></div>
-                          <div data-value="50" class="guideline" style="--percent:50%;"></div>
-                          <div data-value="100" class="guideline" style="--percent:100%;"></div>
+                          <div data-value="0" class="guideline" style="--percent:0%;">£0</div>
+                          <div data-value="50" class="guideline" style="--percent:50%;">£50</div>
+                          <div data-value="100" class="guideline" style="--percent:100%;">£100</div>
                       </div>
                       <!---->
                   </div>
@@ -213,6 +214,7 @@
             <option value="chart-pie">Pie</option>
             <option value="chart-stacked">Stacked</option>
             <option value="chart-comparison">Comparison</option>
+            <option value="chart-radar">Radar</option>
           </select>
         </div>
         <div class="row row-cols-sm-2">

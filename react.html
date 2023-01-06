@@ -39,6 +39,7 @@
         useEffect(() => {
 
           const chartElement = chartRef.current;
+          let table = chartElement.querySelector('table');
 
           if(!chartElement.querySelector('.chart__key')){
             createChartKey(chartElement);
@@ -50,7 +51,7 @@
           }
           
           deleteCellData(chartElement);
-          setCellData(chartElement, props.min, props.max);
+          setCellData(chartElement, table, props.min, props.max);
 
           // create lines
           if(chartElement.querySelector('.lines'))
