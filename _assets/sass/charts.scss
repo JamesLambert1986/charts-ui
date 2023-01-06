@@ -9,9 +9,9 @@ $responsive-chart: '.chart input[type=radio][value="responsive"]:not([value=none
 $scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"]):checked ~ .chart__inner';
 $line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
 $bubble-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"])[value="bubble"]:checked ~ .chart__inner';
-$radar-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"])[value="radar"]:checked ~ .chart__inner';
-$pie-chart: '.chart input[type="radio"]:not([value="none"]):is([value="pie"],[value="polar"]):checked ~ .chart__inner';
-$polar-chart: '.chart input[type="radio"]:not([value="none"])[value="polar"]:checked ~ .chart__inner';
+$radar-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="radar"]:checked ~ .chart__inner';
+$pie-chart: 'input[type="radio"]:not([value="none"]):is([value="pie"],[value="polar"]):checked ~ .chart__inner';
+$polar-chart: 'input[type="radio"]:not([value="none"])[value="polar"]:checked ~ .chart__inner';
 
 // #region Functions and mixins
 @function rem($pixels, $context: 16)
@@ -872,7 +872,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 // #endregion
 
 // #region Pie chart
-#{$pie-chart} {
+#{'.chart '+$pie-chart} {
 
   margin-bottom: 2rem;
 
@@ -1115,7 +1115,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 // #endregion
 
 // #region Polar chart
-#{$polar-chart} {
+#{'.chart '+$polar-chart} {
 
   .pie>div {
     display: block!important;
@@ -1146,7 +1146,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 // #endregion
 
 // #region Radar chart
-#{$radar-chart} {
+#{'.chart '+$radar-chart} {
 
   .chart__yaxis {
     margin: 0;
@@ -1404,12 +1404,35 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 // ******************************************
 // Animation
 // ******************************************
+#{'.chart--animate'} {
+
+  table tbody tr td:not(:first-child){
+    transition: height 2s ease-out, width 2s ease-out, bottom 2s ease-out;
+
+    &:before {
+
+      transition: 2s ease-out;
+    }
+  }
+}
+
+#{'.chart--animate:not(.inview)'} {
+
+  table tbody tr td:not(:first-child) {
+    --percent: 0%!important;
+    
+    &:before {
+      transform: translate(-50%, -50%) scale(0%)!important;
+    }
+  }
+}
+
 
 // #region Animate bar and column chart
 #{'.chart--animate ' + $default-chart} {
 
   table tbody tr td:not(:first-child) {
-    transition: height 2s ease-out, width 2s ease-out;
+    //transition: height 2s ease-out, width 2s ease-out, bottom 2s ease-out;
   }
 }
 
@@ -1420,29 +1443,12 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
   }
 }
 
-#{'.chart--animate:not(.inview) ' + $default-chart} {
-
-  table tbody tr td:not(:first-child) {
-    --percent: 0%!important;
-  }
-}
 // #endregion
 
 
-// #region scatter
-#{'.chart--animate ' + $scatter-line-chart} {
+// #region scatter and line charts
 
-  table tbody tr td:not(:first-child) {
-    transition: bottom 2s ease-out;
-  }
-}
 
-#{'.chart--animate.animating ' + $scatter-line-chart} {
-
-  table tbody tr td:not(:first-child) {
-    //overflow: hidden;
-  }
-}
 
 #{'.chart--animate:not(.inview) ' + $scatter-line-chart} {
 
@@ -1450,8 +1456,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
     --percent: 0%!important;
   }
 }
-// #endregion
-
+// Line chart 
 #{'.chart--animate '+$line-chart} {
   .line path {
     transition: 2s ease-out;
@@ -1463,3 +1468,39 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
     d: var(--path);
   }
 }
+// #endregion
+
+// #region pie charts
+#{'.chart--animate '+$pie-chart} {
+  .pie path {
+    transition: calc(2s * var(--second-fraction, 1)) ease-out;
+  }
+}
+
+#{'.chart--animate:not(.inview) '+$pie-chart} {
+  .pie path {
+    transform: scale(60%) !important;
+  }
+}
+#{'.chart--animate:not(.inview) '+$polar-chart} {
+  .pie path {
+    transform: scale(40%) !important;
+  }
+}
+// #endregion
+
+
+// #region pie charts
+#{'.chart--animate '+$radar-chart} {
+  .line path {
+    transition: 2s ease-out;
+  }
+}
+
+#{'.chart--animate:not(.inview) '+$radar-chart} {
+  .line path {
+    d: var(--path);
+  }
+}
+// #endregion
+

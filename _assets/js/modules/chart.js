@@ -727,6 +727,7 @@ export const setCellData = function(chartElement,table,min,max,secondTable){
 
         let secondPercent = matchingTD.getAttribute('data-percent');
         td.style.cssText += `--second-percent:${secondPercent}%;`
+        td.style.cssText += `--second-fraction:${(secondPercent/100)};`
 
         td.setAttribute('data-second',matchingTD.innerText);
         td.setAttribute('data-second-label',chartElement.getAttribute('data-second-label'));
@@ -828,8 +829,9 @@ export const createPies = function(chartElement){
 
         // create an array and join it just for code readability
         const pathData = [
-          `M ${startX} ${startY}`, // Move
-          `A 100 100 0 ${largeArcFlag} 1 ${endX} ${endY}`, // Arc
+          `M 0 0`,
+          `L ${startX.toFixed(0)} ${startY.toFixed(0)}`, // Move
+          `A 100 100 0 ${largeArcFlag} 1 ${endX.toFixed(0)} ${endY.toFixed(0)}`, // Arc
           `L 0 0`, // Line
         ].join(' ');
 
@@ -1028,6 +1030,7 @@ export const createRadar = function (chartElement,min,max){
   let items = Array.from(chartElement.querySelectorAll('tbody tr'));
 
   let lines = Array();
+  let animateLines = Array();
   let itemCount = items.length <= 1000 ? items.length : 1000;
   let spacer = 100/(itemCount - 1);
 
@@ -1037,6 +1040,7 @@ export const createRadar = function (chartElement,min,max){
     if(index != 0){
 
       lines[index-1] = '';
+      animateLines[index-1] = '';
     }
   });
 
@@ -1076,6 +1080,7 @@ export const createRadar = function (chartElement,min,max){
 
 
           lines[subindex-1] += `${command} ${x} ${y} `;
+          animateLines[subindex-1] += `${command} 50 50 `;
 
         }
       });
@@ -1089,7 +1094,7 @@ export const createRadar = function (chartElement,min,max){
 
     returnString += `
 <svg viewBox="0 0 100 100" class="line" preserveAspectRatio="none">
-  <path fill="none" d="${line}z"></path>
+  <path fill="none" d="${line}z" style="--path: path('${animateLines[index]}z')"></path>
 </svg>`
   });
 
