@@ -186,6 +186,9 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
   else {
     setEventObservers(chartElement,min,max,guidelines);
   }
+
+  if(chartElement.classList.contains('chart--animate'))
+    setIntersctionObserver(chartElement);
 }
 
 export const setEventObservers = function(chartElement,min,max,guidelines) {
@@ -194,6 +197,9 @@ export const setEventObservers = function(chartElement,min,max,guidelines) {
 
   const attributesUpdated = (mutationList, observer) => {
     for (const mutation of mutationList) {
+
+      if(mutation.attributeName == 'class')
+        continue;
 
       observer.disconnect();
       observer2.disconnect();
@@ -329,6 +335,32 @@ export const setEventObservers = function(chartElement,min,max,guidelines) {
   observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
   observer2.observe(chartElement, { attributes: true });
 };
+
+
+
+export const setIntersctionObserver = function(chartElement) {
+
+  const options = {
+    rootMargin: '0px',
+    threshold: 0.5
+  }
+
+  let callback = (entries) => {
+    entries.forEach((entry) => {
+      
+      if(entry.intersectionRatio > 0){
+        entry.target.classList.add('inview');  
+        entry.target.classList.add('animating');
+        setTimeout(function() {
+          entry.target.classList.remove('animating');
+        }, 2000);
+      }
+    });
+  };
+
+  const intObserver = new IntersectionObserver(callback, options);
+  intObserver.observe(chartElement);
+}
 
 // event observers 
 
@@ -834,6 +866,7 @@ export const createLines = function(chartElement,min,max){
   let items = Array.from(chartElement.querySelectorAll('tbody tr'));
 
   let lines = Array();
+  let animatelines = Array();
   let itemCount = items.length <= 1000 ? items.length : 1000;
   let spacer = 200/(itemCount - 1);
 
@@ -843,6 +876,7 @@ export const createLines = function(chartElement,min,max){
     if(index != 0){
 
       lines[index-1] = '';
+      animatelines[index-1] = '';
     }
   });
 
@@ -869,6 +903,7 @@ export const createLines = function(chartElement,min,max){
           let command = counter == 0 ? 'M' : 'L';
 
           lines[subindex-1] += `${command} ${spacer * counter} ${100-percent} `;
+          animatelines[subindex-1] += `${command} ${spacer * counter} 100 `;
         }
       });
 
@@ -881,7 +916,7 @@ export const createLines = function(chartElement,min,max){
 
     returnString += `
 <svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none">
-  <path fill="none" d="${line}"></path>
+  <path fill="none" d="${line}" style="--path: path('${animatelines[index]}');"></path>
 </svg>`
   });
 

@@ -1,12 +1,13 @@
 @use "sass:math";
 @import "_vars";
 
-$bar-chart: '.chart input[type=radio]:where([value="bar"],[value="comparison"]):not([value=none]):not([value=pie]):checked~.chart__inner';
+$default-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner';
+$bar-chart: '.chart input[type=radio]:is([value="bar"],[value="comparison"]):not([value=none]):not([value=pie]):checked~.chart__inner';
 $comparison-chart: '.chart input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__inner';
 $comparison-chart-key: '.chart input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__key';
 $responsive-chart: '.chart input[type=radio][value="responsive"]:not([value=none]):not([value=pie]):checked~.chart__inner';
-$scatter-line-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"]):checked ~ .chart__inner';
-$line-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
+$scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"]):checked ~ .chart__inner';
+$line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
 $bubble-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"])[value="bubble"]:checked ~ .chart__inner';
 $radar-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"])[value="radar"]:checked ~ .chart__inner';
 $pie-chart: '.chart input[type="radio"]:not([value="none"]):is([value="pie"],[value="polar"]):checked ~ .chart__inner';
@@ -320,7 +321,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 // #endregion
 
 // #region Default column chart (Also applies to line chart)
-input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner {
+#{'.chart ' + $default-chart} {
 
   display: block;
   display: flex;
@@ -515,7 +516,6 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
         position: relative;
         background: green;
         padding: 0;
-
         background: var(--chart-colour);
 
         &[data-label]:before {
@@ -754,7 +754,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 // #endregion
 
 // #region Line and scatter chart
-#{$scatter-line-chart} {
+#{'.chart '+$scatter-line-chart} {
 
   table tbody {
     justify-content: space-between;
@@ -844,7 +844,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
   }
 }
 // Lines
-#{$line-chart} {
+#{'.chart '+$line-chart} {
 
   .lines ~ table tbody {
 
@@ -1279,32 +1279,32 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
       }
     }
   }
-
-  #{$bar-chart} table tbody tr td:not(:first-child) {
-    span {
-      top: 50%;
-      right: 0;
-      left: 0;
-      transform: translate(0%, -50%)!important;
-      text-align: right;
-      width: calc(100% - 0.4rem);
-      min-width: fit-content;
-      padding: 0 0.1rem;
-      border-radius: 0;
-    }
-  }
-
-  #{$scatter-line-chart} table tbody tr td:not(:first-child) {
-    span {
-      bottom: 0.25rem;
-      top: auto;
-    }
-  }
-
-  #{$line-chart} .lines~table tbody tr td:not(:first-child):not(:hover) {
-    opacity: 1;
+}
+#{$bar-chart} table tbody tr td:not(:first-child) {
+  span {
+    top: 50%;
+    right: 0;
+    left: 0;
+    transform: translate(0%, -50%)!important;
+    text-align: right;
+    width: calc(100% - 0.4rem);
+    min-width: fit-content;
+    padding: 0 0.1rem;
+    border-radius: 0;
   }
 }
+
+#{'.chart '+$scatter-line-chart} table tbody tr td:not(:first-child) {
+  span {
+    bottom: 0.25rem;
+    top: auto;
+  }
+}
+
+#{'.chart--display-data '$line-chart} .lines~table tbody tr td:not(:first-child):not(:hover) {
+  opacity: 1;
+}
+
 // #endregion
 
 // #region Aspect ration modifier classes
@@ -1397,4 +1397,69 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 .chart:has(.chart__inner) > table {
   order: 10;
   display: none;
+}
+
+
+
+// ******************************************
+// Animation
+// ******************************************
+
+// #region Animate bar and column chart
+#{'.chart--animate ' + $default-chart} {
+
+  table tbody tr td:not(:first-child) {
+    transition: height 2s ease-out, width 2s ease-out;
+  }
+}
+
+#{'.chart--animate.animating ' + $default-chart} {
+
+  table tbody tr td:not(:first-child) {
+    overflow: hidden;
+  }
+}
+
+#{'.chart--animate:not(.inview) ' + $default-chart} {
+
+  table tbody tr td:not(:first-child) {
+    --percent: 0%!important;
+  }
+}
+// #endregion
+
+
+// #region scatter
+#{'.chart--animate ' + $scatter-line-chart} {
+
+  table tbody tr td:not(:first-child) {
+    transition: bottom 2s ease-out;
+  }
+}
+
+#{'.chart--animate.animating ' + $scatter-line-chart} {
+
+  table tbody tr td:not(:first-child) {
+    //overflow: hidden;
+  }
+}
+
+#{'.chart--animate:not(.inview) ' + $scatter-line-chart} {
+
+  table tbody tr td:not(:first-child) {
+    --percent: 0%!important;
+  }
+}
+// #endregion
+
+#{'.chart--animate '+$line-chart} {
+  .line path {
+    transition: 2s ease-out;
+  }
+}
+
+#{'.chart--animate:not(.inview) '+$line-chart} {
+  .line path {
+    d: var(--path);
+  }
 }
