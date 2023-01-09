@@ -8,7 +8,7 @@ $comparison-chart-key: '.chart input[type=radio][value="comparison"]:not([value=
 $responsive-chart: '.chart input[type=radio][value="responsive"]:not([value=none]):not([value=pie]):checked~.chart__inner';
 $scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"]):checked ~ .chart__inner';
 $line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
-$bubble-chart: '.chart input[type="radio"]:not([value="none"]):not([value="pie"])[value="bubble"]:checked ~ .chart__inner';
+$bubble-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="bubble"]:checked ~ .chart__inner';
 $radar-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="radar"]:checked ~ .chart__inner';
 $pie-chart: 'input[type="radio"]:not([value="none"]):is([value="pie"],[value="polar"]):checked ~ .chart__inner';
 $polar-chart: 'input[type="radio"]:not([value="none"])[value="polar"]:checked ~ .chart__inner';
@@ -1092,7 +1092,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 // #endregion
 
 // #region Bubble chart
-#{$bubble-chart} {
+#{'.chart '+$bubble-chart} {
 
   table tbody tr td:not(:first-child) {
     background-color: transparent!important;
@@ -1407,12 +1407,9 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 #{'.chart--animate'} {
 
   table tbody tr td:not(:first-child){
+    
     transition: height 2s ease-out, width 2s ease-out, bottom 2s ease-out;
-
-    &:before {
-
-      transition: 2s ease-out;
-    }
+    transition-delay: calc(var(--row-index) * 0.1s);
   }
 }
 
@@ -1420,16 +1417,14 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 
   table tbody tr td:not(:first-child) {
     --percent: 0%!important;
-    
-    &:before {
-      transform: translate(-50%, -50%) scale(0%)!important;
-    }
   }
 }
 
 
 // #region Animate bar and column chart
 #{'.chart--animate ' + $default-chart} {
+
+  
 
   table tbody tr td:not(:first-child) {
     //transition: height 2s ease-out, width 2s ease-out, bottom 2s ease-out;
@@ -1442,13 +1437,10 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
     overflow: hidden;
   }
 }
-
 // #endregion
 
 
 // #region scatter and line charts
-
-
 
 #{'.chart--animate:not(.inview) ' + $scatter-line-chart} {
 
@@ -1474,6 +1466,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 #{'.chart--animate '+$pie-chart} {
   .pie path {
     transition: calc(2s * var(--second-fraction, 1)) ease-out;
+    transition-delay: calc((var(--row-index) * var(--path-index)) * 0.1s);
   }
 }
 
@@ -1490,8 +1483,13 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 // #endregion
 
 
-// #region pie charts
+// #region radar charts
 #{'.chart--animate '+$radar-chart} {
+
+  table tbody tr td:not(:first-child){
+    transition-delay: 0s;
+  }
+
   .line path {
     transition: 2s ease-out;
   }
@@ -1500,6 +1498,50 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 #{'.chart--animate:not(.inview) '+$radar-chart} {
   .line path {
     d: var(--path);
+  }
+}
+// #endregion
+
+
+// #region buble charts
+#{'.chart--animate '+$bubble-chart} {
+  table tbody tr td:not(:first-child){
+    overflow: visible;
+
+    &:before {
+      transition: 2s ease-out;
+      transition-delay: calc(var(--row-index) * 0.1s);
+    }
+  }
+}
+
+#{'.chart--animate:is(.inview).animating '+$bubble-chart} {
+  table tbody tr td:not(:first-child){ 
+    overflow: visible;
+
+    &:before {
+      transform: translate(-50%, -50%) scale(100%); // Sclae to 100% so we can then 'pop' the bubble
+    }
+  }
+}
+
+// This 'pops' the bubble
+#{'.chart--animate:is(.inview):not(.animating) '+$bubble-chart} {
+  table tbody tr td:not(:first-child){ 
+    &:before {
+      transition: 0s ease-out;
+      transition-delay: calc(var(--row-index) * 0.1s);
+    }
+  }
+}
+
+#{'.chart--animate:not(.inview) '+$bubble-chart} {
+  table tbody tr td:not(:first-child) {
+    --percent: 0%!important;
+    
+    &:before {
+      transform: translate(-50%, -50%) scale(0%);
+    }
   }
 }
 // #endregion

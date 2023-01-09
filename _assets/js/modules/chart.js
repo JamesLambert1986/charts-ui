@@ -686,6 +686,8 @@ export const setCellData = function(chartElement,table,min,max,secondTable){
 
     let rowMax = tr.hasAttribute('data-max') ? tr.getAttribute('data-max') : max;
 
+    // Add a useful index css var for the use of animatons.
+    tr.setAttribute('style',`--row-index: ${index+1};`);
 
     // Add css vars to cells
     Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td, tdIndex) => {
@@ -835,12 +837,12 @@ export const createPies = function(chartElement){
           `L 0 0`, // Line
         ].join(' ');
 
-        paths += `<path d="${pathData}" style="${cell.getAttribute('style')}"></path>`;
+        paths += `<path d="${pathData}" style="${cell.getAttribute('style')} --path-index: ${subindex};"></path>`;
         tooltips += `<foreignObject x="-70" y="-70" width="140" height="140" ><div><span class="h5 mb-0"><span class="total d-block">${ucfirst(unsnake(title))}</span> ${ucfirst(unsnake(cell.getAttribute('data-label')))}<br/> ${cell.innerHTML}${cell.hasAttribute('data-second') ? `${cell.getAttribute('data-second-label')}: ${cell.getAttribute('data-second')}` : ''}</span></div></foreignObject>`;
       }
     });
 
-    returnString += `<div class="pie"><svg viewBox="-105 -105 210 210" preserveAspectRatio="none">${paths}${tooltips}</svg><div><span class="h5 mb-0">${title}</span></div></div>`
+    returnString += `<div class="pie"><svg viewBox="-105 -105 210 210" preserveAspectRatio="none" style="--row-index: ${index+1};">${paths}${tooltips}</svg><div><span class="h5 mb-0">${title}</span></div></div>`
   });
 
   pieWrapper.innerHTML = returnString;
