@@ -3,8 +3,8 @@
 
 $default-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner';
 $bar-chart: '.chart input[type=radio]:is([value="bar"],[value="comparison"]):not([value=none]):not([value=pie]):checked~.chart__inner';
-$comparison-chart: '.chart input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__inner';
-$comparison-chart-key: '.chart input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__key';
+$comparison-chart: 'input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__inner';
+$comparison-chart-key: 'input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__key';
 $responsive-chart: '.chart input[type=radio][value="responsive"]:not([value=none]):not([value=pie]):checked~.chart__inner';
 $scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"]):checked ~ .chart__inner';
 $line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
@@ -981,7 +981,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 // #endregion
 
 // #region Comparison chart
-#{$comparison-chart-key} {
+#{'.chart '+$comparison-chart-key} {
   label {
     pointer-events: none;
   }
@@ -990,7 +990,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
   }
 }
 
-#{$comparison-chart} {
+#{'.chart '+$comparison-chart} {
 
   &::before {
     display: none;
@@ -1023,6 +1023,19 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
   table tbody tr td[data-label="Total"] {
     display: none;
   }
+
+  &[data-longest-label] {
+    &:before {
+      display: none!important;
+    }   
+  }
+
+  &[data-longest-label] table tbody tr {
+    td:first-child {
+      transform: none!important;
+    }
+  }
+
 }
 // #endregion
 
