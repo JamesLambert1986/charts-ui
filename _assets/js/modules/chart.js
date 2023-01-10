@@ -558,7 +558,7 @@ export const createChartYaxis = function(chartElement,min,max,guidelines){
   for (var i = 0; i < guidelines.length; i++) {
 
     const value = parseFloat(guidelines[i].replace('£','').replace('%',''));
-    const percent = ((value - min) / max) * 100;
+    const percent = ((value - min) / (max - min)) * 100;
 
     chartYaxis.innerHTML += `<div class="axis__point" style="--percent:${percent}%;"><span>${guidelines[i]}</span></div>`;
   }
@@ -580,7 +580,7 @@ export const createChartGuidelines = function(chartElement,min,max,guidelines){
   for (var i = 0; i < guidelines.length; i++) {
 
     const value = parseFloat(guidelines[i].replace('£','').replace('%',''));
-    const percent = ((value - min) / max) * 100;
+    const percent = ((value - min) / (max - min)) * 100;
 
     chartGuidelines.innerHTML += `<div class="guideline" style="--percent:${percent}%;"><span>${guidelines[i]}</span></div>`;
   }
@@ -702,16 +702,22 @@ export const setCellData = function(chartElement,table,min,max,secondTable){
       if(!td.hasAttribute('style')){
         
         const value = Number.parseFloat(td.getAttribute('data-numeric'));
-        let percent = ((value - min)/(max)) * 100;
+        let percent = ((value - min)/(max - min)) * 100;
         let bottom = 0;
 
         // If the value is negative the position below the 0 line
         if(min < 0){
-          bottom = Math.abs((min)/(max)*100);
+          bottom = Math.abs(((min)/(max - min))*100);
+
           if(value < 0){
+            percent = bottom - percent;
             bottom = bottom - percent;
           }
+          else {
+            percent = percent - bottom;
+          }
         }
+
         td.setAttribute('data-percent',percent)
         td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--order:${10000 - parseInt(percent * 100)};`);
 
