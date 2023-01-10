@@ -384,6 +384,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
       border-bottom: 1px dashed #eeeeee;
       pointer-events: none;
       z-index: var(--index-below);
+      overflow: hidden;
 
       &:not(.guideline--target) span{
         display: none;
@@ -395,6 +396,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
       border-bottom: 1px dashed #000000;
       z-index: var(--index-above);
       text-shadow: 1px solid white;
+      overflow: visible;
 
       span {
         position: absolute;
@@ -1286,8 +1288,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
         transform: translate(-50%, 0%)!important;
         display: block!important;
         height: fit-content;
-
-        background: none;
+        background: none!important;
         margin: 0;
       }
     }
@@ -1375,7 +1376,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 .chart.chart--display-set-label input[type="radio"][value="bar"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner tbody tr td:before {
   content: attr(data-label);
   white-space: nowrap;
-  display: block;
+  display: block!important;
   position: absolute;
   top: calc(50% - 0.5em);
   right: calc(100% + 0.5em);
