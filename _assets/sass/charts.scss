@@ -1293,7 +1293,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
     }
   }
 }
-#{$bar-chart} table tbody tr td:not(:first-child) {
+#{'.chart '+$bar-chart} table tbody tr td:not(:first-child) {
   span {
     top: 50%;
     right: 0;
