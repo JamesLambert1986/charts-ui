@@ -1293,7 +1293,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
     }
   }
 }
-#{'.chart '+$bar-chart} table tbody tr td:not(:first-child) {
+#{'.chart.chart--display-data '+$bar-chart} table tbody tr td:not(:first-child) {
   span {
     top: 50%;
     right: 0;
@@ -1307,7 +1307,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
   }
 }
 
-#{'.chart '+$scatter-line-chart} table tbody tr td:not(:first-child) {
+#{'.chart.chart--display-data '+$scatter-line-chart} table tbody tr td:not(:first-child) {
   span {
     bottom: 0.25rem;
     top: auto;
@@ -1430,6 +1430,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 
   table tbody tr td:not(:first-child) {
     --percent: 0%!important;
+    --comparison: 50%!important;
   }
 }
 
