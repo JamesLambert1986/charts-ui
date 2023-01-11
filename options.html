@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- #region:HEAD -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="shortcut icon" href="favicon.svg?cache=1673467762075">
+
+    <title>BBC Charts UI Library</title>
+    <link rel="stylesheet" href="_app/css/app.css?cache=1673467762075" />
+    <link rel="stylesheet" href="_assets/css/main.css?cache=1673467762075" />
+
+    <script src="_assets/js/main.js?cache=1673467762075" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1673467762075" type="module" defer></script>
+    <!-- #endregion:HEAD -->
+    
+  </head>
+  <body>
+    <!-- #region:HEADER -->
+    <header>
+      <nav class="navbar navbar-expand-lg" id="menu">
+        <div class="container">
+
+          <a href="./" rel="home" class="me-3">Charts UI library</a>
+          <a href="#menu" class="navbar-toggler">
+
+            <span class="navbar-toggler-icon"></span>
+          </a>
+          <a href="#close" class="navbar-toggler d-lg-none">
+            <span class="navbar-toggler-icon"></span>
+          </a>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0 w-100">
+              <li class="nav-item"><a href="./" class="nav-link">Examples</a></li>
+              <li class="nav-item"><a href="./get-started" class="nav-link">Get started</a></li>
+              <li class="nav-item"><a href="./principles" class="nav-link">Principles</a></li>
+              <li class="nav-item"><a href="./roadmap" class="nav-link">Roadmap</a></li>
+              <li class="nav-item"><a href="./create" class="nav-link">Generator</a></li>
+              <li class="nav-item ms-lg-auto"><a href="mailto:james.lambert@bbc.co.uk" class="nav-link nav-feedback">Feedback</a></li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <!-- #endregion:HEADER -->
+    
+    <main>
+      <div class="bg-primary text-white py-4">
+        <div class="container">
+          <h1>Charts with options</h1>
+
+          <p class="mb-0">...</p>
+
+        </div>
+      </div>
+      
+      
+
+      <div class="container pt-3">
+        
+
+    <h2 id="switcher">With chart options</h2>
+
+    <figure class="chart" data-max="100" data-min="0">
+        <figcaption></figcaption>
+
+        <input type="radio" name="chart-type" value="none" id="chart-none" checked/>
+        <input type="radio" name="chart-type" value="column" id="chart-column"/>
+        <input type="radio" name="chart-type" value="bar" id="chart-bar"/>
+        <input type="radio" name="chart-type" value="scatter" id="chart-scatter"/>
+        <input type="radio" name="chart-type" value="line" id="chart-line"/>
+        <input type="radio" name="chart-type" value="pie" id="chart-pie"/>
+        <input type="radio" name="chart-type" value="stacked" id="chart-stacked"/>
+        <input type="radio" name="chart-type" value="radar" id="chart-radar"/>
+
+        <div class="chart__options">
+
+            <span>Options</span>
+
+            <span class="chart__options__title">Chart Type</span>
+            <label for="chart-none">None</label>
+            <label for="chart-column">Column</label>
+            <label for="chart-bar">Bar</label>
+            <label for="chart-scatter">Scatter</label>
+            <label for="chart-line">Line</label>
+            <label for="chart-pie">Pie</label>
+            <label for="chart-stacked">Stacked</label>
+            <label for="chart-radar">Radar</label>
+        </div>
+
+        <div class="chart__inner">
+            <div class="chart__yaxis" role="presentation">
+                <div class="axis__point" style="--value: 0; --percent:0%;"><span>£0</span></div>
+                <div class="axis__point" style="--value: 50; --percent:50%;"><span>£50</span></div>
+                <div class="axis__point" style="--value: 100; --percent:100%;"><span>£100</span></div>
+            </div>
+            <div class="table__wrapper" data-reorder="false">
+                
+                <table>
+                    <thead>
+                        <tr class="">
+                            <th>Year</th>
+                            <th>Growth</th>
+                            <th>Growth2</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td data-label="Year" data-numeric="2011">2011</td>
+                            <td data-label="Growth" data-numeric="50" style="--bottom:0%;--percent:50%;"><span
+                                    data-group="2011" data-label="Growth">£50.0</span></td>
+                            <td data-label="Growth2" data-numeric="50.1" style="--bottom:0%;--percent:50.1%;"><span
+                                    data-group="2011" data-label="Growth2">£50.10</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Year" data-numeric="2012">2012</td>
+                            <td data-label="Growth" data-numeric="75" style="--bottom:0%;--percent:75%;"><span
+                                    data-group="2012" data-label="Growth">£75.00</span></td>
+                            <td data-label="Growth2" data-numeric="50.1" style="--bottom:0%;--percent:50.1%;"><span
+                                    data-group="2012" data-label="Growth2">£50.10</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Year" data-numeric="2013">2013</td>
+                            <td data-label="Growth" data-numeric="45" style="--bottom:0%;--percent:45%;"><span
+                                    data-group="2013" data-label="Growth">£45.00</span></td>
+                            <td data-label="Growth2" data-numeric="57.1" style="--bottom:0%;--percent:57.10000000000001%;">
+                                <span data-group="2013" data-label="Growth2">£57.10</span></td>
+                        </tr>
+                        <tr>
+                            <td data-label="Year" data-numeric="2014">2014</td>
+                            <td data-label="Growth" data-numeric="35" style="--bottom:0%;--percent:35%;"><span
+                                    data-group="2014" data-label="Growth">£35.00</span></td>
+                            <td data-label="Growth2" data-numeric="80.1" style="--bottom:0%;--percent:80.1%;"><span
+                                    data-group="2014" data-label="Growth2">£80.10</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="chart__guidelines" role="presentation">
+                    <div data-value="0" class="guideline" style="--percent:0%;">£0</div>
+                    <div data-value="50" class="guideline" style="--percent:50%;">£50</div>
+                    <div data-value="100" class="guideline" style="--percent:100%;">£100</div>
+                </div>
+                <!---->
+            </div>
+        </div>
+    </figure>
+
+
+      
+      </div>
+
+
+    </main>
+  </body>
+</html>

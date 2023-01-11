@@ -137,8 +137,14 @@ function chart(chartElement,min,max,type,guidelines,targets,events) {
   if(chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
     createPies(chartElement);
 
-  if(chartElement.querySelector(':scope > input[value="radar"]:checked'))
+    if(chartElement.querySelector(':scope > input[value="radar"]:checked'))
     createRadar(chartElement,min,max);
+
+  if(chartElement.querySelector(':scope > input[value="combo"]:checked')){
+
+    defineCellType(chartElement,min,max);
+    createLines(chartElement,min,max);
+  }
 
   // Event handlers
   const showData = chartElement.querySelectorAll(':scope > input[type="checkbox"]');
@@ -542,6 +548,35 @@ export const createChartType = function(chartElement,type){
   chartElement.insertBefore(chartType, chartKey);
 }
 
+const getValues = function(value,min,max){
+
+  let cleanValue = String(value);
+  cleanValue = cleanValue.replace('£','');
+  cleanValue = cleanValue.replace('%','');
+  cleanValue = cleanValue.replace(',','');
+  cleanValue = Number.parseFloat(cleanValue);
+
+  let percent = ((cleanValue - min)/(max - min)) * 100;
+  let axis = percent;
+  let bottom = 0;
+
+  // If the value is negative the position below the 0 line
+  if(min < 0){
+    bottom = Math.abs(((min)/(max - min))*100);
+
+    if(cleanValue < 0){
+      percent = bottom - percent;
+      bottom = bottom - percent;
+      axis = bottom;
+    }
+    else {
+      percent = percent - bottom;
+      axis = percent + bottom;
+    }
+  }
+
+  return { percent, axis, bottom};
+}
 
 export const createChartYaxis = function(chartElement,min,max,guidelines){
 
@@ -558,9 +593,9 @@ export const createChartYaxis = function(chartElement,min,max,guidelines){
   for (var i = 0; i < guidelines.length; i++) {
 
     const value = parseFloat(guidelines[i].replace('£','').replace('%',''));
-    const percent = ((value - min) / (max - min)) * 100;
+    let { axis } = getValues(value,min,max);
 
-    chartYaxis.innerHTML += `<div class="axis__point" style="--percent:${percent}%;"><span>${guidelines[i]}</span></div>`;
+    chartYaxis.innerHTML += `<div class="axis__point" style="--percent:${axis}%;"><span>${guidelines[i]}</span></div>`;
   }
 
   chartInner.prepend(chartYaxis);
@@ -579,10 +614,10 @@ export const createChartGuidelines = function(chartElement,min,max,guidelines){
   chartGuidelines.innerHTML = '';
   for (var i = 0; i < guidelines.length; i++) {
 
-    const value = parseFloat(guidelines[i].replace('£','').replace('%',''));
-    const percent = ((value - min) / (max - min)) * 100;
+    const value = parseFloat(guidelines[i]);
+    let { percent, axis } = getValues(value,min,max);
 
-    chartGuidelines.innerHTML += `<div class="guideline" style="--percent:${percent}%;"><span>${guidelines[i]}</span></div>`;
+    chartGuidelines.innerHTML += `<div class="guideline" style="--percent:${axis}%;"><span>${guidelines[i]}</span></div>`;
   }
 
   tableWrapper.prepend(chartGuidelines);
@@ -600,11 +635,11 @@ export const createTargets = function(chartElement,min,max,targets){
 
   Object.keys(targets).forEach(key => {
 
-    const value = parseFloat(targets[key].replace('£','').replace('%',''));
-    const percent = ((value - min) / max) * 100;
+    const value = parseFloat(targets[key]);
+    let { axis } = getValues(value,min,max);
 
-    if(!Number.isNaN(percent))
-      chartGuidelines.innerHTML += `<div class="guideline guideline--target" style="--percent:${percent}%;"><span>${key}</span></div>`;
+    if(!Number.isNaN(axis))
+      chartGuidelines.innerHTML += `<div class="guideline guideline--target" style="--percent:${axis}%;"><span>${key}</span></div>`;
   });
 }
 
@@ -702,30 +737,15 @@ export const setCellData = function(chartElement,table,min,max,secondTable){
       if(!td.hasAttribute('style')){
         
         const value = Number.parseFloat(td.getAttribute('data-numeric'));
-        let percent = ((value - min)/(max - min)) * 100;
-        let bottom = 0;
-
-        // If the value is negative the position below the 0 line
-        if(min < 0){
-          bottom = Math.abs(((min)/(max - min))*100);
-
-          if(value < 0){
-            percent = bottom - percent;
-            bottom = bottom - percent;
-          }
-          else {
-            percent = percent - bottom;
-          }
-        }
+        let { percent, bottom, axis } = getValues(value,min,max);
 
         td.setAttribute('data-percent',percent)
-        td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--order:${10000 - parseInt(percent * 100)};`);
+        td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--axis: ${axis}%;--order:${10000 - parseInt(percent * 100)};`);
 
         if(tr.hasAttribute('data-max')){
           let comparison = ((value - min)/(rowMax)) * 100;
-          td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--comparison:${comparison}%;--order:${10000 - parseInt(comparison * 100)};`);
+          td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--axis: ${axis}%;--comparison:${comparison}%;--order:${10000 - parseInt(comparison * 100)};`);
         }
-
       }
 
       // Second table 
@@ -855,7 +875,7 @@ export const createPies = function(chartElement){
 }
 
 export const createLines = function(chartElement,min,max){
-
+  let chartType = chartElement.getAttribute('data-type');
 
   let returnString = '';
 
@@ -872,48 +892,54 @@ export const createLines = function(chartElement,min,max){
 
   }
 
-
   let items = Array.from(chartElement.querySelectorAll('tbody tr'));
 
   let lines = Array();
   let animatelines = Array();
   let itemCount = items.length <= 1000 ? items.length : 1000;
   let spacer = 200/(itemCount - 1);
+  let spacerIndent = 0;
+
+  if(chartType == "combo"){
+
+    spacer = 200/(itemCount);
+    spacerIndent = spacer/2;
+  }
 
   // Creates the lines array from the fields array
-  Array.from(chartElement.querySelectorAll('thead th')).forEach((field, index) => {
+  Array.from(chartElement.querySelectorAll('thead th:not(:first-child)')).forEach((field, index) => {
 
-    if(index != 0){
-
-      lines[index-1] = '';
-      animatelines[index-1] = '';
-    }
+    lines[index] = '';
+    animatelines[index] = '';
+    
   });
 
   // populate the lines array from the items array
   let counter = 0;
+  let command = 'M';
+
   Array.from(chartElement.querySelectorAll('tbody tr')).forEach((item, index) => {
 
     const display = getComputedStyle(item).display;
 
     if(display != "none"){
 
-      Array.from(item.querySelectorAll('td')).forEach((cell, subindex) => {
+      Array.from(item.querySelectorAll('td:not(:first-child)')).forEach((cell, subindex) => {
 
-        if(subindex != 0){
+        if(!cell.classList.contains('chart__bar')){
 
           let value = cell.getAttribute('data-numeric');
 
-          value = value.replace('£','');
-          value = value.replace('%','');
-          value = Number.parseFloat(value) - min;
+          let { axis } = getValues(value,min,max);
 
-          const percent = (value/max) * 100;
-
-          let command = counter == 0 ? 'M' : 'L';
-
-          lines[subindex-1] += `${command} ${spacer * counter} ${100-percent} `;
-          animatelines[subindex-1] += `${command} ${spacer * counter} 100 `;
+          if(!Number.isNaN(axis)){
+            lines[subindex] += `${command} ${(spacerIndent) + (spacer * counter)} ${100-axis} `;
+            animatelines[subindex] += `${command} ${spacer * counter} 100 `;
+            command = 'L';
+          }
+          else {
+            command = 'M';
+          }
         }
       });
 
@@ -1019,7 +1045,6 @@ export const createSeries = function(chartElement){
   });
 }
 
-
 export const createRadar = function (chartElement,min,max){
 
   let returnString = '';
@@ -1065,12 +1090,8 @@ export const createRadar = function (chartElement,min,max){
         if(subindex != 0){
 
           let value = cell.getAttribute('data-numeric');
+          let { percent } = getValues(value,min,max);
 
-          value = value.replace('£','');
-          value = value.replace('%','');
-          value = Number.parseFloat(value) - min;
-
-          const percent = (value/max) * 100;
 
           let command = counter == 0 ? 'M' : 'L';
 
@@ -1128,9 +1149,24 @@ export const createRadar = function (chartElement,min,max){
     value = value.replace('%','');
     value = Number.parseFloat(value) - min;
 
-    const percent = (value/max) * 100;
+    let percent = ((value - min)/(max - min)) * 100;
+    let axis = percent;
+    let bottom = 0;
 
-    console.log(percent);
+    // If the value is negative the position below the 0 line
+    if(min < 0){
+      bottom = Math.abs(((min)/(max - min))*100);
+
+      if(value < 0){
+        percent = bottom - percent;
+        bottom = bottom - percent;
+        axis = bottom;
+      }
+      else {
+        percent = percent - bottom;
+        axis = percent + bottom;
+      }
+    }
 
     let line = '';
 
@@ -1165,6 +1201,23 @@ export const createRadar = function (chartElement,min,max){
 
   });
 
+}
+
+export const defineCellType = function (chartElement){
+
+  let rows = chartElement.getAttribute('data-lines').split(',');
+
+  rows.forEach((row, subIndex) => {
+    Array.from(chartElement.querySelectorAll(`tbody tr td:nth-child(${row})`)).forEach((cell, index) => {
+
+      cell.classList.add('chart__point');
+    });
+  });
+
+  Array.from(chartElement.querySelectorAll(`tbody tr td:not(.chart__point)`)).forEach((cell, index) => {
+
+    cell.classList.add('chart__bar');
+  });
 }
 
 export default chart

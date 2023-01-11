@@ -3,10 +3,11 @@
 
 $default-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner';
 $bar-chart: '.chart input[type=radio]:is([value="bar"],[value="comparison"]):not([value=none]):not([value=pie]):checked~.chart__inner';
+$combo-chart: 'input[type=radio][value="combo"]:not([value=none]):not([value=pie]):checked~.chart__inner';
 $comparison-chart: 'input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__inner';
 $comparison-chart-key: 'input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__key';
 $responsive-chart: '.chart input[type=radio][value="responsive"]:not([value=none]):not([value=pie]):checked~.chart__inner';
-$scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"]):checked ~ .chart__inner';
+$scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"],[value="combo"]):checked ~ .chart__inner';
 $line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
 $bubble-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="bubble"]:checked ~ .chart__inner';
 $radar-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="radar"]:checked ~ .chart__inner';
@@ -156,7 +157,7 @@ $polar-chart: 'input[type="radio"]:not([value="none"])[value="polar"]:checked ~ 
     --chart-colour: var(#{'--chart-colour-'+$i+'-set'});
   }
 
-  input:is([value="line"],[value="radar"]):checked ~ .chart__inner .line:nth-child(10n - #{10 - $i}) {
+  input:is([value="line"],[value="radar"],[value="combo"]):checked ~ .chart__inner .line:nth-child(10n - #{10 - $i}) {
     color: var(#{'--chart-colour-'+$i+'-set'});
     stroke: currentColor;
     z-index: #{10 - $i};
@@ -524,6 +525,11 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
         padding: 0;
         background: var(--chart-colour);
 
+        &:has(span:empty),
+        &:empty{
+          display: none!important;
+        }
+
         &[data-label]:before {
           display: none;
         }
@@ -773,21 +779,25 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
   table tbody {
     justify-content: space-between;
 
-    tr {
-      width: 1rem;
-      margin-left: -0.5rem;
-      margin-right: -0.5rem;
+    
+    tr:not(:has(.chart__bar)) {
+      width: 2px;
+      margin-left: -1px;
+      margin-right: -1px;
       padding: 0;
+    }
 
-      td:first-child {
+    tr {
+
+      td:not(.chart__bar):first-child {
         left: 50%!important;
         width: 4rem;
       }
 
-      td:not(:first-child) {
+      td:not(.chart__bar):not(:first-child) {
         position: absolute;
         left: 50%;
-        bottom: var(--percent);
+        bottom: calc(var(--axis));
         height: 6px;
         width: 6px;
         margin-bottom: -3px;
@@ -857,14 +867,19 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
     display: none;
   }
 }
+
+// Row css seperated out to include combination
+
+
 // Lines
-#{'.chart '+$line-chart} {
+#{'.chart '+$line-chart},
+#{'.chart '+$combo-chart} {
 
   .lines ~ table tbody {
 
     tr {
       
-      td:not(:first-child):not(:hover) {
+      td:not(.chart__bar):not(:first-child):not(:hover) {
 
         opacity: 0;
       }
@@ -1443,6 +1458,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 
   table tbody tr td:not(:first-child) {
     --percent: 0%!important;
+    --axis: 0%!important;
     --comparison: 50%!important;
   }
 }
