@@ -1090,21 +1090,21 @@ export const createRadar = function (chartElement,min,max){
         if(subindex != 0){
 
           let value = cell.getAttribute('data-numeric');
-          let { percent } = getValues(value,min,max);
+          let { axis } = getValues(value,min,max);
 
 
           let command = counter == 0 ? 'M' : 'L';
 
           let x = 50;
-          let y = 50 - (percent/2);
+          let y = 50 - (axis/2);
 
           let deg = 360 / itemCount;
           var angleInRadians = ((deg*counter)-90) * Math.PI / 180.0
 
           if(counter != 0){
 
-            x = 50 + (((percent/2)) * Math.cos(angleInRadians));
-            y = 50 + (((percent/2)) * Math.sin(angleInRadians));
+            x = 50 + (((axis/2)) * Math.cos(angleInRadians));
+            y = 50 + (((axis/2)) * Math.sin(angleInRadians));
           }
 
 
@@ -1145,28 +1145,7 @@ export const createRadar = function (chartElement,min,max){
 
     let value = guideline.innerText;
 
-    value = value.replace('£','');
-    value = value.replace('%','');
-    value = Number.parseFloat(value) - min;
-
-    let percent = ((value - min)/(max - min)) * 100;
-    let axis = percent;
-    let bottom = 0;
-
-    // If the value is negative the position below the 0 line
-    if(min < 0){
-      bottom = Math.abs(((min)/(max - min))*100);
-
-      if(value < 0){
-        percent = bottom - percent;
-        bottom = bottom - percent;
-        axis = bottom;
-      }
-      else {
-        percent = percent - bottom;
-        axis = percent + bottom;
-      }
-    }
+    let { percent, axis } = getValues(value,min,max);
 
     let line = '';
 
@@ -1175,21 +1154,19 @@ export const createRadar = function (chartElement,min,max){
       let command = index == 0 ? 'M' : 'L';
 
       let x = 50;
-      let y = 50 - (percent/2);
+      let y = 50 - (axis/2);
 
       let deg = 360 / itemCount;
       var angleInRadians = ((deg*index)-90) * Math.PI / 180.0
 
       if(counter != 0){
 
-        x = 50 + (((percent/2)) * Math.cos(angleInRadians));
-        y = 50 + (((percent/2)) * Math.sin(angleInRadians));
+        x = 50 + (((axis/2)) * Math.cos(angleInRadians));
+        y = 50 + (((axis/2)) * Math.sin(angleInRadians));
       }      
         
       line += `${command} ${x} ${y} `;
     });
-
-
 
     let returnString = `
     <svg viewBox="0 0 100 100" class="line" preserveAspectRatio="none">
