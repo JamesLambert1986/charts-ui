@@ -359,7 +359,7 @@ export const setIntersctionObserver = function(chartElement) {
         entry.target.classList.add('animating');
         setTimeout(function() {
           entry.target.classList.remove('animating');
-        }, 2000);
+        }, 3000);
       }
     });
   };
@@ -724,6 +724,11 @@ export const setCellData = function(chartElement,table,min,max,secondTable){
     // Add a useful index css var for the use of animatons.
     tr.setAttribute('style',`--row-index: ${index+1};`);
 
+    if(min < 0){
+      let minBottom = Math.abs(((min)/(max - min))*100);
+      chartElement.setAttribute('style',`--min-bottom: ${minBottom}%;`);
+    }
+
     // Add css vars to cells
     Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td, tdIndex) => {
 
@@ -738,6 +743,7 @@ export const setCellData = function(chartElement,table,min,max,secondTable){
         
         const value = Number.parseFloat(td.getAttribute('data-numeric'));
         let { percent, bottom, axis } = getValues(value,min,max);
+
 
         td.setAttribute('data-percent',percent)
         td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--axis: ${axis}%;--order:${10000 - parseInt(percent * 100)};`);

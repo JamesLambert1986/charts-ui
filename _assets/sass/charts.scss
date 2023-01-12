@@ -1445,11 +1445,13 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 // ******************************************
 // Animation
 // ******************************************
-#{'.chart--animate'} {
+#{'.chart--animate.inview'} {
+
+  --animation-left: 2s;
 
   table tbody tr td:not(:first-child){
-    
-    transition: height 2s ease-out, width 2s ease-out, bottom 2s ease-out;
+
+    transition: height 2s ease-out, width 2s ease-out, bottom 2s ease-out, left var(--animation-left) ease-out;
     transition-delay: calc(var(--row-index) * 0.1s);
   }
 }
@@ -1457,23 +1459,30 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 #{'.chart--animate:not(.inview)'} {
 
   table tbody tr td:not(:first-child) {
+    --bottom: var(--min-bottom, 0%)!important;
     --percent: 0%!important;
     --axis: 0%!important;
+    --comparison: 0%!important;
+  }
+}
+
+
+
+#{'.chart--animate.inview '+$comparison-chart} {
+
+  --animation-left: 0s;
+}
+
+#{'.chart--animate:not(.inview) '+$comparison-chart} {
+
+  table tbody tr td:not(:first-child) {
+
     --comparison: 50%!important;
   }
 }
 
 
 // #region Animate bar and column chart
-#{'.chart--animate ' + $default-chart} {
-
-  
-
-  table tbody tr td:not(:first-child) {
-    //transition: height 2s ease-out, width 2s ease-out, bottom 2s ease-out;
-  }
-}
-
 #{'.chart--animate.animating ' + $default-chart} {
 
   table tbody tr td:not(:first-child) {
@@ -1492,13 +1501,15 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
   }
 }
 // Line chart 
-#{'.chart--animate '+$line-chart} {
+#{'.chart--animate '+$line-chart}, 
+#{'.chart--animate '+$combo-chart} {
   .line path {
     transition: 2s ease-out;
   }
 }
 
-#{'.chart--animate:not(.inview) '+$line-chart} {
+#{'.chart--animate:not(.inview) '+$line-chart},
+#{'.chart--animate:not(.inview) '+$combo-chart} {
   .line path {
     d: var(--path);
   }
