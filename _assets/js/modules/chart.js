@@ -394,6 +394,22 @@ function getCSVData(chartElement, csvURL){
   }
 }
 
+
+let numDays = function(start,end){
+
+  let convertStart = start.split('/')
+  let convertEnd = end.split('/')
+
+  var dateStart = new Date(convertStart[1]+'/'+convertStart[0]+'/'+convertStart[2]);
+  var dateEnd = new Date(convertEnd[1]+'/'+convertEnd[0]+'/'+convertEnd[2]);
+      
+  // To calculate the time difference of two dates
+  var diffTime = dateEnd.getTime() - dateStart.getTime();
+
+  return (diffTime / (1000 * 3600 * 24) + 1);
+}
+
+
 export const csvToObj = function(data){
 
   let newRows = [];
@@ -548,7 +564,7 @@ export const createChartType = function(chartElement,type){
   chartElement.insertBefore(chartType, chartKey);
 }
 
-const getValues = function(value,min,max){
+const getValues = function(value,min,max,start){
 
   let cleanValue = String(value);
   cleanValue = cleanValue.replace('£','');
@@ -559,6 +575,11 @@ const getValues = function(value,min,max){
   let percent = ((cleanValue - min)/(max - min)) * 100;
   let axis = percent;
   let bottom = 0;
+
+  if (start != 0){
+    bottom = ((start - min)/(max - min)) * 100;
+  }
+
 
   // If the value is negative the position below the 0 line
   if(min < 0){
@@ -581,8 +602,15 @@ const getValues = function(value,min,max){
 export const createChartYaxis = function(chartElement,min,max,guidelines){
 
   const chartInner = chartElement.querySelector('.chart__inner');
+  let increment = chartElement.getAttribute('data-increment');
 
   let chartYaxis = chartElement.querySelector('.chart__yaxis');
+  let startDay = min;
+  if(increment == "days"){
+    
+    max = numDays(min,max);
+    min = 0;
+  }
 
   if(!chartYaxis){
     chartYaxis = document.createElement('div');
@@ -592,7 +620,14 @@ export const createChartYaxis = function(chartElement,min,max,guidelines){
   chartYaxis.innerHTML = '';
   for (var i = 0; i < guidelines.length; i++) {
 
-    const value = parseFloat(guidelines[i].replace('£','').replace('%',''));
+    let value = parseFloat(guidelines[i].replace('£','').replace('%',''));
+
+    if(increment == "days"){
+
+        value = numDays(startDay,guidelines[i]);
+      
+    }
+
     let { axis } = getValues(value,min,max);
 
     chartYaxis.innerHTML += `<div class="axis__point" style="--percent:${axis}%;"><span>${guidelines[i]}</span></div>`;
@@ -603,8 +638,15 @@ export const createChartYaxis = function(chartElement,min,max,guidelines){
 
 export const createChartGuidelines = function(chartElement,min,max,guidelines){
 
+  let increment = chartElement.getAttribute('data-increment');
   const tableWrapper = chartElement.querySelector('.table__wrapper');
   let chartGuidelines = chartElement.querySelector('.chart__guidelines');
+  let startDay = min;
+  if(increment == "days"){
+    
+    max = numDays(min,max);
+    min = 0;
+  }
 
   if(!chartGuidelines){
     chartGuidelines = document.createElement('div');
@@ -614,7 +656,14 @@ export const createChartGuidelines = function(chartElement,min,max,guidelines){
   chartGuidelines.innerHTML = '';
   for (var i = 0; i < guidelines.length; i++) {
 
-    const value = parseFloat(guidelines[i]);
+    let value = parseFloat(guidelines[i]);
+
+    
+    if(increment == "days"){
+
+      value = numDays(startDay,guidelines[i]) - 1;
+    }
+
     let { percent, axis } = getValues(value,min,max);
 
     chartGuidelines.innerHTML += `<div class="guideline" style="--percent:${axis}%;"><span>${guidelines[i]}</span></div>`;
@@ -700,13 +749,38 @@ export const deleteCellData = function(chartElement){
 
 export const setCellData = function(chartElement,table,min,max,secondTable){
 
+
+  let increment = chartElement.getAttribute('data-increment');
+let startDay = min;
+
+  if(increment == "days"){
+    
+    max = numDays(min,max);
+    min = 0;
+
+    chartElement.querySelector('tbody').setAttribute('style',`--single-day:${((1/max)*100)}%;`);
+  }
+
   Array.from(table.querySelectorAll('tbody tr')).forEach((tr, index) => {
 
     let group = tr.querySelector('td:first-child, th:first-child') ? tr.querySelector('td:first-child, th:first-child').innerHTML : '';
 
     // Set the data numeric value if not set
     Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td, index) => {
-      td.setAttribute('data-numeric',parseFloat(td.innerText.replace('£','').replace('%','')));
+
+      let value = parseFloat(td.innerText.replace('£','').replace('%',''));
+      let start = 0;
+      if(increment == "days"){
+        let dates = td.innerText.split(' - ');
+        if(dates[1]){
+
+          value = numDays(dates[0],dates[1]);
+          start = numDays(startDay,dates[0]) - 1;
+        }
+      }
+    
+      td.setAttribute('data-numeric',value);
+      td.setAttribute('data-start',start);
     });
 
     // Set the data label value if not set
@@ -742,7 +816,8 @@ export const setCellData = function(chartElement,table,min,max,secondTable){
       if(!td.hasAttribute('style')){
         
         const value = Number.parseFloat(td.getAttribute('data-numeric'));
-        let { percent, bottom, axis } = getValues(value,min,max);
+        const start = Number.parseFloat(td.getAttribute('data-start'));
+        let { percent, bottom, axis } = getValues(value,min,max,start);
 
 
         td.setAttribute('data-percent',percent)
@@ -901,6 +976,7 @@ export const createLines = function(chartElement,min,max){
   let items = Array.from(chartElement.querySelectorAll('tbody tr'));
 
   let lines = Array();
+  let commands = Array();
   let animatelines = Array();
   let itemCount = items.length <= 1000 ? items.length : 1000;
   let spacer = 200/(itemCount - 1);
@@ -917,12 +993,11 @@ export const createLines = function(chartElement,min,max){
 
     lines[index] = '';
     animatelines[index] = '';
-    
+    commands[index] = 'M';
   });
 
   // populate the lines array from the items array
   let counter = 0;
-  let command = 'M';
 
   Array.from(chartElement.querySelectorAll('tbody tr')).forEach((item, index) => {
 
@@ -939,12 +1014,12 @@ export const createLines = function(chartElement,min,max){
           let { axis } = getValues(value,min,max);
 
           if(!Number.isNaN(axis)){
-            lines[subindex] += `${command} ${(spacerIndent) + (spacer * counter)} ${100-axis} `;
-            animatelines[subindex] += `${command} ${spacer * counter} 100 `;
-            command = 'L';
+            lines[subindex] += `${commands[subindex]} ${(spacerIndent) + (spacer * counter)} ${100-axis} `;
+            animatelines[subindex] += `${commands[subindex]} ${spacer * counter} 100 `;
+            commands[subindex] = 'L';
           }
           else {
-            command = 'M';
+            commands[subindex] = 'M';
           }
         }
       });

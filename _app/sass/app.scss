@@ -212,3 +212,37 @@ details[open] summary:has(> h2:first-child):before {
   max-width: 100%;
   min-width: 20rem;
 }
+
+// #region More examples nav
+#more-examples {
+
+  padding-bottom: 2rem;
+
+  a {
+    margin-bottom: 1rem;
+  }
+}
+#more-examples:not(.index-page) {
+
+
+  a:not([href="./#more-examples"]) {
+    display: none;
+  }
+
+  a.active + a {
+    display: inline-block;
+
+    &:before {
+      content: "Next: ";
+    }
+  }
+}
+
+#more-examples.index-page {
+
+
+  a[href="./#more-examples"] {
+    display: none;
+  }
+}
+// #endregion

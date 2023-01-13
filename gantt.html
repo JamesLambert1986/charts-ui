@@ -17,7 +17,6 @@
     <script src="_app/js/app.js?cache=1673615509577" type="module" defer></script>
     <!-- #endregion:HEAD -->
     
-    <script src="_app/js/livechart.js?cache=1673615509577" type="module" defer></script>
   </head>
   <body>
     <!-- #region:HEADER -->
@@ -51,30 +50,94 @@
     <main>
       <div class="bg-primary text-white py-4">
         <div class="container">
-          <h1>Series based chart (Beta)</h1>
+          <h1>Gantt</h1>
 
-          <p>Display a series of rows on an incremental based display. </p>
+          <p class="mb-0">...</p>
+
         </div>
       </div>
       
-
-    <div class="container pt-3">
       
-      <figure class="chart chart--crop-10 chart--display-data chart--display-set-label chart--value-order chart--hide-key chart--hide-total" data-max="3000" data-min="0" data-type="bar" id="timeBased" data-csv="_app/data/National_Carbon_Emissions_2021v1.0.csv" data-series="true">
 
-        <figcaption>
-          <p class="chart__title">How China's carbon emissions have grown</p>
-          <p class="chart__strapline">National carbon emissions (million tonnes of carbon per year)</p>
-          <p class="chart__source">Source: Global Carbon Project 2021</p>
-        </figcaption>
+      <div class="container pt-3">
+        
 
+        <figure class="chart chart--collapse-rows" data-increment="days" data-max="29/01/2023" data-min="9/01/2023" data-type="bar" data-guidelines="9/01/2023,16/01/2023,23/01/2023,30/01/2023">
 
-      </figure>
-      
-    <p>Data copied from https://www.bbc.co.uk/news/science-environment-63502762</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Stages</th>
+                <th>Driving Examiners</th>
+                <th>Buses</th>
+                <th>Ambulances</th>
+                <th>Teachers</th>
+                <th>Nurses</th>
+                <th>Physiotherapists</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td>9/01/2023 - 10/01/2023</td>
+                <td>10/01/2023 - 10/01/2023</td>
+                <td>11/01/2023 - 11/01/2023</td>
+                <td>10/01/2023 - 11/01/2023</td>
+                <td>18/01/2023 - 19/01/2023</td>
+                <td>26/01/2023 - 26/01/2023</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td>12/01/2023 - 12/01/2023</td>
+                <td>23/01/2023 - 23/01/2023</td>
+                <td>16/01/2023 - 20/01/2023</td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td>16/01/2023 - 16/01/2023</td>
+                <td></td>
+                <td>25/01/2023 - 27/01/2023</td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td>19/01/2023 - 19/01/2023</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td>25/01/2023 - 26/01/2023</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
 
+            </tbody>
+          </table>
+
+          <figcaption>
+            <span class="chart__title">Who is striking when?</span>
+            <span class="chart__source">Source: BBC Research</span>
+          </figcaption>
+  
+        </figure>
+
+      <p>https://www.bbc.co.uk/news/business-62134314</p>
       </div>
     </main>
+
+
     <div class="container" id="more-examples">
       <!-- #region:MORE -->
 <a href="./#more-examples" class="btn btn-secondary">Back to more examples</a>

@@ -2,12 +2,12 @@
 @import "_vars";
 
 $default-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner';
-$bar-chart: '.chart input[type=radio]:is([value="bar"],[value="comparison"]):not([value=none]):not([value=pie]):checked~.chart__inner';
+$bar-chart: 'input[type=radio]:is([value="bar"],[value="comparison"]):not([value=none]):not([value=pie]):checked~.chart__inner';
 $combo-chart: 'input[type=radio][value="combo"]:not([value=none]):not([value=pie]):checked~.chart__inner';
 $comparison-chart: 'input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__inner';
 $comparison-chart-key: 'input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__key';
-$responsive-chart: '.chart input[type=radio][value="responsive"]:not([value=none]):not([value=pie]):checked~.chart__inner';
-$scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"],[value="combo"]):checked ~ .chart__inner';
+$responsive-chart: 'input[type=radio][value="responsive"]:not([value=none]):not([value=pie]):checked~.chart__inner';
+$scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"]):checked ~ .chart__inner';
 $line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
 $bubble-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="bubble"]:checked ~ .chart__inner';
 $radar-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="radar"]:checked ~ .chart__inner';
@@ -385,7 +385,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
       border-bottom: 1px dashed #eeeeee;
       pointer-events: none;
       z-index: var(--index-below);
-      overflow: hidden;
+      //overflow: hidden;
 
       &:not(.guideline--target) span{
         display: none;
@@ -527,7 +527,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
 
         &:has(span:empty),
         &:empty{
-          display: none!important;
+          display: none;
         }
 
         &[data-label]:before {
@@ -729,14 +729,6 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
       }
     }
 
-    table tbody:has(tr:nth-child(10)) tr td {
-      height: 1.5rem;
-    }
-
-    table tbody:has(tr:nth-child(10)) tr:has(td:nth-child(3)) td:not(:first-child) {
-      height: 1rem;
-    }
-
     &[data-longest-label] {
       &:before {
         display: block;
@@ -761,14 +753,37 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
         padding-right: 0.5em;
       }
     }
+
   }
 }
 
 
-@include barchart($bar-chart);
+@include barchart('.chart '+$bar-chart);
+
+#{'.chart:not(.chart--crop-10) '+$bar-chart} {
+        
+  table tbody:has(tr:nth-child(10)) tr td {
+    height: 1.5rem;
+  }
+
+  table tbody:has(tr:nth-child(10)) tr:has(td:nth-child(3)) td:not(:first-child) {
+    height: 1rem;
+  }
+}
 
 @container (max-width: 36em) {
-  @include barchart($responsive-chart);
+  @include barchart('.chart '+$responsive-chart);
+
+  #{'.chart:not(.chart--crop-10) '+$responsive-chart} {
+        
+    table tbody:has(tr:nth-child(10)) tr td {
+      height: 1.5rem;
+    }
+  
+    table tbody:has(tr:nth-child(10)) tr:has(td:nth-child(3)) td:not(:first-child) {
+      height: 1rem;
+    }
+  }
 }
 
 // #endregion
@@ -779,6 +794,19 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
   table tbody {
     justify-content: space-between;
 
+    tr {
+      td:not(.chart__bar):first-child {
+        left: 50%!important;
+        width: 4rem;
+      }
+    }
+  }
+}
+
+#{'.chart '+$scatter-line-chart},
+#{'.chart '+$combo-chart} {
+
+  table tbody {
     
     tr:not(:has(.chart__bar)) {
       width: 2px;
@@ -788,11 +816,6 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
     }
 
     tr {
-
-      td:not(.chart__bar):first-child {
-        left: 50%!important;
-        width: 4rem;
-      }
 
       td:not(.chart__bar):not(:first-child) {
         position: absolute;
@@ -867,20 +890,13 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
     display: none;
   }
 }
-
-// Row css seperated out to include combination
-
-
 // Lines
 #{'.chart '+$line-chart},
 #{'.chart '+$combo-chart} {
 
   .lines ~ table tbody {
-
     tr {
-      
       td:not(.chart__bar):not(:first-child):not(:hover) {
-
         opacity: 0;
       }
     }
@@ -1430,6 +1446,29 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 }
 // #endregion
 
+.chart.chart--collapse-rows {
+  
+  .chart__inner table tbody tr {
+    margin-bottom: 0!important;
+    pointer-events: none;
+
+    td {
+
+      pointer-events: all;
+    }
+  }
+  .chart__inner table tbody tr:not(:first-child) {
+    position: absolute!important;
+    top: 0;
+    left: 0;
+
+    td:not(:first-child):has(span:empty), 
+    td:not(:first-child):empty {
+      display: block!important;
+    }
+
+  }
+}
 
 // ******************************************
 // Second table
@@ -1600,3 +1639,27 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 }
 // #endregion
 
+
+
+.chart[data-increment="days"] tbody {
+  --linear-bg: rgba(220, 220, 220, 0.2);
+  --chart-direction: 90deg;
+
+  --start-day: 1;
+  
+  --weekend-start: calc(6 - var(--start-day, 1));
+  --weekend-end: calc(var(--weekend-start) + 2);
+  --end-day: calc(8 - var(--start-day));
+
+  --day-percent: calc(100% / 7);
+
+  --start-percent: calc(var(--day-percent) * var(--weekend-start));
+  --end-percent: calc(var(--day-percent) * var(--end-day));
+  --weekend-percent: calc(var(--day-percent) * var(--weekend-end));
+
+  background: linear-gradient(var(--chart-direction), transparent var(--start-percent), transparent var(--start-percent),
+                                                      var(--linear-bg) var(--start-percent), var(--linear-bg) var(--end-percent)
+                              );
+  background-size: calc(var(--single-day) * 7);
+  //background-position: calc(var(--single-day) * 2);
+}
