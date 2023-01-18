@@ -47,6 +47,12 @@ $polar-chart: 'input[type="radio"]:not([value="none"])[value="polar"]:checked ~ 
   --chart-height-lg-set: var(--chart-height-lg, #{$chart-height-lg});
   --chart-height-resp: var(--chart-height-set);
 
+  tbody {
+    --chart-direction: 360deg;
+    --chart-day-bg-pos: 100% calc(var(--single-day) * 7)
+  }
+  
+
   @each $index, $value in $chart-colors {
     --chart-colour-#{$index}-set: var(--chart-colour-#{$index},#{$value});
   }
@@ -669,6 +675,14 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 // #region bar chart and responsive chart
 @mixin barchart($selector) {
   #{$selector} {
+
+
+    tbody {
+      --chart-direction: 90deg;
+    --chart-day-bg-pos: calc(var(--single-day) * 7) 100%;
+    }
+    
+
 
     .chart__guidelines {
       position: absolute;
@@ -1643,8 +1657,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 
 .chart[data-increment="days"] tbody {
   --linear-bg: rgba(220, 220, 220, 0.2);
-  --chart-direction: 90deg;
-
+  
   --start-day: 1;
   
   --weekend-start: calc(6 - var(--start-day, 1));
@@ -1660,6 +1673,6 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
   background: linear-gradient(var(--chart-direction), transparent var(--start-percent), transparent var(--start-percent),
                                                       var(--linear-bg) var(--start-percent), var(--linear-bg) var(--end-percent)
                               );
-  background-size: calc(var(--single-day) * 7);
+  background-size: var(--chart-day-bg-pos);
   //background-position: calc(var(--single-day) * 2);
 }
