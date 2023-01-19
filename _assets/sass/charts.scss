@@ -14,6 +14,9 @@ $radar-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value=
 $pie-chart: 'input[type="radio"]:not([value="none"]):is([value="pie"],[value="polar"]):checked ~ .chart__inner';
 $polar-chart: 'input[type="radio"]:not([value="none"])[value="polar"]:checked ~ .chart__inner';
 
+$tree-chart: 'input[type="radio"]:not([value="none"])[value="treemap"]:checked ~ .chart__inner';
+$tree-chart-key: 'input[type="radio"]:not([value="none"])[value="treemap"]:checked ~ .chart__key';
+
 // #region Functions and mixins
 @function rem($pixels, $context: 16)
 {
@@ -676,13 +679,10 @@ input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:chec
 @mixin barchart($selector) {
   #{$selector} {
 
-
     tbody {
       --chart-direction: 90deg;
     --chart-day-bg-pos: calc(var(--single-day) * 7) 100%;
     }
-    
-
 
     .chart__guidelines {
       position: absolute;
@@ -1320,6 +1320,36 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
       fill-opacity: 0;
       stroke-dasharray: 0.5px;
     }
+  }
+}
+// #endregion
+
+
+// #region Tree map
+#{'.chart '+$tree-chart} {
+
+  tbody {
+    background: red;
+    display: block;
+  }
+
+  table tbody tr {
+    width: 100%;
+  }
+
+  table tbody tr td:first-child {
+    display: none!important;
+  }
+
+  table tbody tr td:not(:first-child) {
+    width: var(--tm-width, var(--percent));
+    max-width: var(--tm-width, var(--percent));
+    height: var(--tm-height, 100%);
+    position: var(--tm-position, relative);
+    top: var(--tm-top, 0);
+    left: var(--tm-left, 0);
+
+    outline: 1px solid white;
   }
 }
 // #endregion

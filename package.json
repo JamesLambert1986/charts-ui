@@ -3,13 +3,19 @@
   "description": "BBC Charts UI library",
   "version": "0.0.1",
   "scripts": {
+    "watch:sass": "sass --watch _assets/sass/:_assets/css/ _app/sass/:_app/css/ --style=compressed",
+    "watch:ts": "node node_modules/typescript/bin/tsc --project tscompileconfig.json --watch",
+    "start": "concurrently \"npm run watch:sass\" \"npm run watch:ts\" \"serve\"",
     "build": "sass _assets/sass/main.scss:_assets/css/style.min.css _assets/sass/charts.scss:_assets/css/charts.min.css --style=compressed",
-    "watch": "sass --watch _assets/sass/:_assets/css/ _app/sass/:_app/css/ --style=compressed",
     "partials": "node _app/local_node_modules/partials.js"
   },
   "dependencies": {
     "bootstrap": "^5.2.2",
     "sass": "^1.55.0",
     "serve": "^14.0.1"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "typescript": "^4.9.4"
   }
 }
