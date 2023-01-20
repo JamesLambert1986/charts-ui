@@ -891,7 +891,7 @@ function setTreemapCellData(chartElement,min,max){
   let overallPercent = 0;
 
   const maxLeft = 90;
-  const maxPercent = 50;
+  const maxPercent = 60;
   const maxOffsetPercent = 25;
 
 

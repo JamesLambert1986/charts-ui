@@ -607,7 +607,7 @@ function setTreemapCellData(chartElement, min, max) {
     let trackerReset;
     let overallPercent = 0;
     const maxLeft = 90;
-    const maxPercent = 50;
+    const maxPercent = 60;
     const maxOffsetPercent = 25;
     Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr, index) => {
         Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td, tdIndex) => {
