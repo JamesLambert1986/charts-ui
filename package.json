@@ -4,18 +4,30 @@
   "version": "0.0.1",
   "scripts": {
     "watch:sass": "sass --watch _assets/sass/:_assets/css/ _app/sass/:_app/css/ --style=compressed",
-    "watch:ts": "node node_modules/typescript/bin/tsc --project tscompileconfig.json --watch",
+    "watch:ts": "tsc-watch -p tscompileconfig.json --onCompilationComplete \"ts-add-js-extension add --dir=_assets/js\"",
     "start": "concurrently \"npm run watch:sass\" \"npm run watch:ts\" \"serve\"",
     "build": "sass _assets/sass/main.scss:_assets/css/style.min.css _assets/sass/charts.scss:_assets/css/charts.min.css --style=compressed",
-    "partials": "node _app/local_node_modules/partials.js"
+    "partials": "node _app/local_node_modules/partials.js",
+    "test": "jest --transformIgnorePatterns",
+    "ext": "ts-add-js-extension add --dir=_assets/js"
   },
   "dependencies": {
     "bootstrap": "^5.2.2",
+    "puppeteer": "^19.5.2",
     "sass": "^1.55.0",
     "serve": "^14.0.1"
   },
   "devDependencies": {
+    "@jest/globals": "^29.3.1",
+    "@testing-library/jest-dom": "^5.16.5",
     "concurrently": "^7.6.0",
+    "jest": "^29.3.1",
+    "jest-environment-jsdom": "^29.3.1",
+    "jest-image-snapshot": "^6.1.0",
+    "ts-add-js-extension": "^1.3.2",
+    "ts-jest": "^29.0.5",
+    "tsc-watch": "^6.0.0",
     "typescript": "^4.9.4"
-  }
+  },
+  "localURL": "http://localhost:3000"
 }

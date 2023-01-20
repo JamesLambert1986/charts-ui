@@ -7,14 +7,48 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" href="favicon.svg?cache=1674152521532">
+    <link rel="shortcut icon" href="favicon.svg?cache=1674223557274">
 
     <title>BBC Charts UI Library</title>
-    <link rel="stylesheet" href="_app/css/app.css?cache=1674152521532" />
-    <link rel="stylesheet" href="_assets/css/main.css?cache=1674152521532" />
+    <link rel="stylesheet" href="_app/css/app.css?cache=1674223557274" />
+    <link rel="stylesheet" href="_assets/css/main.css?cache=1674223557274" />
 
-    <script src="_assets/js/main.js?cache=1674152521532" type="module" defer></script>
-    <script src="_app/js/app.js?cache=1674152521532" type="module" defer></script>
+    <script>
+        url = new URL(window.location.href);
+  
+        if (url.searchParams.has('test')) {
+  
+          document.addEventListener("DOMContentLoaded", function () {
+            Array.from(document.querySelectorAll('.chart--animate')).forEach((arrayElement) => {
+              arrayElement.classList.remove('chart--animate');
+            });
+          });
+  
+          const testContainer = url.searchParams.get('test');
+  
+          let testCSS = `<style>
+          header,
+          #more-examples {
+            display: none;
+          }
+          
+          main > *:not(#${testContainer}) {
+            display: none;
+          }
+  
+          #${testContainer} > *:not(.resize):not(figure){
+            display: none
+          }
+          </style>`;
+  
+          document.head.innerHTML += testCSS;
+        }
+  
+      </script>
+  
+
+    <script src="_assets/js/main.js?cache=1674223557274" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1674223557274" type="module" defer></script>
     <!-- #endregion:HEAD -->
     
   </head>
@@ -72,71 +106,74 @@
               <li class="nav-item"><a href="#comparison" class="nav-link pe-3">Comparison chart</a></li>
               <li class="nav-item"><a href="#radar" class="nav-link pe-3">Radar</a></li>
               <li class="nav-item"><a href="#treemap" class="nav-link pe-3">Treemap</a></li>
+              <li class="nav-item"><a href="#bubble" class="nav-link pe-3">Bubble</a></li>
+              <li class="nav-item"><a href="#polar" class="nav-link pe-3">Polar</a></li>
               <li class="nav-item"><a href="#more-examples" class="nav-link pe-3">More examples</a></li>
             </ul>
           </nav>
-          <label for="expand-submenu" class="nav-link px-2 ms-auto d-lg-none"><span>More</span><span>Less</span></label>
+          <label for="expand-submenu" class="nav-link px-2 ms-auto d-xl-none"><span>More</span><span>Less</span></label>
 
         </div>
       </div>
 
-    <div class="container">
+      <div class="container" id="bar">
+          
+
+        <h2>Bar Chart</h2>
         
+        <div class="resize">
+          
+        <figure class="chart chart--display-data chart--animate" data-max="50" data-min="0" data-type="bar" data-guidelines="45%">
 
-      <h2 id="bar">Bar Chart</h2>
-      
-      <div class="resize">
-        
-      <figure class="chart chart--display-data chart--animate" data-max="50" data-min="0" data-type="bar" data-guidelines="45%">
+          <table>
+              <thead>
+                  <tr>
+                      <th>Issue</th>
+                      <th>Democrat</th>
+                      <th>Republican</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Inflation</td>
+                      <td>45%</td>
+                      <td>18%</td>
+                  </tr>
+                  <tr>
+                      <td>Abortion</td>
+                      <td>12%</td>
+                      <td>43%</td>
+                  </tr>
+                  <tr>
+                      <td>Gun policy</td>
+                      <td>8%</td>
+                      <td>14%</td>
+                  </tr>
+                  <tr>
+                      <td>Immigration</td>
+                      <td>15%</td>
+                      <td>5%</td>
+                  </tr>
+                  <tr>
+                      <td>Crime</td>
+                      <td>13%</td>
+                      <td>10%</td>
+                  </tr>
+              </tbody>
+          </table>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Issue</th>
-                    <th>Democrat</th>
-                    <th>Republican</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Inflation</td>
-                    <td>45%</td>
-                    <td>18%</td>
-                </tr>
-                <tr>
-                    <td>Abortion</td>
-                    <td>12%</td>
-                    <td>43%</td>
-                </tr>
-                <tr>
-                    <td>Gun policy</td>
-                    <td>8%</td>
-                    <td>14%</td>
-                </tr>
-                <tr>
-                    <td>Immigration</td>
-                    <td>15%</td>
-                    <td>5%</td>
-                </tr>
-                <tr>
-                    <td>Crime</td>
-                    <td>13%</td>
-                    <td>10%</td>
-                </tr>
-            </tbody>
-        </table>
+          <figcaption>
+            <p class="chart__title">National exit poll: Issues by party</p>
+            <p class="chart__strapline">Which issue mattered most in deciding how to vote</p>
+            <p>Sample size: 4,636 respondents.</p>
+            <p>Figures may not sum to 100 and all figures have a margin of error</p>
+            <p class="chart__source">Source: Edison Research/NEP via Reuters, 9 Nov, 00.18 EST (0.518 GMT)</p>
+          </figcaption>
+        </figure>
 
-        <figcaption>
-          <p class="chart__title">National exit poll: Issues by party</p>
-          <p class="chart__strapline">Which issue mattered most in deciding how to vote</p>
-          <p>Sample size: 4,636 respondents.</p>
-          <p>Figures may not sum to 100 and all figures have a margin of error</p>
-          <p class="chart__source">Source: Edison Research/NEP via Reuters, 9 Nov, 00.18 EST (0.518 GMT)</p>
-        </figcaption>
-      </figure>
-
+        </div>
       </div>
-
+    <div class="container">
       <p>Data copied from https://www.bbc.co.uk/news/world-us-canada-63556122</p>
 
 
@@ -1231,6 +1268,162 @@
 
 
       
+
+
+
+
+
+
+      <h2 id="bubble">Bubble chart</h2>
+      <figure class="chart chart--animate" data-max="100" data-min="0" data-type="bubble" data-guidelines="£0,£50,£100" data-second-max="230" data-second-min="0" data-second-label="Transactions">
+
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Growth</th>
+              <th>Growth2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2011</td>
+              <td>£50.00</td>
+              <td>£50.10</td>
+            </tr>
+            <tr>
+              <td>2012</td>
+              <td>£75.00</td>
+              <td>£50.10</td>
+            </tr>
+            <tr>
+              <td>2013</td>
+              <td>£45.00</td>
+              <td>£57.10</td>
+            </tr>
+            <tr>
+              <td>2014</td>
+              <td>£35.00</td>
+              <td>£80.10</td>
+            </tr>
+          </tbody>
+        </table>
+
+
+        <table>
+          <thead>
+            <tr>
+              <th>Year</th>
+              <th>Growth</th>
+              <th>Growth2</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2011</td>
+              <td>120</td>
+              <td>200</td>
+            </tr>
+            <tr>
+              <td>2012</td>
+              <td>50</td>
+              <td>210</td>
+            </tr>
+            <tr>
+              <td>2013</td>
+              <td>150</td>
+              <td>170</td>
+            </tr>
+            <tr>
+              <td>2014</td>
+              <td>230</td>
+              <td>140</td>
+            </tr>
+          </tbody>
+        </table>
+      </figure>
+
+
+
+  <h2 id="polar">Polar chart</h2>
+  
+  <figure class="chart chart--animate" data-max="100" data-min="0" data-type="polar" data-second-max="230" data-second-min="0" data-second-label="Transactions">
+
+    <table>
+        <thead>
+            <tr class="">
+                <th>Year</th>
+                <th>Growth</th>
+                <th>Growth2</th>
+                <th>Growth3</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td data-label="Year" data-numeric="2011">2011</td>
+                <td data-label="Growth" data-numeric="50" >£50.0</td>
+                <td data-label="Growth2" data-numeric="50.1">£50.10</td>
+                <td data-label="Growth2" data-numeric="50.1">£50.10</td>
+            </tr>
+            <tr>
+                <td data-label="Year" data-numeric="2012">2012</td>
+                <td data-label="Growth" data-numeric="75">£75.00</td>
+                <td data-label="Growth2" data-numeric="50.1">£50.10</td>
+                <td data-label="Growth2" data-numeric="50.1">£50.10</td>
+            </tr>
+            <tr>
+                <td data-label="Year" data-numeric="2013">2013</td>
+                <td data-label="Growth" data-numeric="45">£45.00</td>
+                <td data-label="Growth2" data-numeric="57.1">£57.10</td>
+                <td data-label="Growth2" data-numeric="57.1">£57.10</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <table>
+      <thead>
+        <tr>
+          <th>Transactions</th>
+          <th>Growth</th>
+          <th>Growth2</th>
+          <th>Growth3</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2011</td>
+          <td>120</td>
+          <td>200</td>
+          <td>60</td>
+        </tr>
+        <tr>
+          <td>2012</td>
+          <td>50</td>
+          <td>210</td>
+          <td>100</td>
+        </tr>
+        <tr>
+          <td>2013</td>
+          <td>150</td>
+          <td>170</td>
+          <td>200</td>
+        </tr>
+        <tr>
+          <td>2014</td>
+          <td>230</td>
+          <td>140</td>
+          <td>100</td>
+        </tr>
+      </tbody>
+    </table>
+  </figure>
+
+
+
+
+
+
     </div>
     </main>
 
@@ -1238,7 +1431,6 @@
       <h2>More examples</h2>
       <!-- #region:MORE -->
 <a href="./#more-examples" class="btn btn-secondary">Back to more examples</a>
-<a href="./third-set" class="btn btn-primary">Bubble and Polar charts</a>
 <a href="./floating" class="btn btn-primary">Floating values</a>
 <a href="./gantt" class="btn btn-primary">Gantt Chart</a>
 <a href="./options" class="btn btn-primary">Chart with options</a>

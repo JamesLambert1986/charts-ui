@@ -7,17 +7,51 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" href="favicon.svg?cache=1674152521532">
+    <link rel="shortcut icon" href="favicon.svg?cache=1674223557274">
 
     <title>BBC Charts UI Library</title>
-    <link rel="stylesheet" href="_app/css/app.css?cache=1674152521532" />
-    <link rel="stylesheet" href="_assets/css/main.css?cache=1674152521532" />
+    <link rel="stylesheet" href="_app/css/app.css?cache=1674223557274" />
+    <link rel="stylesheet" href="_assets/css/main.css?cache=1674223557274" />
 
-    <script src="_assets/js/main.js?cache=1674152521532" type="module" defer></script>
-    <script src="_app/js/app.js?cache=1674152521532" type="module" defer></script>
+    <script>
+        url = new URL(window.location.href);
+  
+        if (url.searchParams.has('test')) {
+  
+          document.addEventListener("DOMContentLoaded", function () {
+            Array.from(document.querySelectorAll('.chart--animate')).forEach((arrayElement) => {
+              arrayElement.classList.remove('chart--animate');
+            });
+          });
+  
+          const testContainer = url.searchParams.get('test');
+  
+          let testCSS = `<style>
+          header,
+          #more-examples {
+            display: none;
+          }
+          
+          main > *:not(#${testContainer}) {
+            display: none;
+          }
+  
+          #${testContainer} > *:not(.resize):not(figure){
+            display: none
+          }
+          </style>`;
+  
+          document.head.innerHTML += testCSS;
+        }
+  
+      </script>
+  
+
+    <script src="_assets/js/main.js?cache=1674223557274" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1674223557274" type="module" defer></script>
     <!-- #endregion:HEAD -->
     
-    <script src="_app/js/livechart.js?cache=1674152521532" type="module" defer></script>
+    <script src="_app/js/livechart.js?cache=1674223557274" type="module" defer></script>
   </head>
   <body>
     <!-- #region:HEADER -->
@@ -78,7 +112,6 @@
     <div class="container" id="more-examples">
       <!-- #region:MORE -->
 <a href="./#more-examples" class="btn btn-secondary">Back to more examples</a>
-<a href="./third-set" class="btn btn-primary">Bubble and Polar charts</a>
 <a href="./floating" class="btn btn-primary">Floating values</a>
 <a href="./gantt" class="btn btn-primary">Gantt Chart</a>
 <a href="./options" class="btn btn-primary">Chart with options</a>

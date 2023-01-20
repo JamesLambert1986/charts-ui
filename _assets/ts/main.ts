@@ -1,4 +1,4 @@
-import chart from './modules/chart.js';
+import chart from './modules/chart';
 
 document.addEventListener("DOMContentLoaded", function () {
 

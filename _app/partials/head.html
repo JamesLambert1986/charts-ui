@@ -8,5 +8,39 @@
     <link rel="stylesheet" href="_app/css/app.css?cache=1" />
     <link rel="stylesheet" href="_assets/css/main.css?cache=1" />
 
+    <script>
+        url = new URL(window.location.href);
+  
+        if (url.searchParams.has('test')) {
+  
+          document.addEventListener("DOMContentLoaded", function () {
+            Array.from(document.querySelectorAll('.chart--animate')).forEach((arrayElement) => {
+              arrayElement.classList.remove('chart--animate');
+            });
+          });
+  
+          const testContainer = url.searchParams.get('test');
+  
+          let testCSS = `<style>
+          header,
+          #more-examples {
+            display: none;
+          }
+          
+          main > *:not(#${testContainer}) {
+            display: none;
+          }
+  
+          #${testContainer} > *:not(.resize):not(figure){
+            display: none
+          }
+          </style>`;
+  
+          document.head.innerHTML += testCSS;
+        }
+  
+      </script>
+  
+
     <script src="_assets/js/main.js?cache=1" type="module" defer></script>
     <script src="_app/js/app.js?cache=1" type="module" defer></script>

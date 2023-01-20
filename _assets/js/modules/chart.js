@@ -1,6 +1,6 @@
 import { ucfirst, unsnake } from './helpers.js';
 function chart(chartElement, min, max, type, guidelines, targets, events) {
-    const chartID = `chart-${Date.now()}`;
+    const chartID = `chart-${Date.now() + (Math.floor(Math.random() * 100) + 1)}`;
     if (chartElement.hasAttribute('data-csv') && !chartElement.hasAttribute('data-csv-loaded')) {
         let csvURL = chartElement.getAttribute('data-csv');
         let csvData = getCSVData(chartElement, csvURL);
@@ -22,7 +22,7 @@ function chart(chartElement, min, max, type, guidelines, targets, events) {
             guidelines = chartElement.getAttribute('data-guidelines').split(',');
         }
         else if (chartElement.querySelector('.chart__yaxis')) {
-            chartElement.setAttribute('data-guidelines', Array.from(chartElement.querySelectorAll('.chart__yaxis .axis__point')).map((element) => element.innerText));
+            chartElement.setAttribute('data-guidelines', Array.from(chartElement.querySelectorAll('.chart__yaxis .axis__point')).map((element) => element.textContent));
         }
     }
     if (typeof targets == 'undefined' && chartElement.hasAttribute('data-targets')) {
@@ -49,16 +49,16 @@ function chart(chartElement, min, max, type, guidelines, targets, events) {
     let longestLabel = '';
     const chartInner = chartElement.querySelector('.chart__inner');
     Array.from(table.querySelectorAll('tbody tr td:first-child')).forEach((td) => {
-        if (td.innerText.length > longestLabel.length) {
-            longestLabel = td.innerText;
+        if (typeof td.textContent != "undefined" && td.textContent.length > longestLabel.length) {
+            longestLabel = td.textContent;
         }
     });
     chartInner.setAttribute('data-longest-label', longestLabel);
     // set the longest data set attr so that the bar chart knows what margin to set on the left
     let longestSet = '';
     Array.from(table.querySelectorAll('thead tr th')).forEach((td) => {
-        if (td.innerText.length > longestSet.length) {
-            longestSet = td.innerText;
+        if (td.textContent.length > longestSet.length) {
+            longestSet = td.textContent;
         }
     });
     chartInner.setAttribute('data-set-label', longestSet);
@@ -216,7 +216,7 @@ export const setEventObservers = function (chartElement, min, max, guidelines) {
                 let cell = mutation.target.parentNode.closest('td');
                 cell.removeAttribute('data-numeric');
                 cell.removeAttribute('style');
-                cell.setAttribute('data-numeric', parseFloat(cell.innerText.replace('£', '').replace('%', '')));
+                cell.setAttribute('data-numeric', parseFloat(cell.textContent.replace('£', '').replace('%', '')));
             }
             Array.from(chartElement.querySelectorAll('tbody tr td[data-numeric]')).forEach((td) => {
                 if (parseFloat(td.getAttribute('data-numeric')) > max) {
@@ -284,7 +284,7 @@ function getCSVData(chartElement, csvURL) {
         }
     };
 }
-let numDays = function (start, end) {
+export const numDays = function (start, end) {
     let convertStart = start.split('/');
     let convertEnd = end.split('/');
     var dateStart = new Date(convertStart[1] + '/' + convertStart[0] + '/' + convertStart[2]);
@@ -313,7 +313,7 @@ export const createTable = function (chartElement, data) {
     const newThead = document.createElement("thead");
     const newTheadRow = document.createElement("tr");
     const newTbody = document.createElement("tbody");
-    const chartID = `chart-${Date.now()}`;
+    const chartID = `chart-${Date.now() + (Math.floor(Math.random() * 100) + 1)}`;
     const chartInner = chartElement.querySelector('.chart__inner');
     let chartKey = document.createElement("div");
     let previousInput;
@@ -353,7 +353,7 @@ export const createTable = function (chartElement, data) {
     chart(chartElement);
 };
 export const createChartKey = function (chartElement) {
-    const chartID = `chart-${Date.now()}`;
+    const chartID = `chart-${Date.now() + (Math.floor(Math.random() * 100) + 1)}`;
     const chartInner = chartElement.querySelector('.chart__inner');
     let chartKey = document.createElement("div");
     let previousInput;
@@ -363,7 +363,7 @@ export const createChartKey = function (chartElement) {
     let headings = Array.from(chartInner.querySelectorAll('thead th'));
     headings.forEach((arrayElement, index) => {
         if (index != 0) {
-            previousInput = createChartKeyItem(chartID, index, arrayElement.innerText, chartKey, chartElement, previousInput);
+            previousInput = createChartKeyItem(chartID, index, arrayElement.textContent, chartKey, chartElement, previousInput);
         }
         if (index == 50) {
             headings.length = index + 1;
@@ -390,7 +390,7 @@ function createChartKeyItem(chartID, index, text, chartKey, chartElement, previo
     return previousInput;
 }
 export const createChartType = function (chartElement, type) {
-    const chartID = `chart-${Date.now()}`;
+    const chartID = `chart-${Date.now() + (Math.floor(Math.random() * 100) + 1)}`;
     const chartKey = chartElement.querySelector('.chart__key');
     const chartType = document.createElement('input');
     chartType.setAttribute('type', 'radio');
@@ -496,7 +496,7 @@ export const createEvents = function (chartElement, events) {
             tr.removeAttribute('data-left-event');
         });
         Array.from(chartElement.querySelectorAll('tbody tr td:first-child')).forEach((td) => {
-            if (td.innerText == key) {
+            if (td.textContent == key) {
                 const parent = td.parentNode;
                 parent.setAttribute('data-event', value);
                 if (parent.offsetLeft > tbody.clientWidth * 0.75) {
@@ -538,10 +538,10 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
         let group = tr.querySelector('td:first-child, th:first-child') ? tr.querySelector('td:first-child, th:first-child').innerHTML : '';
         // Set the data numeric value if not set
         Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td, index) => {
-            let value = parseFloat(td.innerText.replace('£', '').replace('%', ''));
+            let value = parseFloat(td.textContent.replace('£', '').replace('%', ''));
             let start = 0;
             if (increment == "days") {
-                let dates = td.innerText.split(' - ');
+                let dates = td.textContent.split(' - ');
                 if (dates[1]) {
                     value = numDays(dates[0], dates[1]);
                     start = numDays(startDay, dates[0]) - 1;
@@ -552,7 +552,7 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
         });
         // Set the data label value if not set
         Array.from(tr.querySelectorAll('td:not([data-label])')).forEach((td, index) => {
-            td.setAttribute('data-label', table.querySelectorAll('thead th')[index].innerText);
+            td.setAttribute('data-label', table.querySelectorAll('thead th')[index].textContent);
         });
         if (tr.querySelector('[data-label="Total"]')) {
             tr.setAttribute('data-max', tr.querySelector('[data-label="Total"][data-numeric]').getAttribute('data-numeric'));
@@ -589,10 +589,10 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
                 let secondPercent = matchingTD.getAttribute('data-percent');
                 td.style.cssText += `--second-percent:${secondPercent}%;`;
                 td.style.cssText += `--second-fraction:${(secondPercent / 100)};`;
-                td.setAttribute('data-second', matchingTD.innerText);
+                td.setAttribute('data-second', matchingTD.textContent);
                 td.setAttribute('data-second-label', chartElement.getAttribute('data-second-label'));
                 let span = td.querySelector('span');
-                span.setAttribute('data-second', matchingTD.innerText);
+                span.setAttribute('data-second', matchingTD.textContent);
                 span.setAttribute('data-second-label', chartElement.getAttribute('data-second-label'));
                 chartElement;
             }
@@ -921,7 +921,7 @@ export const createRadar = function (chartElement, min, max) {
         tableWrapper.prepend(radarGuidelines);
     }
     Array.from(chartElement.querySelectorAll('.chart__guidelines .guideline')).forEach((guideline, index) => {
-        let value = guideline.innerText;
+        let value = guideline.textContent;
         let { percent, axis } = getValues(value, min, max);
         let line = '';
         Array.from(chartElement.querySelectorAll('tbody tr')).forEach((row, index) => {
