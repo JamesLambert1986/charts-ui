@@ -1528,7 +1528,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 // ******************************************
 // Animation
 // ******************************************
-#{'.chart--animate.inview'} {
+#{'.chart--animate.animating.inview'} {
 
   --animation-left: 2s;
 
@@ -1551,7 +1551,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 
 
 
-#{'.chart--animate.inview '+$comparison-chart} {
+#{'.chart--animate.animating.inview '+$comparison-chart} {
 
   --animation-left: 0s;
 }
@@ -1683,7 +1683,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 // #endregion
 
 // #region treemap
-#{'.chart--animate.inview '+$tree-chart} {
+#{'.chart--animate.animating.inview '+$tree-chart} {
   table tbody tr td:not(:first-child){
     transition: width 2s ease-out,left 2s ease-out, height 2s ease-out, top 2s ease-out;
   }
