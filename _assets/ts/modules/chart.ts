@@ -912,6 +912,7 @@ function setTreemapCellData(chartElement,min,max){
         width = 100 - cumulativeLeft;
         height = (percent/width) * 100;
 
+        td.setAttribute('data-left', cumulativeLeft);
         td.style.cssText += `--tm-position:absolute;--tm-width:${width}%;--tm-height:${height}%;--tm-left:${cumulativeLeft}%;--tm-top:${cumulativeTop}%;`;
 
         cumulativeTop += height;
@@ -922,6 +923,7 @@ function setTreemapCellData(chartElement,min,max){
         height = 100;
         cumulativeTop = 0;
 
+        td.setAttribute('data-left', cumulativeLeft);
         td.style.cssText += `--tm-position:absolute;--tm-width:${width}%;--tm-height:${height}%;--tm-left:${cumulativeLeft}%;--tm-top:${cumulativeTop}%;`;
 
         cumulativeLeft += width;
@@ -966,6 +968,7 @@ function setTreemapCellData(chartElement,min,max){
         width = overallPercent;
         height = (percent/overallPercent) * 100;
 
+        td.setAttribute('data-left', cumulativeLeft);
         td.style.cssText += `--tm-position:absolute;--tm-width:${width}%;--tm-height:${height}%;--tm-left:${cumulativeLeft}%;--tm-top:${cumulativeTop}%;`;
 
         cumulativeTop += height;
