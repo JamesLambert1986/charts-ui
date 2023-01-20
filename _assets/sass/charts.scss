@@ -1343,7 +1343,7 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 
   table tbody tr td:not(:first-child) {
     width: var(--tm-width, var(--percent));
-    max-width: var(--tm-width, var(--percent));
+    max-width: 100%;
     height: var(--tm-height, 100%);
     position: var(--tm-position, relative);
     top: var(--tm-top, 0);
@@ -1639,7 +1639,6 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
 }
 // #endregion
 
-
 // #region buble charts
 #{'.chart--animate '+$bubble-chart} {
   table tbody tr td:not(:first-child){
@@ -1679,6 +1678,34 @@ input[type="radio"][value="none"]:checked ~ .chart__inner {
     &:before {
       transform: translate(-50%, -50%) scale(0%);
     }
+  }
+}
+// #endregion
+
+// #region treemap
+#{'.chart--animate.inview '+$tree-chart} {
+  table tbody tr td:not(:first-child){
+    transition: width 2s ease-out,left 2s ease-out, height 2s ease-out, top 2s ease-out;
+  }
+}
+
+#{'.chart--animate:not(.inview) '+$tree-chart} {
+
+  table tbody tr td:not(:first-child) {
+    --tm-width: 0%!important;
+    --tm-left: 100%!important;
+  }
+
+  table tbody tr td:not(:first-child)[data-left="0"] {
+    --tm-width: 100%!important;
+    --percent: 100%!important;
+    --tm-left: 0%!important;
+    --tm-height: 0!important;
+    --tm-top: 100%!important;
+  }
+  table tbody tr td:not(:first-child):nth-child(2)[data-left="0"] {
+    --tm-height: 100%!important;
+    --tm-top: 0!important;
   }
 }
 // #endregion
