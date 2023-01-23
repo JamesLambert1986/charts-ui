@@ -5,11 +5,13 @@
   "scripts": {
     "watch:sass": "sass --watch _assets/sass/:_assets/css/ _app/sass/:_app/css/ --style=compressed",
     "watch:ts": "tsc-watch -p tscompileconfig.json --onCompilationComplete \"ts-add-js-extension add --dir=_assets/js\"",
+    "ext": "ts-add-js-extension add --dir=_assets/js",
     "start": "concurrently \"npm run watch:sass\" \"npm run watch:ts\" \"serve\"",
     "build": "sass _assets/sass/main.scss:_assets/css/style.min.css _assets/sass/charts.scss:_assets/css/charts.min.css --style=compressed",
     "partials": "node _app/local_node_modules/partials.js",
-    "test": "jest --transformIgnorePatterns",
-    "ext": "ts-add-js-extension add --dir=_assets/js"
+    "test": "jest _tests --transformIgnorePatterns",
+    "visual:test": "jest _visuals --detectOpenHandles",
+    "visual:approve": "jest _visuals --updateSnapshot"
   },
   "dependencies": {
     "bootstrap": "^5.2.2",

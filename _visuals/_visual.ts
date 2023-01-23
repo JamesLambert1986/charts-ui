@@ -34,27 +34,10 @@ module.exports = {
         const desktopImage = await page.screenshot({ fullPage: true });
         expect(desktopImage).toMatchImageSnapshot({ allowSizeMismatch: true, customDiffConfig: { threshold: 0.5 } });
 
-        return true;
+        await page.close();
+        await browser.close();
       });
-/*
-      it(`should render correctly in dark mode.`, async() => {
 
-        const browser = await puppeteer.launch()
-        const page = await browser.newPage()
-
-        await page.goto(pkg.localURL+url+'cache='+Date.now()+'')
-        await page.emulateMediaFeatures([{ name: 'prefers-color-scheme', value: 'dark' }]);
-
-
-        await page.setViewport({ width: 1440, height: 800 })
-        await page.waitForTimeout(4000)
-
-        const desktopImage = await page.screenshot({ fullPage: true });
-        expect(desktopImage).toMatchImageSnapshot({ allowSizeMismatch: true, customDiffConfig: { threshold: 0.5 } });
-
-        return true;
-      });
-*/
 
     });
   },
