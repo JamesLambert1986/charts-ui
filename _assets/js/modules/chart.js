@@ -1,36 +1,20 @@
 import { ucfirst, unsnake } from './helpers.js';
-function chart(chartElement, min, max, type, guidelines, targets, events) {
-    const chartID = `chart-${Date.now() + (Math.floor(Math.random() * 100) + 1)}`;
+function chart(chartElement) {
     if (chartElement.hasAttribute('data-csv') && !chartElement.hasAttribute('data-csv-loaded')) {
         let csvURL = chartElement.getAttribute('data-csv');
-        let csvData = getCSVData(chartElement, csvURL);
-        console.log('create the table');
-        return false;
+        getCSVData(chartElement, csvURL);
     }
     let table = chartElement.querySelector('table');
-    if (typeof min == 'undefined') {
-        min = chartElement.getAttribute('data-min');
+    // Read the data attributes
+    let min = chartElement.hasAttribute('data-min') ? parseFloat(chartElement.getAttribute('data-min')) : 0;
+    let max = chartElement.hasAttribute('data-max') ? parseFloat(chartElement.getAttribute('data-max')) : getLargestValue(chartElement);
+    let type = chartElement.hasAttribute('data-type') ? chartElement.getAttribute('data-type') : 'column';
+    if (chartElement.querySelector('.chart__yaxis')) {
+        chartElement.setAttribute('data-guidelines', Array.from(chartElement.querySelectorAll('.chart__yaxis .axis__point')).map((element) => element.textContent));
     }
-    if (typeof max == 'undefined') {
-        max = chartElement.getAttribute('data-max');
-    }
-    if (typeof type == 'undefined') {
-        type = chartElement.getAttribute('data-type') ? chartElement.getAttribute('data-type') : 'column';
-    }
-    if (typeof guidelines == 'undefined') {
-        if (chartElement.hasAttribute('data-guidelines')) {
-            guidelines = chartElement.getAttribute('data-guidelines').split(',');
-        }
-        else if (chartElement.querySelector('.chart__yaxis')) {
-            chartElement.setAttribute('data-guidelines', Array.from(chartElement.querySelectorAll('.chart__yaxis .axis__point')).map((element) => element.textContent));
-        }
-    }
-    if (typeof targets == 'undefined' && chartElement.hasAttribute('data-targets')) {
-        targets = JSON.parse(chartElement.getAttribute('data-targets'));
-    }
-    if (typeof events == 'undefined' && chartElement.hasAttribute('data-events')) {
-        events = JSON.parse(chartElement.getAttribute('data-events'));
-    }
+    let guidelines = chartElement.hasAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : null;
+    let targets = chartElement.hasAttribute('data-targets') ? JSON.parse(chartElement.getAttribute('data-targets')) : null;
+    let events = chartElement.hasAttribute('data-events') ? JSON.parse(chartElement.getAttribute('data-events')) : null;
     // Wrap the table with some divs to add functionality
     if (!chartElement.querySelector('.table__wrapper')) {
         const tableWrapper = document.createElement('div');
@@ -102,7 +86,7 @@ function chart(chartElement, min, max, type, guidelines, targets, events) {
         createLines(chartElement, min, max);
     }
     if (chartElement.querySelector(':scope > input[value="treemap"]:checked'))
-        setTreemapCellData(chartElement, min, max);
+        setTreemapCellData(chartElement);
     // Event handlers
     const showData = chartElement.querySelectorAll(':scope > input[type="checkbox"]');
     for (var i = 0; i < showData.length; i++) {
@@ -123,7 +107,7 @@ function chart(chartElement, min, max, type, guidelines, targets, events) {
                     }
                 });
                 setCellData(chartElement, table, min, newMax);
-                setTreemapCellData(chartElement, min, newMax);
+                setTreemapCellData(chartElement);
             }
         });
         if (chartElement.querySelector(':scope > input[value="radar"]:checked'))
@@ -155,6 +139,7 @@ function chart(chartElement, min, max, type, guidelines, targets, events) {
     }
     if (chartElement.classList.contains('chart--animate'))
         setIntersctionObserver(chartElement);
+    return true;
 }
 export const setEventObservers = function (chartElement, min, max, guidelines) {
     let table = chartElement.querySelector('table');
@@ -269,6 +254,9 @@ export const setIntersctionObserver = function (chartElement) {
     intObserver.observe(chartElement);
 };
 // event observers 
+function getLargestValue(chartElement) {
+    return 100;
+}
 function getCSVData(chartElement, csvURL) {
     var request = new XMLHttpRequest();
     request.open('GET', csvURL, true);
@@ -282,7 +270,9 @@ function getCSVData(chartElement, csvURL) {
                 return true;
             }
         }
+        return false;
     };
+    return true;
 }
 export const numDays = function (start, end) {
     let convertStart = start.split('/');
@@ -296,7 +286,7 @@ export const numDays = function (start, end) {
 export const csvToObj = function (data) {
     let newRows = [];
     let rows = data.split('\n');
-    rows.forEach((row, index) => {
+    rows.forEach((row) => {
         let newRow = [];
         let cells = row.replace('\r', '').split(',');
         cells.forEach((cell) => {
@@ -307,8 +297,6 @@ export const csvToObj = function (data) {
     return newRows;
 };
 export const createTable = function (chartElement, data) {
-    let min = chartElement.getAttribute('data-min');
-    let max = chartElement.getAttribute('data-max');
     const newTable = document.createElement("table");
     const newThead = document.createElement("thead");
     const newTheadRow = document.createElement("tr");
@@ -408,7 +396,7 @@ const getValues = function (value, min, max, start) {
     let percent = ((cleanValue - min) / (max - min)) * 100;
     let axis = percent;
     let bottom = 0;
-    if (start != 0) {
+    if (start && start != 0) {
         bottom = ((start - min) / (max - min)) * 100;
     }
     // If the value is negative the position below the 0 line
@@ -469,7 +457,7 @@ export const createChartGuidelines = function (chartElement, min, max, guideline
         if (increment == "days") {
             value = numDays(startDay, guidelines[i]) - 1;
         }
-        let { percent, axis } = getValues(value, min, max);
+        let { axis } = getValues(value, min, max);
         chartGuidelines.innerHTML += `<div class="guideline" style="--percent:${axis}%;"><span>${guidelines[i]}</span></div>`;
     }
     tableWrapper.prepend(chartGuidelines);
@@ -537,7 +525,7 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
     Array.from(table.querySelectorAll('tbody tr')).forEach((tr, index) => {
         let group = tr.querySelector('td:first-child, th:first-child') ? tr.querySelector('td:first-child, th:first-child').innerHTML : '';
         // Set the data numeric value if not set
-        Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td, index) => {
+        Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td) => {
             let value = parseFloat(td.textContent.replace('£', '').replace('%', ''));
             let start = 0;
             if (increment == "days") {
@@ -599,17 +587,16 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
         });
     });
 };
-function setTreemapCellData(chartElement, min, max) {
+function setTreemapCellData(chartElement) {
     let cumulativeLeft = 0;
     let cumulativeTop = 0;
-    let cumulativePercent = 0;
     let trackerPercent = 0;
     let trackerReset;
     let overallPercent = 0;
     const maxLeft = 90;
     const maxPercent = 60;
     const maxOffsetPercent = 25;
-    Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr, index) => {
+    Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr) => {
         Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td, tdIndex) => {
             let percent = parseFloat(td.getAttribute('data-percent'));
             let width = percent;
@@ -752,6 +739,7 @@ export const createLines = function (chartElement, min, max) {
     }
     let items = Array.from(chartElement.querySelectorAll('tbody tr'));
     let lines = Array();
+    let linesCount = chartElement.querySelectorAll('thead th:not(:first-child)').length;
     let commands = Array();
     let animatelines = Array();
     let itemCount = items.length <= 1000 ? items.length : 1000;
@@ -762,14 +750,14 @@ export const createLines = function (chartElement, min, max) {
         spacerIndent = spacer / 2;
     }
     // Creates the lines array from the fields array
-    Array.from(chartElement.querySelectorAll('thead th:not(:first-child)')).forEach((field, index) => {
-        lines[index] = '';
-        animatelines[index] = '';
-        commands[index] = 'M';
-    });
+    for (let i = 0; i < linesCount; i++) {
+        lines[i] = '';
+        animatelines[i] = '';
+        commands[i] = 'M';
+    }
     // populate the lines array from the items array
     let counter = 0;
-    Array.from(chartElement.querySelectorAll('tbody tr')).forEach((item, index) => {
+    Array.from(chartElement.querySelectorAll('tbody tr')).forEach((item) => {
         const display = getComputedStyle(item).display;
         if (display != "none") {
             Array.from(item.querySelectorAll('td:not(:first-child)')).forEach((cell, subindex) => {
@@ -833,11 +821,12 @@ export const createSeries = function (chartElement) {
             return false;
         }
         currentRow++;
+        return true;
     }
     function updateCurrent(index) {
         chartElement.querySelector(`tbody tr:nth-child(${index})`).classList.remove('d-none');
         seriesCurrentRow.innerHTML = chartElement.querySelector(`tbody tr:nth-child(${index})`).getAttribute('data-label');
-        Array.from(chartElement.querySelectorAll(`tbody tr:not(:nth-child(${index}))`)).forEach((row, subindex) => {
+        Array.from(chartElement.querySelectorAll(`tbody tr:not(:nth-child(${index}))`)).forEach((row) => {
             row.classList.add('d-none');
         });
     }
@@ -871,17 +860,17 @@ export const createRadar = function (chartElement, min, max) {
         tableWrapper.prepend(radarWrapper);
     }
     let items = Array.from(chartElement.querySelectorAll('tbody tr'));
+    let linesCount = chartElement.querySelectorAll('thead th').length;
     let lines = Array();
     let animateLines = Array();
     let itemCount = items.length <= 1000 ? items.length : 1000;
-    let spacer = 100 / (itemCount - 1);
     // Creates the lines array from the fields array
-    Array.from(chartElement.querySelectorAll('thead th')).forEach((field, index) => {
-        if (index != 0) {
-            lines[index - 1] = '';
-            animateLines[index - 1] = '';
+    for (let i = 0; i < linesCount; i++) {
+        if (i != 0) {
+            lines[i - 1] = '';
+            animateLines[i - 1] = '';
         }
-    });
+    }
     // populate the lines array from the items array
     let counter = 0;
     Array.from(chartElement.querySelectorAll('tbody tr')).forEach((item) => {
@@ -920,9 +909,9 @@ export const createRadar = function (chartElement, min, max) {
         radarGuidelines.setAttribute('class', 'radar__guidelines');
         tableWrapper.prepend(radarGuidelines);
     }
-    Array.from(chartElement.querySelectorAll('.chart__guidelines .guideline')).forEach((guideline, index) => {
+    Array.from(chartElement.querySelectorAll('.chart__guidelines .guideline')).forEach((guideline) => {
         let value = guideline.textContent;
-        let { percent, axis } = getValues(value, min, max);
+        let { axis } = getValues(value, min, max);
         let line = '';
         Array.from(chartElement.querySelectorAll('tbody tr')).forEach((row, index) => {
             let command = index == 0 ? 'M' : 'L';
@@ -944,15 +933,19 @@ export const createRadar = function (chartElement, min, max) {
     });
 };
 export const defineCellType = function (chartElement) {
-    let rows = chartElement.getAttribute('data-lines').split(',');
-    rows.forEach((row, subIndex) => {
-        Array.from(chartElement.querySelectorAll(`tbody tr td:nth-child(${row})`)).forEach((cell, index) => {
+    let dataLines = chartElement.getAttribute('data-lines');
+    if (!dataLines)
+        return false;
+    let rows = dataLines.split(',');
+    rows.forEach((row) => {
+        Array.from(chartElement.querySelectorAll(`tbody tr td:nth-child(${row})`)).forEach((cell) => {
             cell.classList.add('chart__point');
         });
     });
-    Array.from(chartElement.querySelectorAll(`tbody tr td:not(.chart__point)`)).forEach((cell, index) => {
+    Array.from(chartElement.querySelectorAll(`tbody tr td:not(.chart__point)`)).forEach((cell) => {
         cell.classList.add('chart__bar');
     });
+    return true;
 };
 export default chart;
 //# sourceMappingURL=chart.js.map

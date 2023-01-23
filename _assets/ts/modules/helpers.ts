@@ -7,7 +7,7 @@
  * Add global classes used by the CSS and later JavaScript.
  * @param {HTMLElement} body Dom element, this doesn't have to be the body but it is recommended.
  */
- export const addBodyClasses = (body) => {
+ export const addBodyClasses = (body: HTMLElement) => {
   
     body.classList.add("js-enabled");
   
@@ -23,7 +23,7 @@
    * Add global events.
    * @param {HTMLElement} body Dom element, this doesn't have to be the body but it is recommended.
    */
-  export const addGlobalEvents = (body) => {
+  export const addGlobalEvents = () => {
     
     window.addEventListener('hashchange', function() {
   
@@ -45,10 +45,10 @@
    * Check if an element contains certain elements that needs enhancing with the JavaScript helpers, it is recommended to do this on the page body after the dom is loaded. Elements that are loaded via ajax should also run this function. 
    * @param {HTMLElement} element Dom element, this doesn't have to be the body but it is recommended.
    */
-  export const checkElements = (element) => {
+  export const checkElements = (element: HTMLElement) => {
   
     // Tables
-    Array.from(element.querySelectorAll('table')).forEach((table, index) => {
+    Array.from(element.querySelectorAll('table')).forEach((table: any,) => {
   
       tableStacked(table);
       tableWrap(table);
@@ -59,7 +59,7 @@
    * Wrap tables with a table wrapper div to help maintain its responsive design.
    * @param {HTMLElement} table Dom table element
    */
-  export const tableWrap = (table) => {
+  export const tableWrap = (table: any) => {
     
     if(!table.parentNode.classList.contains('table__wrapper')){
   
@@ -73,7 +73,7 @@
    * Creates data attributes to be used by the CSS for mobile views.
    * @param {HTMLElement} table Dom table element
    */
-  export const tableStacked = (table) => {
+  export const tableStacked = (table: HTMLElement) => {
   
     const colHeadings = Array.from(table.querySelectorAll('thead th'));
     const colRows = Array.from(table.querySelectorAll('tbody tr'));
@@ -103,13 +103,13 @@
            !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
   }
   
-  export const zeroPad = (num, places) => String(num).padStart(places, '0')
+  export const zeroPad = (num: number, places: number) => String(num).padStart(places, '0')
   
-  export const ucfirst = (str) => str.charAt(0).toUpperCase() + str.slice(1)
-  export const ucwords = (str) => str.split(' ').map(s => ucfirst(s)).join(' ')
-  export const unsnake = (str) => str.replace(/_/g, ' ')
-  export const snake = (str) => str.replace(/ /g, '_')
-  export const safeID = function(str){
+  export const ucfirst = (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+  export const ucwords = (str: string) => str.split(' ').map(s => ucfirst(s)).join(' ')
+  export const unsnake = (str: string) => str.replace(/_/g, ' ')
+  export const snake = (str: string) => str.replace(/ /g, '_')
+  export const safeID = function(str: string){
   
     str = str.toLowerCase();
     str = snake(str);

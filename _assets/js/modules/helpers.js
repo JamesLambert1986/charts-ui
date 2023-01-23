@@ -17,7 +17,7 @@ export const addBodyClasses = (body) => {
  * Add global events.
  * @param {HTMLElement} body Dom element, this doesn't have to be the body but it is recommended.
  */
-export const addGlobalEvents = (body) => {
+export const addGlobalEvents = () => {
     window.addEventListener('hashchange', function () {
         const hash = location.hash.replace('#', '');
         const label = document.querySelector(`label[for="${hash}"]`);
@@ -35,7 +35,7 @@ export const addGlobalEvents = (body) => {
  */
 export const checkElements = (element) => {
     // Tables
-    Array.from(element.querySelectorAll('table')).forEach((table, index) => {
+    Array.from(element.querySelectorAll('table')).forEach((table) => {
         tableStacked(table);
         tableWrap(table);
     });
