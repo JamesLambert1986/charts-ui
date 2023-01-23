@@ -381,7 +381,23 @@ export const setIntersctionObserver = function(chartElement:any) {
 
 function getLargestValue(chartElement:any){
 
-  return 100;
+  let values = Array.from(chartElement.querySelectorAll('tbody td:not(:first-child)')).map((element: any) => {
+
+    let currentValue:string|number = String(element.textContent);
+    currentValue = currentValue.replace('£','');
+    currentValue = currentValue.replace('%','');
+    currentValue = currentValue.replace(',','');
+    currentValue = Number.parseFloat(currentValue);
+
+    return currentValue;
+  })
+
+  let largetValue:number = Math.max(...values);
+
+  chartElement.setAttribute('data-max',Math.ceil(largetValue));
+
+  // TO DO round to the nearest 10, 100, 1000 and so on
+  return Math.ceil(largetValue);
 }
 
 function getCSVData(chartElement:any, csvURL:string){
@@ -1053,15 +1069,17 @@ export const createPies = function(chartElement:any){
         const largeArcFlag = percent > .5 ? 1 : 0;
 
         // create an array and join it just for code readability
-        const pathData = [
-          `M 0 0`,
-          `L ${startX.toFixed(0)} ${startY.toFixed(0)}`, // Move
-          `A 100 100 0 ${largeArcFlag} 1 ${endX.toFixed(0)} ${endY.toFixed(0)}`, // Arc
-          `L 0 0`, // Line
-        ].join(' ');
+        if(startX && startY && endX && endY){
+          const pathData = [
+            `M 0 0`,
+            `L ${startX.toFixed(0)} ${startY.toFixed(0)}`, // Move
+            `A 100 100 0 ${largeArcFlag} 1 ${endX.toFixed(0)} ${endY.toFixed(0)}`, // Arc
+            `L 0 0`, // Line
+          ].join(' ');
 
-        paths += `<path d="${pathData}" style="${cell.getAttribute('style')} --path-index: ${subindex};"></path>`;
-        tooltips += `<foreignObject x="-70" y="-70" width="140" height="140" ><div><span class="h5 mb-0"><span class="total d-block">${ucfirst(unsnake(title))}</span> ${ucfirst(unsnake(cell.getAttribute('data-label')))}<br/> ${cell.innerHTML}${cell.hasAttribute('data-second') ? `${cell.getAttribute('data-second-label')}: ${cell.getAttribute('data-second')}` : ''}</span></div></foreignObject>`;
+          paths += `<path d="${pathData}" style="${cell.getAttribute('style')} --path-index: ${subindex};"></path>`;
+          tooltips += `<foreignObject x="-70" y="-70" width="140" height="140" ><div><span class="h5 mb-0"><span class="total d-block">${ucfirst(unsnake(title))}</span> ${ucfirst(unsnake(cell.getAttribute('data-label')))}<br/> ${cell.innerHTML}${cell.hasAttribute('data-second') ? `${cell.getAttribute('data-second-label')}: ${cell.getAttribute('data-second')}` : ''}</span></div></foreignObject>`;
+        }
       }
     });
 
@@ -1343,24 +1361,24 @@ export const createRadar = function (chartElement:any,min:any,max:any){
     let { axis } = getValues(value,min,max);
     let line = '';
 
-    Array.from(chartElement.querySelectorAll('tbody tr')).forEach((row: any, index) => {
+    for(let i = 0; i < chartElement.querySelectorAll('tbody tr').length; i++) {
 
-      let command = index == 0 ? 'M' : 'L';
+      let command = i == 0 ? 'M' : 'L';
 
       let x = 50;
       let y = 50 - (axis/2);
 
       let deg = 360 / itemCount;
-      var angleInRadians = ((deg*index)-90) * Math.PI / 180.0
+      var angleInRadians = ((deg*i)-90) * Math.PI / 180.0
 
       if(counter != 0){
 
         x = 50 + (((axis/2)) * Math.cos(angleInRadians));
         y = 50 + (((axis/2)) * Math.sin(angleInRadians));
       }      
-        
+      
       line += `${command} ${x} ${y} `;
-    });
+    }
 
     let returnString = `
     <svg viewBox="0 0 100 100" class="line" preserveAspectRatio="none">
