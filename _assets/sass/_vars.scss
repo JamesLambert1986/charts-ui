@@ -25,3 +25,19 @@ $chart-colors: map-merge((
 
 $chart-height: 56.25%!default;
 $chart-height-lg: 42.86%!default;
+
+// Selectors
+$default-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner';
+$bar-chart: 'input[type=radio]:is([value="bar"],[value="comparison"]):not([value=none]):not([value=pie]):checked~.chart__inner';
+$combo-chart: 'input[type=radio][value="combo"]:not([value=none]):not([value=pie]):checked~.chart__inner';
+$comparison-chart: 'input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__inner';
+$comparison-chart-key: 'input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__key';
+$responsive-chart: 'input[type=radio][value="responsive"]:not([value=none]):not([value=pie]):checked~.chart__inner';
+$scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"]):checked ~ .chart__inner';
+$line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
+$bubble-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="bubble"]:checked ~ .chart__inner';
+$radar-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="radar"]:checked ~ .chart__inner';
+$pie-chart: 'input[type="radio"]:not([value="none"]):is([value="pie"],[value="polar"]):checked ~ .chart__inner';
+$polar-chart: 'input[type="radio"]:not([value="none"])[value="polar"]:checked ~ .chart__inner';
+$tree-chart: 'input[type="radio"]:not([value="none"])[value="treemap"]:checked ~ .chart__inner';
+$tree-chart-key: 'input[type="radio"]:not([value="none"])[value="treemap"]:checked ~ .chart__key';

@@ -1,0 +1,23 @@
+#{'.chart '+$line-chart},
+#{'.chart '+$combo-chart} {
+
+  .lines ~ table tbody {
+    tr {
+      td:not(.chart__bar):not(:first-child):not(:hover) {
+        opacity: 0;
+      }
+    }
+  }
+
+  .line {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke-width: var(--line-thickness);
+    width: 100%;
+    height: calc(100% - 1rem);
+    pointer-events: none;
+    z-index: var(--index-above)
+  }
+}

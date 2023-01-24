@@ -1,0 +1,7 @@
+input[type="radio"]:not([value="none"]):not([value="pie"])[value="stacked"]:checked ~ .chart__inner {
+  table tbody tr {
+    flex-direction: column-reverse;
+    justify-content: flex-start;
+    align-items: center;
+  }
+}

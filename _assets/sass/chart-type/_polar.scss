@@ -1,0 +1,28 @@
+#{'.chart '+$polar-chart} {
+
+  .pie>div {
+    display: block!important;
+    top: 100%;
+    height: auto;
+    border-radius: 0;
+    background: none;
+    aspect-ratio: unset;
+  }
+
+  .pie path,
+  .pie path:hover {
+    transform: scale(calc(var(--second-percent)))!important;
+  }
+
+  .pie foreignObject {
+    background: none;
+
+    .total {
+      display: none!important;
+    }
+  }
+
+  .pie:has(path:hover) path:not(:hover) {
+    opacity: 0.5;
+  }
+}

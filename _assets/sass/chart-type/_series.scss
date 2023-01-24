@@ -1,0 +1,46 @@
+.chart .series__controls {
+  display: flex;
+}
+
+.chart .series__play-btn,
+.chart .series__pause-btn {
+
+  background: none;
+  border: none;
+  padding: 0;
+  margin-inline-end: 1rem;
+  margin-block-end: 1rem;
+
+  &:before {
+    content: "";
+    height: rem(16);
+    width: rem(16);
+    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3e%3cpath d='M29 16 5.8 1v30L29 16z'%3e%3c/path%3e%3c/svg%3e");
+    background-size: 100% 100%;
+    display: inline-block;
+
+    vertical-align: bottom;
+    margin-bottom: rem(3);
+    margin-right: rem(6);
+  }
+}
+
+.chart .series__pause-btn {
+  &:before {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3e%3cpath d='M7 3h6v26H7zm12 0h6v26h-6z'%3e%3c/path%3e%3c/svg%3e");
+  }
+}
+
+.chart .series__progress {
+  flex-grow: 1;
+  height: 1.5rem;
+  margin-inline-end: 1rem;
+  margin-block-end: 1rem;
+  accent-color: black;
+}
+
+.chart .series__current {
+  line-height: 1.5rem;
+  margin-inline-end: 0;
+  margin-block-end: 1rem;
+}

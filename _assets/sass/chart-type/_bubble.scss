@@ -1,0 +1,23 @@
+
+// #region Bubble chart
+#{'.chart '+$bubble-chart} {
+
+  table tbody tr td:not(:first-child) {
+    background-color: transparent!important;
+
+    &:before {
+
+      content:""!important;
+      display: block;
+      height: 30px;
+      width: 30px;
+      border-radius: 15px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(calc(var(--second-percent, 0%)));
+      background: var(--chart-colour);
+    }
+  }
+}
+// #endregion

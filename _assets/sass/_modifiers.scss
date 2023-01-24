@@ -1,0 +1,176 @@
+// #region Display data modifier class
+.chart--display-data {
+  table tbody tr {
+
+    td:not(:first-child) {
+      
+      span {
+        &:before {
+          display: none;
+        }
+        opacity: 1!important;
+        z-index: var(--index-above);
+        top: 0%;
+        transform: translate(-50%, 0%)!important;
+        display: block!important;
+        height: fit-content;
+        background: none!important;
+        margin: 0;
+      }
+    }
+  }
+}
+#{'.chart.chart--display-data '+$bar-chart} table tbody tr td:not(:first-child) {
+  span {
+    top: 50%;
+    right: 0;
+    left: 0;
+    transform: translate(0%, -50%)!important;
+    text-align: right;
+    width: calc(100% - 0.4rem);
+    min-width: fit-content;
+    padding: 0 0.1rem;
+    border-radius: 0;
+  }
+}
+
+#{'.chart.chart--display-data '+$scatter-line-chart} table tbody tr td:not(:first-child) {
+  span {
+    bottom: 0.25rem;
+    top: auto;
+  }
+}
+
+#{'.chart--display-data '$line-chart} .lines~table tbody tr td:not(:first-child):not(:hover) {
+  opacity: 1;
+}
+
+// #endregion
+
+// #region Aspect ration modifier classes
+.chart--short {
+  --chart-height-set: 33.33%;
+  --chart-height-lg-set: 33.33%;
+}
+
+.chart--tall {
+  --chart-height-set: 56.25%;
+  --chart-height-lg-set: 56.25%;
+}
+.chart--square {
+  --chart-height-set: 100%;
+  --chart-height-lg-set: 100%;
+}
+.chart--hide-guidelines {
+  *:is(.chart__yaxis, .chart__guidelines) {
+    display: none!important;
+  }
+}
+// #endregion
+
+// #region Value order modifier class
+.chart--value-order tbody tr {
+  flex-wrap: nowrap;
+  display: flex;
+  justify-content: flex-start!important;
+}
+.chart--value-order tbody tr td{
+  order: var(--order,10000)!important;
+  display: flex;
+  flex-shrink: 0;
+}
+// #endregion
+
+// #region Crop height modifier classes (Used for bar chart only currently)
+.chart--crop-10 .chart__inner {
+
+  overflow: hidden;
+  max-height: calc(10 * 3rem);
+}
+// #endregion
+
+// #region Hide key modifier class
+.chart--hide-key {
+  .chart__key {
+    display: none!important;
+  }
+}
+// #endregion
+
+// #region Display set label modifier class
+// For bar chart
+.chart.chart--display-set-label input[type="radio"][value="bar"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner tbody tr td:before {
+  content: attr(data-label);
+  white-space: nowrap;
+  display: block!important;
+  position: absolute;
+  top: calc(50% - 0.5em);
+  right: calc(100% + 0.5em);
+  color: #000000;
+  font-size: var(--label-size);
+}
+
+.chart.chart--display-set-label input[type="radio"][value="bar"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inner[data-set-label]:before {
+  content: attr(data-set-label);
+}
+
+// For column chart
+// TODO
+// #endregion
+
+// #region
+.chart--hide-total {
+  table tbody tr {
+
+    td[data-label="Total"] {
+      display: none;
+    }
+  }
+}
+// #endregion
+
+.chart.chart--collapse-rows {
+  
+  .chart__inner table tbody tr {
+    margin-bottom: 0!important;
+    pointer-events: none;
+
+    td {
+
+      pointer-events: all;
+    }
+  }
+  .chart__inner table tbody tr:not(:first-child) {
+    position: absolute!important;
+    top: 0;
+    left: 0;
+
+    td:not(:first-child):has(span:empty), 
+    td:not(:first-child):empty {
+      display: block!important;
+    }
+
+  }
+}
+
+.chart[data-increment="days"] tbody {
+  --linear-bg: rgba(220, 220, 220, 0.2);
+  
+  --start-day: 1;
+  
+  --weekend-start: calc(6 - var(--start-day, 1));
+  --weekend-end: calc(var(--weekend-start) + 2);
+  --end-day: calc(8 - var(--start-day));
+
+  --day-percent: calc(100% / 7);
+
+  --start-percent: calc(var(--day-percent) * var(--weekend-start));
+  --end-percent: calc(var(--day-percent) * var(--end-day));
+  --weekend-percent: calc(var(--day-percent) * var(--weekend-end));
+
+  background: linear-gradient(var(--chart-direction), transparent var(--start-percent), transparent var(--start-percent),
+                                                      var(--linear-bg) var(--start-percent), var(--linear-bg) var(--end-percent)
+                              );
+  background-size: var(--chart-day-bg-pos);
+  //background-position: calc(var(--single-day) * 2);
+}

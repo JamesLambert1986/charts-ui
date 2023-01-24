@@ -1,0 +1,127 @@
+
+// #region bar chart and responsive chart
+@mixin barchart($selector) {
+  #{$selector} {
+
+    tbody {
+      --chart-direction: 90deg;
+    --chart-day-bg-pos: calc(var(--single-day) * 7) 100%;
+    }
+
+    .chart__guidelines {
+      position: absolute;
+
+      .guideline {
+        bottom: auto;
+        left: var(--percent);
+        height: 100%;
+        border-left: 1px dashed #eee;
+        width: 0;
+
+        span{
+          display: block;
+          font-size: var(--label-size);
+          position: absolute;
+          top: 100%;
+          transform: translate(-50%,0.2em);
+        } 
+      }
+    }
+
+    .chart__yaxis {
+
+      display: none;
+    }
+
+    table {
+
+      padding-top: 0;
+    }
+
+    table tbody {
+
+      flex-direction: column;
+      position: relative;
+    }
+
+    table tbody tr {
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 0.5rem;
+      padding: 0;
+
+      td {
+        
+        height: 3rem;
+        bottom: 0;
+        left: var(--bottom, 0%);
+        width: var(--comparison,var(--percent));
+        max-width: 100%;
+      }
+
+      td:first-child {
+        position: static;
+        transform: none;
+        display: block!important;
+        max-height: 1.5rem;
+      }
+    }
+
+    &[data-longest-label] {
+      &:before {
+        display: block;
+        content: attr(data-longest-label);
+        font-size: var(--label-size);
+        padding-right: 0.5em;
+        opacity: 0;
+        pointer-events: none;
+        white-space: nowrap;
+      }   
+    }
+
+    &[data-longest-label] table tbody tr {
+      td:first-child {
+        position: absolute;
+        transform: translate(-100%, -50%)!important;
+        display: block !important;
+        max-height: 1.5rem;
+        z-index: var(--index-above);
+        top: 50%;
+        left: 0!important;
+        padding-right: 0.5em;
+      }
+    }
+
+  }
+}
+
+
+@include barchart('.chart '+$bar-chart);
+
+#{'.chart:not(.chart--crop-10) '+$bar-chart} {
+        
+  table tbody:has(tr:nth-child(10)) tr td {
+    height: 1.5rem;
+  }
+
+  table tbody:has(tr:nth-child(10)) tr:has(td:nth-child(3)) td:not(:first-child) {
+    height: 1rem;
+  }
+}
+
+@container (max-width: 36em) {
+  @include barchart('.chart '+$responsive-chart);
+
+  #{'.chart:not(.chart--crop-10) '+$responsive-chart} {
+        
+    table tbody:has(tr:nth-child(10)) tr td {
+      height: 1.5rem;
+    }
+  
+    table tbody:has(tr:nth-child(10)) tr:has(td:nth-child(3)) td:not(:first-child) {
+      height: 1rem;
+    }
+  }
+}
+
+// #endregion

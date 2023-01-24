@@ -1,0 +1,26 @@
+#{'.chart '+$tree-chart} {
+
+  tbody {
+    background: red;
+    display: block;
+  }
+
+  table tbody tr {
+    width: 100%;
+  }
+
+  table tbody tr td:first-child {
+    display: none!important;
+  }
+
+  table tbody tr td:not(:first-child) {
+    width: var(--tm-width, var(--percent));
+    max-width: 100%;
+    height: var(--tm-height, 100%);
+    position: var(--tm-position, relative);
+    top: var(--tm-top, 0);
+    left: var(--tm-left, 0);
+
+    outline: 1px solid white;
+  }
+}
