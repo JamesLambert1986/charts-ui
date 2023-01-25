@@ -41,3 +41,4 @@ $pie-chart: 'input[type="radio"]:not([value="none"]):is([value="pie"],[value="po
 $polar-chart: 'input[type="radio"]:not([value="none"])[value="polar"]:checked ~ .chart__inner';
 $tree-chart: 'input[type="radio"]:not([value="none"])[value="treemap"]:checked ~ .chart__inner';
 $tree-chart-key: 'input[type="radio"]:not([value="none"])[value="treemap"]:checked ~ .chart__key';
+$dumbbell-chart: 'input[type="radio"]:not([value="none"])[value="dumbbell"]:checked ~ .chart__inner';

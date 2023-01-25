@@ -175,3 +175,20 @@
   }
 }
 // #endregion
+
+// #region
+
+#{'.chart--animate.animating.inview '+$dumbbell-chart} {
+  table tbody tr:before {
+    transition: width 2s ease-out, left 2s ease-out;
+    transition-delay: calc(var(--row-index) * 0.1s);
+  }
+}
+#{'.chart--animate:not(.inview) '+$dumbbell-chart} {
+
+  table tbody tr:before {
+    left: 0%!important;
+    width: 0%!important;
+  }
+}
+// #endregion

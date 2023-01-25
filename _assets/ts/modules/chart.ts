@@ -788,6 +788,8 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
   Array.from(table.querySelectorAll('tbody tr')).forEach((tr:any, index) => {
 
     let group = tr.querySelector('td:first-child, th:first-child') ? tr.querySelector('td:first-child, th:first-child').innerHTML : '';
+    let coverageStart:number = 100;
+    let coverageEnd:number = 0;
 
     // Set the data numeric value if not set
     Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td:any) => {
@@ -817,18 +819,26 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
       tr.setAttribute('data-max',tr.querySelector('[data-label="Total"][data-numeric]').getAttribute('data-numeric'));
     }
 
+    if(tr.querySelector('[data-label="Min"]')){
+      tr.setAttribute('data-min',tr.querySelector('[data-label="Min"][data-numeric]').getAttribute('data-numeric'));
+    }
+    if(tr.querySelector('[data-label="Max"]')){
+      tr.setAttribute('data-max',tr.querySelector('[data-label="Max"][data-numeric]').getAttribute('data-numeric'));
+    }
+
+    let rowMin = tr.hasAttribute('data-min') ? tr.getAttribute('data-min') : min;
     let rowMax = tr.hasAttribute('data-max') ? tr.getAttribute('data-max') : max;
 
     // Add a useful index css var for the use of animatons.
     tr.setAttribute('style',`--row-index: ${index+1};`);
 
-    if(min < 0){
-      let minBottom = Math.abs(((min)/(max - min))*100);
+    if(rowMin < 0){
+      let minBottom = Math.abs(((rowMin)/(rowMax - rowMin))*100);
       chartElement.setAttribute('style',`--min-bottom: ${minBottom}%;`);
     }
 
     // Add css vars to cells
-    Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td:any, tdIndex) => {
+    Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child):not([data-label="Min"]):not([data-label="Max"])')).forEach((td:any, tdIndex) => {
 
       
       const label = td.getAttribute('data-label');
@@ -841,15 +851,24 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
         
         const value = Number.parseFloat(td.getAttribute('data-numeric'));
         const start = Number.parseFloat(td.getAttribute('data-start'));
-        let { percent, bottom, axis } = getValues(value,min,max,start);
+        let { percent, bottom, axis } = getValues(value,rowMin,rowMax,start);
         let order:number = (10000 - Math.round(percent * 100));
 
         td.setAttribute('data-percent',percent)
         td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--axis: ${axis}%;--order:${order};`);
 
+        if(percent < coverageStart){
+          tr.style.setProperty('--coverage-start',`${percent}%`);
+          coverageStart = percent;
+        }
+        
+        if(percent > coverageEnd){
+          tr.style.setProperty('--coverage-end',`${percent}%`);
+          coverageEnd = percent;
+        }
 
         if(tr.hasAttribute('data-max')){
-          let comparison = ((value - min)/(rowMax)) * 100;
+          let comparison = ((value - rowMin)/(rowMax)) * 100;
           order = (10000 - Math.round(comparison * 100));
           td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--axis: ${axis}%;--comparison:${comparison}%;--order:${order};`);
         }

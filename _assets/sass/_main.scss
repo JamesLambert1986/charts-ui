@@ -264,6 +264,11 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     &:focus-within {
       outline: 3px solid var(--chart-colour);
     }
+
+    &[data-label="Min"],
+    &[data-label="Max"] {
+      display: none;
+    }
   }
 }
 // #endregion
@@ -482,6 +487,11 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
         }
       }
 
+      td[data-label="Min"],
+      td[data-label="Max"] {
+        display: none;
+      }
+
       &:first-child td:first-child,
       &:last-child td:first-child {
 
@@ -542,7 +552,7 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
           text-align: center;
 
           &::before {
-            content: attr(data-label)  ' - ' attr(data-group) '\A';
+            content: attr(data-label)'\A'attr(data-group)'\A';
           }
 
           &[data-second]:after {
