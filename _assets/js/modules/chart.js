@@ -76,6 +76,9 @@ function chart(chartElement) {
     // Create lines for line graph
     if (chartElement.querySelector(':scope > input[value="line"]:checked'))
         createLines(chartElement, min, max);
+    // Create lines for line graph
+    if (chartElement.querySelector(':scope > input[value="proportional"]:checked'))
+        createProportionalAreas(chartElement, min, max);
     // Create pies
     if (chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
         createPies(chartElement);
@@ -108,6 +111,12 @@ function chart(chartElement) {
                 });
                 setCellData(chartElement, table, min, newMax);
                 setTreemapCellData(chartElement);
+            }
+            if (chartElement.querySelector(':scope > input[value="proportional"]:checked')) {
+                deleteCellData(chartElement);
+                console.log('hi');
+                setCellData(chartElement, table, min, max);
+                createProportionalAreas(chartElement, min, max);
             }
         });
         if (chartElement.querySelector(':scope > input[value="radar"]:checked'))
@@ -526,6 +535,7 @@ export const deleteCellData = function (chartElement) {
     });
 };
 export const setCellData = function (chartElement, table, min, max, secondTable) {
+    let chartType = chartElement.getAttribute('data-type');
     let increment = chartElement.getAttribute('data-increment');
     let startDay = min;
     if (increment == "days") {
@@ -537,9 +547,10 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
         let group = tr.querySelector('td:first-child, th:first-child') ? tr.querySelector('td:first-child, th:first-child').innerHTML : '';
         let coverageStart = 100;
         let coverageEnd = 0;
+        let cumulativeComparison = 0;
         // Set the data numeric value if not set
         Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td) => {
-            let value = parseFloat(td.textContent.replace('£', '').replace('%', ''));
+            let value = parseFloat(td.textContent.replace('£', '').replace('%', '').replace(',', ''));
             let start = 0;
             if (increment == "days") {
                 let dates = td.textContent.split(' - ');
@@ -556,7 +567,7 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
             td.setAttribute('data-label', table.querySelectorAll('thead th')[index].textContent);
         });
         if (tr.querySelector('[data-label="Total"]')) {
-            tr.setAttribute('data-max', tr.querySelector('[data-label="Total"][data-numeric]').getAttribute('data-numeric'));
+            tr.setAttribute('data-total', tr.querySelector('[data-label="Total"][data-numeric]').getAttribute('data-numeric'));
         }
         if (tr.querySelector('[data-label="Min"]')) {
             tr.setAttribute('data-min', tr.querySelector('[data-label="Min"][data-numeric]').getAttribute('data-numeric'));
@@ -564,16 +575,29 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
         if (tr.querySelector('[data-label="Max"]')) {
             tr.setAttribute('data-max', tr.querySelector('[data-label="Max"][data-numeric]').getAttribute('data-numeric'));
         }
+        if (chartType == "proportional") {
+            let total = 0;
+            Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td, tdIndex) => {
+                let display = getComputedStyle(td).display;
+                if (display == 'none')
+                    return;
+                total += Number.parseFloat(td.getAttribute('data-numeric'));
+            });
+            tr.setAttribute('data-total', total);
+        }
         let rowMin = tr.hasAttribute('data-min') ? tr.getAttribute('data-min') : min;
         let rowMax = tr.hasAttribute('data-max') ? tr.getAttribute('data-max') : max;
         // Add a useful index css var for the use of animatons.
-        tr.setAttribute('style', `--row-index: ${index + 1};`);
+        tr.setAttribute('style', `--row-index:${index + 1};`);
         if (rowMin < 0) {
             let minBottom = Math.abs(((rowMin) / (rowMax - rowMin)) * 100);
             chartElement.setAttribute('style', `--min-bottom: ${minBottom}%;`);
         }
         // Add css vars to cells
-        Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child):not([data-label="Min"]):not([data-label="Max"])')).forEach((td, tdIndex) => {
+        Array.from(tr.querySelectorAll('td[data-numeric]:not([data-label="Min"]):not([data-label="Max"]):not(:first-child)')).forEach((td, tdIndex) => {
+            let display = getComputedStyle(td).display;
+            if (display == 'none')
+                return;
             const label = td.getAttribute('data-label');
             const content = td.innerHTML;
             if (!td.querySelector('span[data-group]'))
@@ -584,7 +608,7 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
                 let { percent, bottom, axis } = getValues(value, rowMin, rowMax, start);
                 let order = (10000 - Math.round(percent * 100));
                 td.setAttribute('data-percent', percent);
-                td.setAttribute("style", `--bottom:${bottom}%;--percent:${percent}%;--axis: ${axis}%;--order:${order};`);
+                td.setAttribute("style", `--bottom:${bottom}%;--percent:${percent}%;--axis:${axis}%;--order:${order};`);
                 if (percent < coverageStart) {
                     tr.style.setProperty('--coverage-start', `${percent}%`);
                     coverageStart = percent;
@@ -593,10 +617,13 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
                     tr.style.setProperty('--coverage-end', `${percent}%`);
                     coverageEnd = percent;
                 }
-                if (tr.hasAttribute('data-max')) {
-                    let comparison = ((value - rowMin) / (rowMax)) * 100;
+                if (tr.hasAttribute('data-total')) {
+                    let rowTotal = tr.getAttribute('data-total');
+                    let comparison = ((value - rowMin) / (rowTotal)) * 100;
                     order = (10000 - Math.round(comparison * 100));
-                    td.setAttribute("style", `--bottom:${bottom}%;--percent:${percent}%;--axis: ${axis}%;--comparison:${comparison}%;--order:${order};`);
+                    cumulativeComparison += comparison;
+                    td.setAttribute('data-comparison', comparison);
+                    td.setAttribute("style", `--bottom:${bottom}%;--percent:${percent}%;--axis:${axis}%;--order:${order};--cumulative-comparision:${cumulativeComparison}%;--comparison:${comparison}%;`);
                 }
             }
             // Second table 
@@ -719,6 +746,7 @@ export const createPies = function (chartElement) {
                 let value = cell.getAttribute('data-numeric');
                 value = value.replace('£', '');
                 value = value.replace('%', '');
+                value = value.replace(',', '');
                 value = Number.parseInt(value);
                 total += value;
                 pieCount++;
@@ -731,6 +759,7 @@ export const createPies = function (chartElement) {
                 let value = cell.getAttribute('data-numeric');
                 value = value.replace('£', '');
                 value = value.replace('%', '');
+                value = value.replace(',', '');
                 value = Number.parseInt(value);
                 let percent = value / total;
                 const [startX, startY] = getCoordinatesForPercent(cumulativePercent, pieCount);
@@ -811,6 +840,78 @@ export const createLines = function (chartElement, min, max) {
         returnString += `
 <svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none">
   <path fill="none" d="${line}" style="--path: path('${animatelines[index]}');"></path>
+</svg>`;
+    });
+    linesWrapper.innerHTML = returnString;
+};
+export const createProportionalAreas = function (chartElement, min, max) {
+    let chartType = chartElement.getAttribute('data-type');
+    let returnString = '';
+    let tableWrapper = chartElement.querySelector('.table__wrapper');
+    let linesWrapper = chartElement.querySelector('.lines');
+    if (!linesWrapper) {
+        linesWrapper = document.createElement("div");
+        linesWrapper.setAttribute('class', 'lines');
+        tableWrapper.prepend(linesWrapper);
+    }
+    let items = Array.from(chartElement.querySelectorAll('tbody tr'));
+    let lines = Array();
+    let reverseLines = Array();
+    let linesCount = chartElement.querySelectorAll('thead th:not(:first-child)').length;
+    let commands = Array();
+    let animatelines = Array();
+    let reverseAnimatelines = Array();
+    let itemCount = items.length <= 1000 ? items.length : 1000;
+    let spacer = 200 / (itemCount - 1);
+    let spacerIndent = 0;
+    // Creates the lines array from the fields array
+    for (let i = 0; i < linesCount; i++) {
+        lines[i] = '';
+        reverseLines[i] = 'z';
+        animatelines[i] = '';
+        reverseAnimatelines[i] = 'z';
+        commands[i] = 'M';
+    }
+    // populate the lines array from the items array
+    let counter = 0;
+    Array.from(chartElement.querySelectorAll('tbody tr')).forEach((item) => {
+        const display = getComputedStyle(item).display;
+        if (display != "none") {
+            Array.from(item.querySelectorAll('td:not(:first-child)')).forEach((cell, subindex) => {
+                const cellDisplay = getComputedStyle(cell).display;
+                if (cellDisplay == 'none')
+                    return;
+                if (!cell.classList.contains('chart__bar')) {
+                    const styles = getComputedStyle(cell);
+                    const axis = styles.getPropertyValue('--cumulative-comparision').replace('%', '');
+                    let minus = cell.getAttribute('data-comparison');
+                    let reversePoint = 100 - (axis - parseFloat(minus));
+                    if (!Number.isNaN(axis)) {
+                        lines[subindex] += `${commands[subindex]} ${(spacerIndent) + (spacer * counter)} ${100 - axis} `;
+                        reverseLines[subindex] = `L ${(spacerIndent) + (spacer * counter)} ${reversePoint} ` + reverseLines[subindex];
+                        if (subindex + 1 > (linesCount / 2)) {
+                            animatelines[subindex] += `${commands[subindex]} ${spacer * counter} 0 `;
+                            reverseAnimatelines[subindex] = `L ${spacer * counter} 50 ` + reverseAnimatelines[subindex];
+                        }
+                        else {
+                            animatelines[subindex] += `${commands[subindex]} ${spacer * counter} 50 `;
+                            reverseAnimatelines[subindex] = `L ${spacer * counter} 100 ` + reverseAnimatelines[subindex];
+                        }
+                        commands[subindex] = 'L';
+                    }
+                    else {
+                        commands[subindex] = 'M';
+                    }
+                }
+            });
+            counter++;
+        }
+    });
+    lines.forEach((line, index) => {
+        //if(line != "")
+        returnString += `
+<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none">
+  <path d="${line}${reverseLines[index]}" style="--path: path('${animatelines[index]}${reverseAnimatelines[index]}');"></path>
 </svg>`;
     });
     linesWrapper.innerHTML = returnString;

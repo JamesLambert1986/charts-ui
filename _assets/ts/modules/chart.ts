@@ -111,6 +111,10 @@ function chart(chartElement:any) {
   if(chartElement.querySelector(':scope > input[value="line"]:checked'))
     createLines(chartElement,min,max);
 
+  // Create lines for line graph
+  if(chartElement.querySelector(':scope > input[value="proportional"]:checked'))
+    createProportionalAreas(chartElement,min,max);
+
   // Create pies
   if(chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
     createPies(chartElement);
@@ -137,31 +141,40 @@ function chart(chartElement:any) {
         createPies(chartElement);
 
 
-      if(chartElement.querySelector(':scope > input[value="treemap"]:checked')){
+        if(chartElement.querySelector(':scope > input[value="treemap"]:checked')){
 
-        deleteCellData(chartElement);
+          deleteCellData(chartElement);
+  
+          let newMax = 0;
+  
+          Array.from(chartElement.querySelectorAll('table tbody tr td:not(:first-child)')).forEach((td: any) => {
+  
+            const display = getComputedStyle(td).display;
+  
+            if(display != 'none'){
+  
+              let value = td.innerHTML;
+  
+              value = value.replace('£','');
+              value = value.replace('%','');
+              value = Number.parseFloat(value);
+  
+              newMax += value;
+            }
+          });
+          setCellData(chartElement, table,min,newMax);
+          setTreemapCellData(chartElement);
+        }
 
-        let newMax = 0;
+        if(chartElement.querySelector(':scope > input[value="proportional"]:checked')){
 
-        Array.from(chartElement.querySelectorAll('table tbody tr td:not(:first-child)')).forEach((td: any) => {
+          deleteCellData(chartElement);
+  
+          console.log('hi');
 
-          const display = getComputedStyle(td).display;
-
-          if(display != 'none'){
-
-            let value = td.innerHTML;
-
-            value = value.replace('£','');
-            value = value.replace('%','');
-            value = Number.parseFloat(value);
-
-            newMax += value;
-          }
-        });
-        setCellData(chartElement, table,min,newMax);
-        setTreemapCellData(chartElement);
-      }
-
+          setCellData(chartElement, table,min,max);
+          createProportionalAreas(chartElement,min,max);
+        }
     });
 
     if(chartElement.querySelector(':scope > input[value="radar"]:checked'))
@@ -772,10 +785,11 @@ export const deleteCellData = function(chartElement:any){
 }
 
 export const setCellData = function(chartElement:any,table:any,min:any,max:any,secondTable?:any){
-
-
+  
+  let chartType = chartElement.getAttribute('data-type');
   let increment = chartElement.getAttribute('data-increment');
   let startDay = min;
+  
 
   if(increment == "days"){
     
@@ -790,11 +804,12 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
     let group = tr.querySelector('td:first-child, th:first-child') ? tr.querySelector('td:first-child, th:first-child').innerHTML : '';
     let coverageStart:number = 100;
     let coverageEnd:number = 0;
+    let cumulativeComparison:number = 0;
 
     // Set the data numeric value if not set
     Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td:any) => {
 
-      let value = parseFloat(td.textContent.replace('£','').replace('%',''));
+      let value = parseFloat(td.textContent.replace('£','').replace('%','').replace(',',''));
       let start = 0;
       if(increment == "days"){
         let dates = td.textContent.split(' - ');
@@ -816,7 +831,7 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
     });
 
     if(tr.querySelector('[data-label="Total"]')){
-      tr.setAttribute('data-max',tr.querySelector('[data-label="Total"][data-numeric]').getAttribute('data-numeric'));
+      tr.setAttribute('data-total',tr.querySelector('[data-label="Total"][data-numeric]').getAttribute('data-numeric'));
     }
 
     if(tr.querySelector('[data-label="Min"]')){
@@ -826,11 +841,27 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
       tr.setAttribute('data-max',tr.querySelector('[data-label="Max"][data-numeric]').getAttribute('data-numeric'));
     }
 
+    if(chartType == "proportional"){
+
+      let total = 0;
+
+      Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td:any, tdIndex) => {
+
+        let display = getComputedStyle(td).display;
+        if(display == 'none')
+          return;
+
+        total += Number.parseFloat(td.getAttribute('data-numeric'));
+      });
+
+      tr.setAttribute('data-total',total);
+    }
+
     let rowMin = tr.hasAttribute('data-min') ? tr.getAttribute('data-min') : min;
     let rowMax = tr.hasAttribute('data-max') ? tr.getAttribute('data-max') : max;
 
     // Add a useful index css var for the use of animatons.
-    tr.setAttribute('style',`--row-index: ${index+1};`);
+    tr.setAttribute('style',`--row-index:${index+1};`);
 
     if(rowMin < 0){
       let minBottom = Math.abs(((rowMin)/(rowMax - rowMin))*100);
@@ -838,8 +869,11 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
     }
 
     // Add css vars to cells
-    Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child):not([data-label="Min"]):not([data-label="Max"])')).forEach((td:any, tdIndex) => {
+    Array.from(tr.querySelectorAll('td[data-numeric]:not([data-label="Min"]):not([data-label="Max"]):not(:first-child)')).forEach((td:any, tdIndex) => {
 
+      let display = getComputedStyle(td).display;
+      if(display == 'none')
+        return;
       
       const label = td.getAttribute('data-label');
       const content = td.innerHTML;
@@ -855,7 +889,7 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
         let order:number = (10000 - Math.round(percent * 100));
 
         td.setAttribute('data-percent',percent)
-        td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--axis: ${axis}%;--order:${order};`);
+        td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--axis:${axis}%;--order:${order};`);
 
         if(percent < coverageStart){
           tr.style.setProperty('--coverage-start',`${percent}%`);
@@ -867,10 +901,13 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
           coverageEnd = percent;
         }
 
-        if(tr.hasAttribute('data-max')){
-          let comparison = ((value - rowMin)/(rowMax)) * 100;
+        if(tr.hasAttribute('data-total')){
+          let rowTotal = tr.getAttribute('data-total');
+          let comparison = ((value - rowMin)/(rowTotal)) * 100;
           order = (10000 - Math.round(comparison * 100));
-          td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--axis: ${axis}%;--comparison:${comparison}%;--order:${order};`);
+          cumulativeComparison += comparison;
+          td.setAttribute('data-comparison',comparison);
+          td.setAttribute("style",`--bottom:${bottom}%;--percent:${percent}%;--axis:${axis}%;--order:${order};--cumulative-comparision:${cumulativeComparison}%;--comparison:${comparison}%;`);
         }
       }
 
@@ -1054,6 +1091,7 @@ export const createPies = function(chartElement:any){
 
         value = value.replace('£','');
         value = value.replace('%','');
+        value = value.replace(',','');
         value = Number.parseInt(value);
 
         total += value;
@@ -1072,6 +1110,7 @@ export const createPies = function(chartElement:any){
 
         value = value.replace('£','');
         value = value.replace('%','');
+        value = value.replace(',','');
         value = Number.parseInt(value);
 
         let percent = value/total;
@@ -1189,6 +1228,107 @@ export const createLines = function(chartElement:any,min:any,max:any){
 
   linesWrapper.innerHTML = returnString;
 }
+
+
+export const createProportionalAreas = function(chartElement:any,min:any,max:any){
+  let chartType = chartElement.getAttribute('data-type');
+  let returnString = '';
+  let tableWrapper = chartElement.querySelector('.table__wrapper');
+  let linesWrapper = chartElement.querySelector('.lines');
+
+  if(!linesWrapper){
+
+    linesWrapper = document.createElement("div");
+    linesWrapper.setAttribute('class','lines');
+
+    tableWrapper.prepend(linesWrapper);
+
+  }
+
+  let items = Array.from(chartElement.querySelectorAll('tbody tr'));
+  let lines = Array();
+  let reverseLines = Array();
+  let linesCount = chartElement.querySelectorAll('thead th:not(:first-child)').length;
+  let commands = Array();
+  let animatelines = Array();
+  let reverseAnimatelines = Array();
+  let itemCount = items.length <= 1000 ? items.length : 1000;
+  let spacer = 200/(itemCount - 1);
+  let spacerIndent = 0;
+
+  // Creates the lines array from the fields array
+  for(let i = 0; i < linesCount; i++){
+
+    lines[i] = '';
+    reverseLines[i] = 'z';
+    animatelines[i] = '';
+    reverseAnimatelines[i] = 'z';
+    commands[i] = 'M';
+  }
+
+  // populate the lines array from the items array
+  let counter = 0;
+
+  Array.from(chartElement.querySelectorAll('tbody tr')).forEach((item:any) => {
+
+    const display = getComputedStyle(item).display;
+
+    if(display != "none"){
+
+      Array.from(item.querySelectorAll('td:not(:first-child)')).forEach((cell:any, subindex) => {
+
+        const cellDisplay = getComputedStyle(cell).display;
+
+        if(cellDisplay == 'none')
+          return;
+
+        if(!cell.classList.contains('chart__bar')){
+
+          const styles = getComputedStyle(cell);
+          const axis:any = styles.getPropertyValue('--cumulative-comparision').replace('%','');
+          let minus:any = cell.getAttribute('data-comparison');
+
+          let reversePoint = 100 - (axis - parseFloat(minus));
+
+          if(!Number.isNaN(axis)){
+            lines[subindex] += `${commands[subindex]} ${(spacerIndent) + (spacer * counter)} ${100-axis} `;
+            reverseLines[subindex] = `L ${(spacerIndent) + (spacer * counter)} ${reversePoint} ` + reverseLines[subindex];
+            
+
+            if(subindex+1 > (linesCount/2)){
+              animatelines[subindex] += `${commands[subindex]} ${spacer * counter} 0 `;
+              reverseAnimatelines[subindex] = `L ${spacer * counter} 50 ` + reverseAnimatelines[subindex];
+            }
+            else {
+              animatelines[subindex] += `${commands[subindex]} ${spacer * counter} 50 `;
+              reverseAnimatelines[subindex] = `L ${spacer * counter} 100 ` + reverseAnimatelines[subindex];
+            }
+
+            commands[subindex] = 'L';
+          }
+          else {
+            commands[subindex] = 'M';
+          }
+        }
+      });
+
+      counter++;
+    }
+
+  });
+
+  lines.forEach((line, index) => {
+    //if(line != "")
+      returnString += `
+<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none">
+  <path d="${line}${reverseLines[index]}" style="--path: path('${animatelines[index]}${reverseAnimatelines[index]}');"></path>
+</svg>`
+
+  });
+
+  linesWrapper.innerHTML = returnString;
+}
+
 
 export const createSeries = function(chartElement:any){
 

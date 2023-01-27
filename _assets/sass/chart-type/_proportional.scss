@@ -1,0 +1,47 @@
+#{'.chart '+$proportional-chart-key} {
+  .key {
+
+    &[data-label="Min"],
+    &[data-label="Max"],
+    &[data-label="Total"] {
+      display: none;
+    }
+  }
+}
+
+#{'.chart '+$proportional-chart} {
+
+  table {
+    
+    tbody tr {
+      
+      td[data-label="Total"] {
+        display: none;
+      }
+    }
+  }
+
+  table tbody tr td:not(.chart__bar):not(:first-child) {
+    bottom: calc(var(--cumulative-comparision));
+  }
+
+  .lines ~ table tbody {
+    tr {
+      td:not(.chart__bar):not(:first-child):not(:hover) {
+        opacity: 0;
+      }
+    }
+  }
+
+  .line {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke-width: 0.2px;
+    width: 100%;
+    height: calc(100% - 1rem);
+    pointer-events: none;
+    z-index: var(--index-above)
+  }
+}

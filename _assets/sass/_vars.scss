@@ -33,10 +33,12 @@ $combo-chart: 'input[type=radio][value="combo"]:not([value=none]):not([value=pie
 $comparison-chart: 'input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__inner';
 $comparison-chart-key: 'input[type=radio][value="comparison"]:not([value=none]):not([value=pie]):checked~.chart__key';
 $responsive-chart: 'input[type=radio][value="responsive"]:not([value=none]):not([value=pie]):checked~.chart__inner';
-$scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"]):checked ~ .chart__inner';
+$scatter-line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"]):is([value="line"],[value="scatter"],[value="bubble"],[value="radar"],[value="proportional"]):checked ~ .chart__inner';
 $line-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="line"]:checked ~ .chart__inner';
 $bubble-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="bubble"]:checked ~ .chart__inner';
 $radar-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="radar"]:checked ~ .chart__inner';
+$proportional-chart: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="proportional"]:checked ~ .chart__inner';
+$proportional-chart-key: 'input[type="radio"]:not([value="none"]):not([value="pie"])[value="proportional"]:checked ~ .chart__key';
 $pie-chart: 'input[type="radio"]:not([value="none"]):is([value="pie"],[value="polar"]):checked ~ .chart__inner';
 $polar-chart: 'input[type="radio"]:not([value="none"])[value="polar"]:checked ~ .chart__inner';
 $tree-chart: 'input[type="radio"]:not([value="none"])[value="treemap"]:checked ~ .chart__inner';

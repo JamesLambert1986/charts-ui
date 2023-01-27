@@ -52,6 +52,7 @@
 }
 // Line chart 
 #{'.chart--animate '+$line-chart}, 
+#{'.chart--animate '+$proportional-chart},
 #{'.chart--animate '+$combo-chart} {
   .line path {
     transition: 2s ease-out;
@@ -59,6 +60,7 @@
 }
 
 #{'.chart--animate:not(.inview) '+$line-chart},
+#{'.chart--animate:not(.inview) '+$proportional-chart},
 #{'.chart--animate:not(.inview) '+$combo-chart} {
   .line path {
     d: var(--path);

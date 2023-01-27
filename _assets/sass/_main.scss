@@ -140,9 +140,10 @@
     --chart-colour: var(#{'--chart-colour-'+$i+'-set'});
   }
 
-  input:is([value="line"],[value="radar"],[value="combo"]):checked ~ .chart__inner .line:nth-child(10n - #{10 - $i}) {
+  input:is([value="line"],[value="radar"],[value="combo"],[value="proportional"]):checked ~ .chart__inner .line:nth-child(10n - #{10 - $i}) {
     color: var(#{'--chart-colour-'+$i+'-set'});
     stroke: currentColor;
+    fill: currentColor;
     z-index: #{10 - $i};
   }
   input:is([value="pie"],[value="polar"]):checked ~ .chart__inner .pie path:nth-child(10n - #{10 - $i}) {
