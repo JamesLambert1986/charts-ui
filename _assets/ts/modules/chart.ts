@@ -1318,12 +1318,8 @@ export const createProportionalAreas = function(chartElement:any,min:any,max:any
   });
 
   lines.forEach((line, index) => {
-    //if(line != "")
-      returnString += `
-<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none">
-  <path d="${line}${reverseLines[index]}" style="--path: path('${animatelines[index]}${reverseAnimatelines[index]}');"></path>
-</svg>`
-
+    //
+      returnString += `<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none">${line != "" ? `<path d="${line}${reverseLines[index]}" style="--path: path('${animatelines[index]}${reverseAnimatelines[index]}');"></path>`: ''}</svg>`;
   });
 
   linesWrapper.innerHTML = returnString;
