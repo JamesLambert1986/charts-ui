@@ -362,6 +362,34 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     }
   }
 
+  .chart__xaxis {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    bottom: -1rem;
+
+    .axis__point {
+      
+      left: var(--percent);
+      width: 1px;
+      position: absolute;
+      height: 0;
+      white-space: nowrap;
+
+      span {
+        display: block;
+        transform: translate(-50%, 0%);
+        text-align: center;
+        font-size: var(--label-size);
+        position: absolute;
+        left: 50%;
+      }
+    }
+  }
+
   .chart__guidelines {
 
     position: absolute;

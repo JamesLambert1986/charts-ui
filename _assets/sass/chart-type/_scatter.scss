@@ -100,3 +100,33 @@
     display: none;
   }
 }
+
+#{'.chart[data-increment][data-start][data-end] '+$scatter-line-chart} {
+
+  table tbody tr {
+    position: absolute;
+    left: var(--position);
+
+    td:first-child {
+      display: none;
+    }
+  }
+
+  .slope {
+    
+    pointer-events: none;
+  }
+  .slope svg {
+    color: vlack;
+    stroke: currentColor;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    stroke-width: var(--line-thickness);
+    width: 100%;
+    height: calc(100% - 1rem);
+    pointer-events: none;
+    z-index: var(--index-above)
+  }
+}

@@ -20,6 +20,7 @@ function setupChart(chartElement) {
     let guidelines = chartElement.hasAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : null;
     let targets = chartElement.hasAttribute('data-targets') ? JSON.parse(chartElement.getAttribute('data-targets')) : null;
     let events = chartElement.hasAttribute('data-events') ? JSON.parse(chartElement.getAttribute('data-events')) : null;
+    let xaxis = chartElement.hasAttribute('data-xaxis') ? chartElement.getAttribute('data-xaxis').split(',') : null;
     // Add the basic HTML structure
     addBasicHTMLStructure(chartElement);
     // Create chart key if the one isn't already created
@@ -40,6 +41,9 @@ function setupChart(chartElement) {
     }
     if (events) {
         createEvents(chartElement, events);
+    }
+    if (xaxis) {
+        createXaxis(chartElement, xaxis);
     }
     let chartInner = chartElement.querySelector('.chart__inner');
     // set the longest label attr so that the bar chart knows what margin to set on the left
@@ -82,6 +86,8 @@ function setupChart(chartElement) {
     }
     if (chartElement.querySelector(':scope > input[value="treemap"]:checked'))
         setTreemapCellData(chartElement);
+    if (chartElement.hasAttribute('data-slope'))
+        createSlope(chartElement, min, max);
     // Event handlers
     const showData = chartElement.querySelectorAll(':scope > input[type="checkbox"]');
     for (var i = 0; i < showData.length; i++) {
@@ -533,6 +539,26 @@ export const createEvents = function (chartElement, events) {
         });
     });
 };
+export const createXaxis = function (chartElement, xaxis) {
+    const tableWrapper = chartElement.querySelector('.table__wrapper');
+    let chartXaxis = chartElement.querySelector('.chart__xaxis');
+    let increment = chartElement.getAttribute('data-increment');
+    let start = chartElement.getAttribute('data-start');
+    let end = chartElement.getAttribute('data-end');
+    if (!chartXaxis) {
+        chartXaxis = document.createElement('div');
+        chartXaxis.setAttribute('class', 'chart__xaxis');
+    }
+    if (increment && start && end) {
+        chartXaxis.innerHTML = '';
+        for (var i = 0; i < xaxis.length; i++) {
+            let value = parseFloat(xaxis[i].replace('£', '').replace('%', ''));
+            let position = ((value - start) / (end - start)) * 100;
+            chartXaxis.innerHTML += `<div class="axis__point" style="--percent:${position}%;"><span>${xaxis[i]}</span></div>`;
+        }
+    }
+    tableWrapper.prepend(chartXaxis);
+};
 export const deleteCellData = function (chartElement) {
     Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr) => {
         tr.removeAttribute('style');
@@ -553,6 +579,8 @@ export const deleteCellData = function (chartElement) {
 export const setCellData = function (chartElement, table, min, max, secondTable) {
     let chartType = chartElement.getAttribute('data-type');
     let increment = chartElement.getAttribute('data-increment');
+    let start = chartElement.getAttribute('data-start');
+    let end = chartElement.getAttribute('data-end');
     let startDay = min;
     if (increment == "days") {
         max = numDays(min, max);
@@ -661,6 +689,11 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
             chartElement.querySelector(`.key[data-label="${label}"]`).setAttribute('data-total', keyTotal + value);
             chartElement.setAttribute('data-total', chartTotal + value);
         });
+        if (increment && start && end) {
+            let firstCellValue = parseFloat(tr.querySelector('td:first-child').textContent.replace('£', '').replace('%', '').replace(',', ''));
+            let position = ((firstCellValue - start) / (end - start)) * 100;
+            tr.setAttribute('style', `--position:${position}%;`);
+        }
     });
 };
 function addKeyTotals(chartElement) {
@@ -896,6 +929,49 @@ export const createLines = function (chartElement, min, max) {
 </svg>`;
     });
     linesWrapper.innerHTML = returnString;
+};
+export const createSlope = function (chartElement, min, max) {
+    let n = 0;
+    let totalX = 0;
+    let totalY = 0;
+    let totalXY = 0;
+    let totalXsquared = 0;
+    let start = chartElement.getAttribute('data-start');
+    let end = chartElement.getAttribute('data-end');
+    let slope = chartElement.getAttribute('data-slope');
+    let yInt = chartElement.getAttribute('data-yint');
+    let tableWrapper = chartElement.querySelector('.table__wrapper');
+    let slopeWrapper = chartElement.querySelector('.slope');
+    if (!slopeWrapper) {
+        slopeWrapper = document.createElement("div");
+        slopeWrapper.setAttribute('class', 'slope');
+        tableWrapper.prepend(slopeWrapper);
+    }
+    Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr) => {
+        const display = getComputedStyle(tr).display;
+        if (display != "none") {
+            let x = parseFloat(tr.querySelector('td:first-child').textContent);
+            let y = 0;
+            Array.from(tr.querySelectorAll('td:not(:first-child)')).forEach((td) => {
+                y += parseFloat(td.getAttribute('data-numeric'));
+            });
+            let xy = x * y;
+            let xSquared = x * x;
+            totalX += x;
+            totalY += y;
+            totalXY += xy;
+            totalXsquared += xSquared;
+            n++;
+        }
+    });
+    // Least squares method (https://www.youtube.com/watch?v=P8hT5nDai6A)
+    let m = slope ? parseFloat(slope) : ((n * totalXY) - (totalX * totalY)) / ((n * totalXsquared) - (totalX * totalX)); // Slope
+    let b = yInt ? parseFloat(yInt) : (totalY - (m * totalX)) / n; // Y intercept
+    let firstY = (m * parseFloat(start)) + b;
+    let lastY = (m * parseFloat(end)) + b;
+    let { percent: firstYPercent } = getValues(firstY, min, max);
+    let { percent: lastYPercent } = getValues(lastY, min, max);
+    slopeWrapper.innerHTML = `<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none"><path fill="none" d="M 0 ${100 - firstYPercent} L 200 ${100 - lastYPercent}"></path></svg>`;
 };
 export const createProportionalAreas = function (chartElement) {
     let returnString = '';

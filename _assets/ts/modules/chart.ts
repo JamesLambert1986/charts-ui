@@ -27,6 +27,7 @@ function setupChart(chartElement:any) {
   let guidelines:any = chartElement.hasAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : null;
   let targets:any = chartElement.hasAttribute('data-targets') ? JSON.parse(chartElement.getAttribute('data-targets')) : null;
   let events:any = chartElement.hasAttribute('data-events') ? JSON.parse(chartElement.getAttribute('data-events')) : null;
+  let xaxis:any = chartElement.hasAttribute('data-xaxis') ? chartElement.getAttribute('data-xaxis').split(',') : null;
 
   // Add the basic HTML structure
   addBasicHTMLStructure(chartElement);
@@ -54,6 +55,9 @@ function setupChart(chartElement:any) {
     createEvents(chartElement,events);
   }
 
+  if(xaxis){
+    createXaxis(chartElement,xaxis);
+  }
 
   let chartInner = chartElement.querySelector('.chart__inner');
   // set the longest label attr so that the bar chart knows what margin to set on the left
@@ -109,6 +113,10 @@ function setupChart(chartElement:any) {
 
   if(chartElement.querySelector(':scope > input[value="treemap"]:checked'))
     setTreemapCellData(chartElement);
+
+  if(chartElement.hasAttribute('data-slope'))
+    createSlope(chartElement,min,max);
+
 
   // Event handlers
   const showData = chartElement.querySelectorAll(':scope > input[type="checkbox"]');
@@ -779,6 +787,32 @@ export const createEvents = function(chartElement:any,events:any){
   });
 }
 
+export const createXaxis = function(chartElement:any,xaxis:any){
+
+  const tableWrapper = chartElement.querySelector('.table__wrapper');
+  let chartXaxis = chartElement.querySelector('.chart__xaxis');
+
+  let increment = chartElement.getAttribute('data-increment');
+  let start = chartElement.getAttribute('data-start');
+  let end = chartElement.getAttribute('data-end');
+
+  if(!chartXaxis){
+    chartXaxis = document.createElement('div');
+    chartXaxis.setAttribute('class','chart__xaxis');
+  }
+  if(increment && start && end){
+    chartXaxis.innerHTML = '';
+    for (var i = 0; i < xaxis.length; i++) {
+
+      let value = parseFloat(xaxis[i].replace('£','').replace('%',''));
+      let position = ((value - start)/(end - start)) * 100;
+
+      chartXaxis.innerHTML += `<div class="axis__point" style="--percent:${position}%;"><span>${xaxis[i]}</span></div>`;
+    }
+  }
+  tableWrapper.prepend(chartXaxis);
+}
+
 export const deleteCellData = function(chartElement:any){
   Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr:any) => {
     tr.removeAttribute('style');
@@ -801,6 +835,8 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
   
   let chartType = chartElement.getAttribute('data-type');
   let increment = chartElement.getAttribute('data-increment');
+  let start = chartElement.getAttribute('data-start');
+  let end = chartElement.getAttribute('data-end');
   let startDay = min;
   
 
@@ -811,6 +847,7 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
 
     chartElement.querySelector('tbody').setAttribute('style',`--single-day:${((1/max)*100)}%;`);
   }
+
 
   Array.from(table.querySelectorAll('tbody tr')).forEach((tr:any, index) => {
 
@@ -949,6 +986,13 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
       chartElement.querySelector(`.key[data-label="${label}"]`).setAttribute('data-total',keyTotal+value);
       chartElement.setAttribute('data-total',chartTotal+value);
     });
+
+
+    if(increment && start && end){
+      let firstCellValue = parseFloat(tr.querySelector('td:first-child').textContent.replace('£','').replace('%','').replace(',',''));
+      let position = ((firstCellValue - start)/(end - start)) * 100;
+      tr.setAttribute('style',`--position:${position}%;`);
+    }
 
   });
 
@@ -1291,6 +1335,63 @@ export const createLines = function(chartElement:any,min:any,max:any){
   });
 
   linesWrapper.innerHTML = returnString;
+}
+
+export const createSlope = function(chartElement:any,min:any,max:any){
+  let n:number = 0;
+  let totalX:number = 0;
+  let totalY:number = 0;
+  let totalXY:number = 0;
+  let totalXsquared:number = 0;
+  let start = chartElement.getAttribute('data-start');
+  let end = chartElement.getAttribute('data-end');
+  let slope = chartElement.getAttribute('data-slope');
+  let yInt = chartElement.getAttribute('data-yint');
+  let tableWrapper = chartElement.querySelector('.table__wrapper');
+  let slopeWrapper = chartElement.querySelector('.slope');
+
+  if(!slopeWrapper){
+
+    slopeWrapper = document.createElement("div");
+    slopeWrapper.setAttribute('class','slope');
+    tableWrapper.prepend(slopeWrapper);
+  }
+
+  Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr:any) => {
+
+    const display = getComputedStyle(tr).display;
+    if(display != "none"){
+
+      let x = parseFloat(tr.querySelector('td:first-child').textContent);
+      let y = 0;
+
+      Array.from(tr.querySelectorAll('td:not(:first-child)')).forEach((td:any) => {
+        y += parseFloat(td.getAttribute('data-numeric'));
+      });
+
+      let xy = x * y;
+      let xSquared = x * x;
+
+      totalX += x;
+      totalY += y;
+      totalXY += xy;
+      totalXsquared += xSquared;
+
+      n++;
+    }
+  });
+
+  // Least squares method (https://www.youtube.com/watch?v=P8hT5nDai6A)
+  let m = slope ? parseFloat(slope) : ((n * totalXY) - (totalX * totalY)) / ((n * totalXsquared) - (totalX * totalX)); // Slope
+  let b = yInt ? parseFloat(yInt) : (totalY - (m * totalX)) / n; // Y intercept
+
+  let firstY = (m * parseFloat(start)) + b;
+  let lastY = (m * parseFloat(end)) + b;
+  
+  let { percent: firstYPercent } = getValues(firstY,min,max);
+  let { percent: lastYPercent } = getValues(lastY,min,max);
+
+  slopeWrapper.innerHTML = `<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none"><path fill="none" d="M 0 ${100-firstYPercent} L 200 ${100-lastYPercent}"></path></svg>`;
 }
 
 
