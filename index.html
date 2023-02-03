@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" href="favicon.svg?cache=1674574277549">
+    <link rel="shortcut icon" href="favicon.svg?cache=1675424569645">
 
     <title>BBC Charts UI Library</title>
-    <link rel="stylesheet" href="_app/css/app.css?cache=1674574277549" />
-    <link rel="stylesheet" href="_assets/css/charts.css?cache=1674574277549" />
+    <link rel="stylesheet" href="_app/css/app.css?cache=1675424569645" />
+    <link rel="stylesheet" href="_assets/css/charts.css?cache=1675424569645" />
 
     <script>
         url = new URL(window.location.href);
@@ -47,8 +47,8 @@
       </script>
   
 
-    <script src="_assets/js/main.js?cache=1674574277549" type="module" defer></script>
-    <script src="_app/js/app.js?cache=1674574277549" type="module" defer></script>
+    <script src="_assets/js/main.js?cache=1675424569645" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1675424569645" type="module" defer></script>
     <!-- #endregion:HEAD -->
     
   </head>
@@ -174,13 +174,13 @@
 
         </div>
       </div>
-    <div class="container">
+    <div class="container" id="column">
       <p>Data copied from https://www.bbc.co.uk/news/world-us-canada-63556122</p>
 
 
-      <h2 id="column">Column chart</h2>
+      <h2>Column chart</h2>
       
-      <figure class="chart chart--animate" data-max="1800" data-min="0" data-type="column" data-guidelines="0,200,400,600,800,1000,1200,1400,1600,1800">
+      <figure class="chart chart--animate chart--show-totals" data-max="1800" data-min="0" data-type="column" data-guidelines="0,200,400,600,800,1000,1200,1400,1600,1800">
 
           <table>
               <thead>
@@ -352,8 +352,9 @@
 
       <p>Data copied from <a href="https://www.bbc.co.uk/news/uk-wales-52380643">Registered Covid-19 deaths in Wales udring the pandemic</a></p>
 
-
-      <h2 id="responsive">Responsive Chart</h2>
+    </div>
+    <div class="container" id="responsive">
+      <h2>Responsive Chart</h2>
       <p>TBD - bar chart that transforms to column in larger containers</p>
       
       <figure class="chart chart--animate" data-max="50" data-min="0" data-type="responsive">
@@ -396,7 +397,8 @@
           </table>
       </figure>
 
-
+    </div>
+    <div class="container">
       <h2 id="stacked">Stacked chart</h2>
       
       <figure class="chart chart--animate" data-max="2500000" data-type="stacked" data-min="0" data-guidelines="0,500000,1000000,1500000,2000000,2500000">
@@ -489,9 +491,10 @@
       <p>Data copied from https://www.bbc.co.uk/news/58160547</p>
 
 
-      <h2 id="scatter">Scatter Chart</h2>
-      
-      <figure class="chart chart--animate" data-max="100" data-min="0" data-type="scatter" data-guidelines="£0,£50,£100">
+    </div>
+    <div class="container" id="scatter">
+      <h2>Scatter Chart</h2>
+      <figure class="chart chart--animate chart--show-totals" data-max="100" data-min="0" data-type="scatter" data-guidelines="£0,£50,£100" data-currency="GBP">
 
           <table>
               <thead>
@@ -525,7 +528,8 @@
               </tbody>
           </table>
       </figure>
-
+    </div>
+    <div class="container">
       <h2 id="line">Line chart</h2>
       
       <figure class="chart chart--animate" data-max="11" data-min="-0.5" data-type="line" data-guidelines="0%,2%,4%,6%,8%,10%" data-targets='{"Bank of England target":"2"}' data-events='{"Sep 2022":"Sep 2022 10.1%"}'>
@@ -1222,11 +1226,8 @@
       </figure>
 
 
-
-
-
       <h2 id="treemap">Tree map</h2>
-      <figure class="chart chart--animate chart--display-data" data-max="72" data-min="0" data-type="treemap">
+      <figure class="chart chart--animate chart--show-totals" data-max="72" data-min="0" data-type="treemap" data-total-format="£{i}bn">
 
         <table>
           <thead>
@@ -1489,7 +1490,7 @@
     <div class="container" id="proportional">
       <h2 id="dumbbell">Proportional chart</h2>
   
-      <figure class="chart chart--animate chart--display-da/ta" data-max="35000" data-min="0" data-type="proportional">
+      <figure class="chart chart--animate chart--display-da/ta chart--show-totals" data-max="35000" data-min="0" data-type="proportional">
         <table>
           <thead>
             <tr>

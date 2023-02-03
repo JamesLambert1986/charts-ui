@@ -1,82 +1,45 @@
 import { ucfirst, unsnake } from './helpers'
 
-function chart(chartElement:any) {
+// #region Setup Chart function
+function setupChart(chartElement:any) {
 
+  let table = chartElement.querySelector('table');
+
+  // Load CSV data and create a HTML table
   if(chartElement.hasAttribute('data-csv') && !chartElement.hasAttribute('data-csv-loaded')){
     let csvURL = chartElement.getAttribute('data-csv');
 
     getCSVData(chartElement, csvURL);
+    return false; // getCSVData will re-trigger setupChart after the CSV data is transformed into a table
   }
 
-  let table = chartElement.querySelector('table');
-
-  // Read the data attributes
-  let min:any = chartElement.hasAttribute('data-min') ? parseFloat(chartElement.getAttribute('data-min')) : 0;
-  let max:any = chartElement.hasAttribute('data-max') ? parseFloat(chartElement.getAttribute('data-max')) : getLargestValue(chartElement);
-  let type:string = chartElement.hasAttribute('data-type') ? chartElement.getAttribute('data-type') : 'column';
-  
+  // Populate chart data attributes from existing HTML
   if(chartElement.querySelector('.chart__yaxis')){
     chartElement.setAttribute('data-guidelines', Array.from(chartElement.querySelectorAll('.chart__yaxis .axis__point')).map((element: any) => element.textContent));
   }
+  // TODO: events, targets, chart type (including multiple)
 
+
+  // Read the data attributes TODO: check what needs to be a constant
+  let min:any = chartElement.hasAttribute('data-min') ? chartElement.getAttribute('data-min') : 0;
+  let max:any = chartElement.hasAttribute('data-max') ? chartElement.getAttribute('data-max') : getLargestValue(table);
+  let type:string = chartElement.hasAttribute('data-type') ? chartElement.getAttribute('data-type') : 'column';
   let guidelines:any = chartElement.hasAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : null;
   let targets:any = chartElement.hasAttribute('data-targets') ? JSON.parse(chartElement.getAttribute('data-targets')) : null;
   let events:any = chartElement.hasAttribute('data-events') ? JSON.parse(chartElement.getAttribute('data-events')) : null;
 
-
-  // Wrap the table with some divs to add functionality
-  if(!chartElement.querySelector('.table__wrapper')){
-
-    const tableWrapper = document.createElement('div');
-    tableWrapper.setAttribute('class','table__wrapper');
-
-    chartElement.append(tableWrapper);
-    tableWrapper.append(table);
-  }
-
-  if(!chartElement.querySelector('.chart__inner')){
-
-    const tableWrapper = chartElement.querySelector('.table__wrapper');
-    const chartInner = document.createElement('div');
-    chartInner.setAttribute('class','chart__inner');
-
-    chartInner.append(tableWrapper);
-    chartElement.append(chartInner);
-  }
-
-
-  // set the longest label attr so that the bar chart knows what margin to set on the left
-  let longestLabel = '';
-  const chartInner = chartElement.querySelector('.chart__inner');
-  Array.from(table.querySelectorAll('tbody tr td:first-child')).forEach((td: any) => {
-
-    if(typeof td.textContent != "undefined" && td.textContent.length > longestLabel.length){
-      longestLabel = td.textContent;
-    }
-  });
-  chartInner.setAttribute('data-longest-label',longestLabel);
-
-  // set the longest data set attr so that the bar chart knows what margin to set on the left
-  let longestSet = '';
-  Array.from(table.querySelectorAll('thead tr th')).forEach((td: any) => {
-
-    if(td.textContent.length > longestSet.length){
-      longestSet = td.textContent;
-    }
-  });
-  chartInner.setAttribute('data-set-label',longestSet);
+  // Add the basic HTML structure
+  addBasicHTMLStructure(chartElement);
 
   // Create chart key if the one isn't already created
   if(!chartElement.querySelector('.chart__key')){
     createChartKey(chartElement);
   }
 
-
   // Create the required type input field if one isn't set
   if(!chartElement.querySelector(':scope > [type="radio"]:checked')){
     createChartType(chartElement,type);
   }
-
 
   // Y Axis and Guidelines
   if(guidelines){
@@ -91,21 +54,37 @@ function chart(chartElement:any) {
     createEvents(chartElement,events);
   }
 
+
+  let chartInner = chartElement.querySelector('.chart__inner');
+  // set the longest label attr so that the bar chart knows what margin to set on the left
+  let longestLabel = '';
+  Array.from(table.querySelectorAll('tbody tr td:first-child')).forEach((td: any) => {
+    if(typeof td.textContent != "undefined" && td.textContent.length > longestLabel.length)
+      longestLabel = td.textContent;
+  });
+  chartInner.setAttribute('data-longest-label',longestLabel);
+
+  // set the longest data set attr so that the bar chart knows what margin to set on the left
+  let longestSet = '';
+  Array.from(table.querySelectorAll('thead tr th')).forEach((td: any) => {
+    if(td.textContent.length > longestSet.length)
+      longestSet = td.textContent;
+  });
+  chartInner.setAttribute('data-set-label',longestSet);
+
   // Make sure table cells have enough data attached to them to display the chart data
   let secondTable = chartElement.querySelector(':scope > table');
   if(secondTable){
 
-    let secondMin = chartElement.getAttribute('data-second-min');
-    let secondMax = chartElement.getAttribute('data-second-max');
+    let secondMin:any = chartElement.hasAttribute('data-second-min') ? parseFloat(chartElement.getAttribute('data-second-min')) : 0;
+    let secondMax:any = chartElement.hasAttribute('data-second-max') ? parseFloat(chartElement.getAttribute('data-second-max')) : getLargestValue(secondTable);
     
-
     setCellData(chartElement, secondTable,secondMin,secondMax);
   }
 
   setCellData(chartElement, table,min,max,secondTable);
 
-
-
+  addKeyTotals(chartElement);
 
   // Create lines for line graph
   if(chartElement.querySelector(':scope > input[value="line"]:checked'))
@@ -113,7 +92,7 @@ function chart(chartElement:any) {
 
   // Create lines for line graph
   if(chartElement.querySelector(':scope > input[value="proportional"]:checked'))
-    createProportionalAreas(chartElement,min,max);
+    createProportionalAreas(chartElement);
 
   // Create pies
   if(chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
@@ -169,11 +148,10 @@ function chart(chartElement:any) {
         if(chartElement.querySelector(':scope > input[value="proportional"]:checked')){
 
           deleteCellData(chartElement);
-  
-          console.log('hi');
+
 
           setCellData(chartElement, table,min,max);
-          createProportionalAreas(chartElement,min,max);
+          createProportionalAreas(chartElement);
         }
     });
 
@@ -211,7 +189,7 @@ function chart(chartElement:any) {
     createSeries(chartElement);
   }
   else {
-    //setEventObservers(chartElement,min,max,guidelines);
+    setEventObservers(chartElement,min,max,guidelines);
   }
 
   if(chartElement.classList.contains('chart--animate'))
@@ -219,7 +197,74 @@ function chart(chartElement:any) {
 
   return true;
 }
+// #endregion
 
+// #region Create table from CSV URL
+function getCSVData(chartElement:any, csvURL:string){
+
+  var request = new XMLHttpRequest();
+  request.open('GET', csvURL, true);
+  request.send(null);
+  request.onreadystatechange = function () {
+
+    if (request.readyState === 4 && request.status === 200) {
+
+      let type = request.getResponseHeader('Content-Type');
+
+      if (type != null && type.indexOf("csv") != -1) {
+
+        const data = csvToObj(request.responseText);
+        
+        createTable(chartElement, data);
+              
+        chartElement.setAttribute('data-csv-loaded', 'true');
+        setupChart(chartElement);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  return true;
+}
+// #endregion
+
+
+// #region Add missing HTML functions 
+export const addBasicHTMLStructure = function(chartElement:any){
+
+  let table = chartElement.querySelector('table');
+
+  // Wrap the table with some divs to add functionality
+  if(!chartElement.querySelector('.table__wrapper')){
+
+    const tableWrapper = document.createElement('div');
+    tableWrapper.setAttribute('class','table__wrapper');
+
+    chartElement.append(tableWrapper);
+    tableWrapper.append(table);
+  }
+
+  if(!chartElement.querySelector('.chart__inner')){
+
+    const tableWrapper = chartElement.querySelector('.table__wrapper');
+    const chartInner = document.createElement('div');
+    chartInner.setAttribute('class','chart__inner');
+
+    chartInner.append(tableWrapper);
+    chartElement.append(chartInner);
+  }
+}
+// #endregion
+
+
+// #region Add data attributes
+// #endregion
+
+
+// #region Event handlers and observers
+// #endregion
 export const setEventObservers = function(chartElement:any,min:any,max:any,guidelines:any) {
 
   let table = chartElement.querySelector('table');
@@ -392,9 +437,9 @@ export const setIntersctionObserver = function(chartElement:any) {
 // event observers 
 
 
-function getLargestValue(chartElement:any){
+function getLargestValue(table:any){
 
-  let values = Array.from(chartElement.querySelectorAll('tbody td:not(:first-child)')).map((element: any) => {
+  let values = Array.from(table.querySelectorAll('tbody td:not(:first-child)')).map((element: any) => {
 
     let currentValue:string|number = String(element.textContent);
     currentValue = currentValue.replace('£','');
@@ -407,37 +452,8 @@ function getLargestValue(chartElement:any){
 
   let largetValue:number = Math.max(...values);
 
-  chartElement.setAttribute('data-max',Math.ceil(largetValue));
-
   // TO DO round to the nearest 10, 100, 1000 and so on
   return Math.ceil(largetValue);
-}
-
-function getCSVData(chartElement:any, csvURL:string){
-
-  var request = new XMLHttpRequest();
-  request.open('GET', csvURL, true);
-  request.send(null);
-  request.onreadystatechange = function () {
-
-    if (request.readyState === 4 && request.status === 200) {
-
-      let type = request.getResponseHeader('Content-Type');
-
-      if (type != null && type.indexOf("csv") != -1) {
-
-        const data = csvToObj(request.responseText);
-        
-        createTable(chartElement, data);
-
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  return true;
 }
 
 
@@ -531,9 +547,6 @@ export const createTable = function(chartElement:any,data:any){
   newTable.appendChild(newTbody);
 
   chartElement.appendChild(newTable);
-
-  chartElement.setAttribute('data-csv-loaded', 'true');
-  chart(chartElement);
 }
 
 export const createChartKey = function(chartElement:any){
@@ -644,7 +657,7 @@ export const createChartYaxis = function(chartElement:any,min:any,max:any,guidel
   let startDay = min;
 
   if(increment == "days"){
-    
+
     max = numDays(min,max);
     min = 0;
   }
@@ -845,7 +858,7 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
 
       let total = 0;
 
-      Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td:any, tdIndex) => {
+      Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td:any) => {
 
         let display = getComputedStyle(td).display;
         if(display == 'none')
@@ -877,14 +890,14 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
       
       const label = td.getAttribute('data-label');
       const content = td.innerHTML;
+      const value = Number.parseFloat(td.getAttribute('data-numeric'));
+      const start = Number.parseFloat(td.getAttribute('data-start'));
 
       if(!td.querySelector('span[data-group]'))
         td.innerHTML = `<span data-group="${group}" data-label="${label}">${content}</span>`;
 
       if(!td.hasAttribute('style')){
         
-        const value = Number.parseFloat(td.getAttribute('data-numeric'));
-        const start = Number.parseFloat(td.getAttribute('data-start'));
         let { percent, bottom, axis } = getValues(value,rowMin,rowMax,start);
         let order:number = (10000 - Math.round(percent * 100));
 
@@ -930,10 +943,61 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
         chartElement
       }
 
+      // totals
+      let chartTotal = chartElement.getAttribute('data-total') ? Number.parseFloat(chartElement.getAttribute('data-total')) : 0;
+      let keyTotal = chartElement.querySelector(`.key[data-label="${label}"]`).getAttribute('data-total') ? Number.parseFloat(chartElement.querySelector(`.key[data-label="${label}"]`).getAttribute('data-total')) : 0;
+      chartElement.querySelector(`.key[data-label="${label}"]`).setAttribute('data-total',keyTotal+value);
+      chartElement.setAttribute('data-total',chartTotal+value);
     });
 
   });
 
+}
+
+function addKeyTotals(chartElement:any){
+
+  let chartTotal = 0;
+
+  Array.from(chartElement.querySelectorAll('tbody td[data-numeric]:not([data-label="Min"]):not([data-label="Max"]):not(:first-child)')).forEach((td:any, index) => {
+
+    const value = Number.parseFloat(td.getAttribute('data-numeric'));
+    chartTotal += value;
+  });
+  chartElement.setAttribute('data-total',chartTotal);
+
+  Array.from(chartElement.querySelectorAll('.chart__key .key[data-label]')).forEach((key:any, index) => {
+
+    if(key.querySelector('.chart__total'))
+      return false;
+
+    let label = key.getAttribute('data-label');
+    let keyTotal:any = 0;
+
+    Array.from(chartElement.querySelectorAll(`tbody td[data-label="${label}"]`)).forEach((td:any, index) => {
+
+      const value = Number.parseFloat(td.getAttribute('data-numeric'));
+      keyTotal += value;
+    });
+
+    let keyPercent = Math.round((keyTotal/chartTotal)*100);
+
+
+    if(chartElement.hasAttribute('data-currency')){
+      
+      if (chartElement.getAttribute('data-currency') == "GBP") {
+        // @ts-ignore
+        keyTotal = new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', trailingZeroDisplay: 'stripIfInteger' }).format(keyTotal);
+      }
+    }
+    else if(chartElement.hasAttribute('data-total-format')){
+      keyTotal = chartElement.getAttribute('data-total-format').replace('{i}',keyTotal);
+    }
+    else {
+      keyTotal = new Intl.NumberFormat('en-GB').format(keyTotal);
+    }
+
+    key.innerHTML += `<span class="chart__total"><span class="chart__total__number"><span class="visually-hidden">Total: </span>${keyTotal}</span><span class="chart__total__percent"><span class="visually-hidden">Total percent: </span>${keyPercent}%</span></span>`;
+  });
 }
 
 function setTreemapCellData(chartElement:any){
@@ -1230,8 +1294,8 @@ export const createLines = function(chartElement:any,min:any,max:any){
 }
 
 
-export const createProportionalAreas = function(chartElement:any,min:any,max:any){
-  let chartType = chartElement.getAttribute('data-type');
+export const createProportionalAreas = function(chartElement:any){
+
   let returnString = '';
   let tableWrapper = chartElement.querySelector('.table__wrapper');
   let linesWrapper = chartElement.querySelector('.lines');
@@ -1571,4 +1635,4 @@ export const defineCellType = function (chartElement: HTMLElement){
   return true;
 }
 
-export default chart
+export default setupChart

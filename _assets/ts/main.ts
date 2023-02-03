@@ -1,9 +1,9 @@
-import chart from './modules/chart';
+import setupChart from './modules/chart';
 
 const setIntersctionObserver = function(chartElement:any) {
 
   const options = {
-    rootMargin: '0px',
+    rootMargin: '500px',
     threshold: 0
   }
 
@@ -11,7 +11,7 @@ const setIntersctionObserver = function(chartElement:any) {
     entries.forEach((entry:any) => {
       
       if(entry.intersectionRatio > 0){
-        chart(chartElement);
+        setupChart(chartElement);
       }
     });
   };

@@ -270,6 +270,10 @@ input[type="radio"]:not([value="none"]):not([value="pie"]):checked ~ .chart__inn
     &[data-label="Max"] {
       display: none;
     }
+
+    .chart__total {
+      display: none;
+    }
   }
 }
 // #endregion

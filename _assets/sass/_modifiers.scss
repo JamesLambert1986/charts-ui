@@ -174,3 +174,28 @@
   background-size: var(--chart-day-bg-pos);
   //background-position: calc(var(--single-day) * 2);
 }
+
+
+// #region show chart totals
+.chart--show-totals {
+  .chart__key {
+    .key {
+      
+      .chart__total {
+        display: flex;
+        font-size: var(--label-size);
+        font-weight: bold;
+        line-height: 1;
+      }
+
+      .chart__total__number {
+        margin-right: 1rem;
+      }
+      .chart__total__percent {
+        margin-left: auto;
+      }
+    }
+  }
+}
+
+// #endregion
