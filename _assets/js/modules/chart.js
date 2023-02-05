@@ -68,7 +68,8 @@ function setupChart(chartElement) {
         setCellData(chartElement, secondTable, secondMin, secondMax);
     }
     setCellData(chartElement, table, min, max, secondTable);
-    addKeyTotals(chartElement);
+    if (chartElement.classList.contains('chart--show-totals'))
+        addKeyTotals(chartElement);
     // Create lines for line graph
     if (chartElement.querySelector(':scope > input[value="line"]:checked'))
         createLines(chartElement, min, max);
@@ -141,7 +142,7 @@ function setupChart(chartElement) {
         createSeries(chartElement);
     }
     else {
-        setEventObservers(chartElement, min, max, guidelines);
+        //setEventObservers(chartElement,min,max,guidelines);
     }
     if (chartElement.classList.contains('chart--animate'))
         setIntersctionObserver(chartElement);
@@ -295,6 +296,7 @@ export const setIntersctionObserver = function (chartElement) {
             if (entry.intersectionRatio > 0) {
                 entry.target.classList.add('inview');
                 entry.target.classList.add('animating');
+                intObserver.unobserve(entry.target);
                 setTimeout(function () {
                     entry.target.classList.remove('animating');
                 }, 3000);

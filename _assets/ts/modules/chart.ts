@@ -88,7 +88,8 @@ function setupChart(chartElement:any) {
 
   setCellData(chartElement, table,min,max,secondTable);
 
-  addKeyTotals(chartElement);
+  if(chartElement.classList.contains('chart--show-totals'))
+    addKeyTotals(chartElement);
 
   // Create lines for line graph
   if(chartElement.querySelector(':scope > input[value="line"]:checked'))
@@ -197,7 +198,7 @@ function setupChart(chartElement:any) {
     createSeries(chartElement);
   }
   else {
-    setEventObservers(chartElement,min,max,guidelines);
+    //setEventObservers(chartElement,min,max,guidelines);
   }
 
   if(chartElement.classList.contains('chart--animate'))
@@ -431,6 +432,8 @@ export const setIntersctionObserver = function(chartElement:any) {
       if(entry.intersectionRatio > 0){
         entry.target.classList.add('inview');  
         entry.target.classList.add('animating');
+        intObserver.unobserve(entry.target);
+
         setTimeout(function() {
           entry.target.classList.remove('animating');
         }, 3000);
@@ -987,7 +990,7 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
       chartElement.setAttribute('data-total',chartTotal+value);
     });
 
-
+    
     if(increment && start && end){
       let firstCellValue = parseFloat(tr.querySelector('td:first-child').textContent.replace('£','').replace('%','').replace(',',''));
       let position = ((firstCellValue - start)/(end - start)) * 100;
