@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" href="favicon.svg?cache=1675624615756">
+    <link rel="shortcut icon" href="favicon.svg?cache=1675630598694">
 
     <title>BBC Charts UI Library</title>
-    <link rel="stylesheet" href="_app/css/app.css?cache=1675624615756" />
-    <link rel="stylesheet" href="_assets/css/charts.css?cache=1675624615756" />
+    <link rel="stylesheet" href="_app/css/app.css?cache=1675630598694" />
+    <link rel="stylesheet" href="_assets/css/charts.css?cache=1675630598694" />
 
     <script>
         url = new URL(window.location.href);
@@ -47,8 +47,8 @@
       </script>
   
 
-    <script src="_assets/js/main.js?cache=1675624615756" type="module" defer></script>
-    <script src="_app/js/app.js?cache=1675624615756" type="module" defer></script>
+    <script src="_assets/js/main.js?cache=1675630598694" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1675630598694" type="module" defer></script>
     <!-- #endregion:HEAD -->
     
   </head>
@@ -494,40 +494,69 @@
     </div>
     <div class="container" id="scatter">
       <h2>Scatter Chart</h2>
-      <figure class="chart chart--animate chart--show-totals" data-max="100" data-min="0" data-type="scatter" data-guidelines="£0,£50,£100" data-currency="GBP">
 
-          <table>
-              <thead>
-                  <tr>
-                      <th>Year</th>
-                      <th>Growth</th>
-                      <th>Growth2</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                      <td>2011</td>
-                      <td>£50.00</td>
-                      <td>£50.10</td>
-                  </tr>
-                  <tr>
-                      <td>2012</td>
-                      <td>£75.00</td>
-                      <td>£50.10</td>
-                  </tr>
-                  <tr>
-                      <td>2013</td>
-                      <td>£45.00</td>
-                      <td>£57.10</td>
-                  </tr>
-                  <tr>
-                      <td>2014</td>
-                      <td>£35.00</td>
-                      <td>£80.10</td>
-                  </tr>
-              </tbody>
-          </table>
+      <figure class="chart chart--animate chart--show-totals" data-min="0" data-max="700" data-type="scatter" data-guidelines="0,100,200,300,400,500,600,700" data-increment="0.1" data-start="10" data-end="26" data-xaxis="10,12,14,16,18,20,22,24,26" data-slope data-yint>
+        <table>
+            <thead>
+                <tr class="">
+                    <th>Temperature °C</th>
+                    <th>Ice Cream Sales</th>
+                </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>14.2</td>
+                <td>215</td>
+              </tr>
+              <tr>
+                <td>16.4</td>
+                <td>325</td>
+              </tr>
+              <tr>
+                <td>11.9</td>
+                <td>185</td>
+              </tr>
+              <tr>
+                <td>15.2</td>
+                <td>332</td>
+              </tr>
+              <tr>
+                <td>18.5</td>
+                <td>406</td>
+              </tr>
+              <tr>
+                <td>22.1</td>
+                <td>522</td>
+              </tr>
+              <tr>
+                <td>19.4</td>
+                <td>412</td>
+              </tr>
+              <tr>
+                <td>25.1</td>
+                <td>614</td>
+              </tr>
+              <tr>
+                <td>23.4</td>
+                <td>544</td>
+              </tr>
+              <tr>
+                <td>18.1</td>
+                <td>421</td>
+              </tr>
+              <tr>
+                <td>22.6</td>
+                <td>445</td>
+              </tr>
+              <tr>
+                <td>17.2</td>
+                <td>408</td>
+              </tr>
+            </tbody>
+        </table>
       </figure>
+
+      <p>https://www.mathsisfun.com/data/scatter-xy-plots.html</p>
     </div>
     <div class="container">
       <h2 id="line">Line chart</h2>
@@ -1650,7 +1679,6 @@
 <a href="./combo" class="btn btn-primary">Combination of charts</a>
 <a href="./live" class="btn btn-primary">Live chart</a>
 <a href="./series" class="btn btn-primary">Series based chart</a>
-<a href="./trend" class="btn btn-primary">Trend line</a>
 <a href="./react" class="btn btn-primary">React component</a>
 
     <!-- #endregion:MORE -->

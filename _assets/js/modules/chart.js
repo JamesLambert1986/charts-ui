@@ -142,7 +142,7 @@ function setupChart(chartElement) {
         createSeries(chartElement);
     }
     else {
-        //setEventObservers(chartElement,min,max,guidelines);
+        setEventObservers(chartElement, min, max, guidelines);
     }
     if (chartElement.classList.contains('chart--animate'))
         setIntersctionObserver(chartElement);
@@ -973,7 +973,7 @@ export const createSlope = function (chartElement, min, max) {
     let lastY = (m * parseFloat(end)) + b;
     let { percent: firstYPercent } = getValues(firstY, min, max);
     let { percent: lastYPercent } = getValues(lastY, min, max);
-    slopeWrapper.innerHTML = `<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none"><path fill="none" d="M 0 ${100 - firstYPercent} L 200 ${100 - lastYPercent}"></path></svg>`;
+    slopeWrapper.innerHTML = `<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none"><path fill="none" d="M 0 ${100 - firstYPercent} L 200 ${100 - lastYPercent}" style="--path: path('M 0 100 L 200 100');"></path></svg>`;
 };
 export const createProportionalAreas = function (chartElement) {
     let returnString = '';

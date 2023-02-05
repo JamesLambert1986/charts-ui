@@ -198,7 +198,7 @@ function setupChart(chartElement:any) {
     createSeries(chartElement);
   }
   else {
-    //setEventObservers(chartElement,min,max,guidelines);
+    setEventObservers(chartElement,min,max,guidelines);
   }
 
   if(chartElement.classList.contains('chart--animate'))
@@ -1394,7 +1394,7 @@ export const createSlope = function(chartElement:any,min:any,max:any){
   let { percent: firstYPercent } = getValues(firstY,min,max);
   let { percent: lastYPercent } = getValues(lastY,min,max);
 
-  slopeWrapper.innerHTML = `<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none"><path fill="none" d="M 0 ${100-firstYPercent} L 200 ${100-lastYPercent}"></path></svg>`;
+  slopeWrapper.innerHTML = `<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none"><path fill="none" d="M 0 ${100-firstYPercent} L 200 ${100-lastYPercent}" style="--path: path('M 0 100 L 200 100');"></path></svg>`;
 }
 
 

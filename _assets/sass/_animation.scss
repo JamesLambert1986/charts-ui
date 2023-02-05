@@ -50,6 +50,20 @@
     --percent: 0%!important;
   }
 }
+
+#{'.chart--animate ' + $scatter-line-chart} {
+
+  .slope path {
+    transition: 2s ease-out;
+  }
+}
+
+#{'.chart--animate:not(.inview) '+$scatter-line-chart} {
+  .slope path {
+    d: var(--path);
+  }
+}
+
 // Line chart 
 #{'.chart--animate '+$line-chart}, 
 #{'.chart--animate '+$proportional-chart},
