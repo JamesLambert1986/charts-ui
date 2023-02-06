@@ -1,6 +1,6 @@
-import setupChart from './modules/chart';
+import { setupChart, addBasicHTMLStructure, createChartKey, createChartType} from './modules/chart';
 
-const setIntersctionObserver = function(chartElement:any) {
+document.addEventListener("DOMContentLoaded", function () {
 
   const options = {
     rootMargin: '200px',
@@ -18,12 +18,38 @@ const setIntersctionObserver = function(chartElement:any) {
   };
 
   const intObserver = new IntersectionObserver(callback, options);
-  intObserver.observe(chartElement);
-}
-
-document.addEventListener("DOMContentLoaded", function () {
 
   Array.from(document.querySelectorAll('.chart')).forEach((arrayElement:any) => {
-    setIntersctionObserver(arrayElement);
+    addBasicHTMLStructure(arrayElement);
+    if(!arrayElement.querySelector('.chart__key')){
+      createChartKey(arrayElement);
+    }
+    let type:string = arrayElement.hasAttribute('data-type') ? arrayElement.getAttribute('data-type') : 'column';
+    if(!arrayElement.querySelector(':scope > [type="radio"]:checked')){
+      createChartType(arrayElement,type);
+    }
+    intObserver.observe(arrayElement);
   });
+
+
+  window.addEventListener('hashchange', function(e) {
+
+    const hash = location.hash.replace('#','');
+    let element = document.getElementById(hash);
+
+    Array.from(document.querySelectorAll('.chart:not(.inview)')).forEach((arrayElement:any, index) => {
+
+      intObserver.unobserve(arrayElement);
+      
+      setTimeout(function(){ 
+        setupChart(arrayElement); 
+        element?.scrollIntoView(true);
+      }, 100 * index);
+
+    });
+
+    
+
+  }, false);
+
 });

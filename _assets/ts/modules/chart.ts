@@ -1,9 +1,8 @@
 import { ucfirst, unsnake } from './helpers'
 
 // #region Setup Chart function
-function setupChart(chartElement:any) {
+export const setupChart = function (chartElement:any) {
 
-  let table = chartElement.querySelector('table');
 
   // Load CSV data and create a HTML table
   if(chartElement.hasAttribute('data-csv') && !chartElement.hasAttribute('data-csv-loaded')){
@@ -17,6 +16,12 @@ function setupChart(chartElement:any) {
   if(chartElement.querySelector('.chart__yaxis')){
     chartElement.setAttribute('data-guidelines', Array.from(chartElement.querySelectorAll('.chart__yaxis .axis__point')).map((element: any) => element.textContent));
   }
+
+  // Add the basic HTML structure
+  addBasicHTMLStructure(chartElement);
+
+  let table = chartElement.querySelector('.chart__inner table');
+  
   // TODO: events, targets, chart type (including multiple)
 
 
@@ -29,8 +34,8 @@ function setupChart(chartElement:any) {
   let events:any = chartElement.hasAttribute('data-events') ? JSON.parse(chartElement.getAttribute('data-events')) : null;
   let xaxis:any = chartElement.hasAttribute('data-xaxis') ? chartElement.getAttribute('data-xaxis').split(',') : null;
 
-  // Add the basic HTML structure
-  addBasicHTMLStructure(chartElement);
+
+  
 
   // Create chart key if the one isn't already created
   if(!chartElement.querySelector('.chart__key')){
@@ -168,6 +173,7 @@ function setupChart(chartElement:any) {
       createRadar(chartElement,min,max);
   }
 
+  // Update chart type
   if(chartElement.querySelector(':scope > input[type="radio"]')){
 
     const chartTypes = chartElement.querySelectorAll(':scope > input[type="radio"]');
@@ -198,7 +204,7 @@ function setupChart(chartElement:any) {
     createSeries(chartElement);
   }
   else {
-    setEventObservers(chartElement,min,max,guidelines);
+    //setEventObservers(chartElement,min,max,guidelines); // TO  DO - put back in place but without breaking stuff
   }
 
   if(chartElement.classList.contains('chart--animate'))
@@ -979,8 +985,6 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
         let span = td.querySelector('span');
         span.setAttribute('data-second',matchingTD.textContent);
         span.setAttribute('data-second-label',chartElement.getAttribute('data-second-label'));
-
-        chartElement
       }
 
       // totals
@@ -1074,6 +1078,7 @@ function setTreemapCellData(chartElement:any){
       // Add an if to check checkbox
       if(display != 'none' && cumulativeLeft > maxLeft){
 
+  console.log('hi3')
         width = 100 - cumulativeLeft;
         height = (percent/width) * 100;
 
@@ -1084,6 +1089,7 @@ function setTreemapCellData(chartElement:any){
       }
       else if (display != 'none' && percent > maxPercent && i != trackerReset){
 
+        console.log('hi4')
         width = percent;
         height = 100;
         cumulativeTop = 0;
@@ -1096,6 +1102,7 @@ function setTreemapCellData(chartElement:any){
       }
       else if (display != 'none'){
 
+        console.log('hi5')
         if (trackerPercent == 0){
           
           overallPercent += percent;
