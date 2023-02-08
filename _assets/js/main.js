@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         intObserver.observe(arrayElement);
     });
-    window.addEventListener('hashchange', function (e) {
+    window.addEventListener('hashchange', function () {
         const hash = location.hash.replace('#', '');
         let element = document.getElementById(hash);
         Array.from(document.querySelectorAll('.chart:not(.inview)')).forEach((arrayElement, index) => {

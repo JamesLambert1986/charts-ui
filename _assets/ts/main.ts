@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
 
-  window.addEventListener('hashchange', function(e) {
+  window.addEventListener('hashchange', function() {
 
     const hash = location.hash.replace('#','');
     let element = document.getElementById(hash);

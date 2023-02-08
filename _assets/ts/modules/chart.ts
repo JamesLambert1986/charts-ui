@@ -20,12 +20,67 @@ export const setupChart = function (chartElement:any) {
   // Add the basic HTML structure
   addBasicHTMLStructure(chartElement);
 
-  let table = chartElement.querySelector('.chart__inner table');
   
-  // TODO: events, targets, chart type (including multiple)
+
+  let {min, max} = getChartData(chartElement);
+
+  createChartAssets(chartElement);
 
 
-  // Read the data attributes TODO: check what needs to be a constant
+  // Make sure table cells have enough data attached to them to display the chart data
+  let table = chartElement.querySelector('.chart__inner table');
+  let secondTable = chartElement.querySelector(':scope > table');
+  if(secondTable){
+
+    let secondMin:any = chartElement.hasAttribute('data-second-min') ? parseFloat(chartElement.getAttribute('data-second-min')) : 0;
+    let secondMax:any = chartElement.hasAttribute('data-second-max') ? parseFloat(chartElement.getAttribute('data-second-max')) : getLargestValue(secondTable);
+    
+    setCellData(chartElement,secondTable,secondMin,secondMax);
+  }
+
+  setCellData(chartElement,table,min,max,secondTable);
+
+  // Create stuff like SVG's and add additional data only required for certain chart types
+  createOptionalContent(chartElement,min,max);
+
+  // Event handlers
+  const showData = chartElement.querySelectorAll(':scope > input[type="checkbox"]');
+
+  for (var i = 0; i < showData.length; i++) {
+    showData[i].addEventListener('change', function() {
+      
+      createOptionalContent(chartElement,min,max); // TODO: move this to the observer and just update the data attribute
+    });
+  }
+
+  // Update chart type
+  const chartTypes = chartElement.querySelectorAll(':scope > input[type="radio"]');
+  for (var i = 0; i < chartTypes.length; i++) {
+    chartTypes[i].addEventListener('change', function() {  
+      createOptionalContent(chartElement,min,max); // TODO: move this to the observer and just update the data attribute
+    });
+  }
+  
+
+
+  if(chartElement.classList.contains('chart--animate'))
+    setIntersctionObserver(chartElement);
+  else
+    setEventObservers(chartElement); // TO  DO - put back in place but without breaking stuff
+          
+  if(chartElement.hasAttribute('data-series'))
+    createSeries(chartElement);
+
+  return true;
+}
+// #endregion
+
+
+
+export const getChartData = function(chartElement:any){
+
+  let table = chartElement.querySelector('.chart__inner table');
+
   let min:any = chartElement.hasAttribute('data-min') ? chartElement.getAttribute('data-min') : 0;
   let max:any = chartElement.hasAttribute('data-max') ? chartElement.getAttribute('data-max') : getLargestValue(table);
   let type:string = chartElement.hasAttribute('data-type') ? chartElement.getAttribute('data-type') : 'column';
@@ -34,8 +89,13 @@ export const setupChart = function (chartElement:any) {
   let events:any = chartElement.hasAttribute('data-events') ? JSON.parse(chartElement.getAttribute('data-events')) : null;
   let xaxis:any = chartElement.hasAttribute('data-xaxis') ? chartElement.getAttribute('data-xaxis').split(',') : null;
 
+  return {min,max,type,guidelines,targets,events,xaxis};
+}
 
-  
+
+export const createChartAssets = function(chartElement:any){
+
+  let {min,max,type,guidelines,targets,events,xaxis} = getChartData(chartElement);
 
   // Create chart key if the one isn't already created
   if(!chartElement.querySelector('.chart__key')){
@@ -63,156 +123,10 @@ export const setupChart = function (chartElement:any) {
   if(xaxis){
     createXaxis(chartElement,xaxis);
   }
-
-  let chartInner = chartElement.querySelector('.chart__inner');
-  // set the longest label attr so that the bar chart knows what margin to set on the left
-  let longestLabel = '';
-  Array.from(table.querySelectorAll('tbody tr td:first-child')).forEach((td: any) => {
-    if(typeof td.textContent != "undefined" && td.textContent.length > longestLabel.length)
-      longestLabel = td.textContent;
-  });
-  chartInner.setAttribute('data-longest-label',longestLabel);
-
-  // set the longest data set attr so that the bar chart knows what margin to set on the left
-  let longestSet = '';
-  Array.from(table.querySelectorAll('thead tr th')).forEach((td: any) => {
-    if(td.textContent.length > longestSet.length)
-      longestSet = td.textContent;
-  });
-  chartInner.setAttribute('data-set-label',longestSet);
-
-  // Make sure table cells have enough data attached to them to display the chart data
-  let secondTable = chartElement.querySelector(':scope > table');
-  if(secondTable){
-
-    let secondMin:any = chartElement.hasAttribute('data-second-min') ? parseFloat(chartElement.getAttribute('data-second-min')) : 0;
-    let secondMax:any = chartElement.hasAttribute('data-second-max') ? parseFloat(chartElement.getAttribute('data-second-max')) : getLargestValue(secondTable);
-    
-    setCellData(chartElement, secondTable,secondMin,secondMax);
-  }
-
-  setCellData(chartElement, table,min,max,secondTable);
-
-  if(chartElement.classList.contains('chart--show-totals'))
-    addKeyTotals(chartElement);
-
-  // Create lines for line graph
-  if(chartElement.querySelector(':scope > input[value="line"]:checked'))
-    createLines(chartElement,min,max);
-
-  // Create lines for line graph
-  if(chartElement.querySelector(':scope > input[value="proportional"]:checked'))
-    createProportionalAreas(chartElement);
-
-  // Create pies
-  if(chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
-    createPies(chartElement);
-
-  if(chartElement.querySelector(':scope > input[value="radar"]:checked'))
-    createRadar(chartElement,min,max);
-
-  if(chartElement.querySelector(':scope > input[value="combo"]:checked')){
-
-    defineCellType(chartElement);
-    createLines(chartElement,min,max);
-  }
-
-  if(chartElement.querySelector(':scope > input[value="treemap"]:checked'))
-    setTreemapCellData(chartElement);
-
-  if(chartElement.hasAttribute('data-slope'))
-    createSlope(chartElement,min,max);
-
-
-  // Event handlers
-  const showData = chartElement.querySelectorAll(':scope > input[type="checkbox"]');
-
-  for (var i = 0; i < showData.length; i++) {
-    showData[i].addEventListener('change', function() {
-      
-      if(chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
-        createPies(chartElement);
-
-
-        if(chartElement.querySelector(':scope > input[value="treemap"]:checked')){
-
-          deleteCellData(chartElement);
-  
-          let newMax = 0;
-  
-          Array.from(chartElement.querySelectorAll('table tbody tr td:not(:first-child)')).forEach((td: any) => {
-  
-            const display = getComputedStyle(td).display;
-  
-            if(display != 'none'){
-  
-              let value = td.innerHTML;
-  
-              value = value.replace('£','');
-              value = value.replace('%','');
-              value = Number.parseFloat(value);
-  
-              newMax += value;
-            }
-          });
-          setCellData(chartElement, table,min,newMax);
-          setTreemapCellData(chartElement);
-        }
-
-        if(chartElement.querySelector(':scope > input[value="proportional"]:checked')){
-
-          deleteCellData(chartElement);
-
-
-          setCellData(chartElement, table,min,max);
-          createProportionalAreas(chartElement);
-        }
-    });
-
-    if(chartElement.querySelector(':scope > input[value="radar"]:checked'))
-      createRadar(chartElement,min,max);
-  }
-
-  // Update chart type
-  if(chartElement.querySelector(':scope > input[type="radio"]')){
-
-    const chartTypes = chartElement.querySelectorAll(':scope > input[type="radio"]');
-
-    for (var i = 0; i < chartTypes.length; i++) {
-      chartTypes[i].addEventListener('change', function() {
-          
-        switch(this.value){
-          case "line":
-            createLines(chartElement,min,max)
-            break;
-          case "pie":
-          case "polar":
-            createPies(chartElement)
-          case "radar":
-            createRadar(chartElement,min,max);
-            break;
-        }
-      });
-    }
-
-  }
-
-
-
-  if(chartElement.hasAttribute('data-series')){
-    
-    createSeries(chartElement);
-  }
-  else {
-    //setEventObservers(chartElement,min,max,guidelines); // TO  DO - put back in place but without breaking stuff
-  }
-
-  if(chartElement.classList.contains('chart--animate'))
-    setIntersctionObserver(chartElement);
-
-  return true;
 }
-// #endregion
+
+
+
 
 // #region Create table from CSV URL
 function getCSVData(chartElement:any, csvURL:string){
@@ -231,9 +145,6 @@ function getCSVData(chartElement:any, csvURL:string){
         const data = csvToObj(request.responseText);
         
         createTable(chartElement, data);
-              
-        chartElement.setAttribute('data-csv-loaded', 'true');
-        setupChart(chartElement);
         return true;
       }
     }
@@ -250,6 +161,9 @@ function getCSVData(chartElement:any, csvURL:string){
 export const addBasicHTMLStructure = function(chartElement:any){
 
   let table = chartElement.querySelector('table');
+
+  if(!table)
+    return false;
 
   // Wrap the table with some divs to add functionality
   if(!chartElement.querySelector('.table__wrapper')){
@@ -270,6 +184,8 @@ export const addBasicHTMLStructure = function(chartElement:any){
     chartInner.append(tableWrapper);
     chartElement.append(chartInner);
   }
+
+  return true;
 }
 // #endregion
 
@@ -277,147 +193,103 @@ export const addBasicHTMLStructure = function(chartElement:any){
 // #region Add data attributes
 // #endregion
 
-
 // #region Event handlers and observers
 // #endregion
-export const setEventObservers = function(chartElement:any,min:any,max:any,guidelines:any) {
+export const setEventObservers = function(chartElement:any) {
 
-  let table = chartElement.querySelector('table');
+  if(chartElement.hasAttribute('data-series'))
+    return false;
+
+  let table = chartElement.querySelector('.chart__inner table');
+
+  let min = chartElement.getAttribute('data-min');
+  let max = chartElement.getAttribute('data-max');
 
   const attributesUpdated = (mutationList:any, observer:any) => {
+
+    observer.disconnect();
+    observer2.disconnect();
+
+    console.log(mutationList);
+
     for (const mutation of mutationList) {
 
       if(mutation.attributeName == 'class')
         continue;
 
-      observer.disconnect();
-      observer2.disconnect();
-
-      if (mutation.type === 'childList') {
-        console.log('A child node has been added or removed.');
-      } else if (mutation.type === 'attributes') {
+      if (mutation.type === 'attributes') {
         console.log(`The ${mutation.attributeName} attribute was modified.`);
       }
 
-      
       min = chartElement.getAttribute('data-min');
       max = chartElement.getAttribute('data-max');
       
+      createChartAssets(chartElement);
 
-      Array.from(chartElement.querySelectorAll('tbody tr td[data-numeric]')).forEach((td:any) => {
-        
-        if(parseFloat(td.getAttribute('data-numeric')) > max){
-
-          max = parseFloat(td.getAttribute('data-numeric'));
-        }
-      });
-
-
-      if(mutation.type === 'attributes'){
-
-        let guidelines = chartElement.getAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : [];
-        
-        // Y Axis and Guidelines
-        if(guidelines){
-          createChartYaxis(chartElement,min,max,guidelines);
-          createChartGuidelines(chartElement,min,max,guidelines);
-
-          if(chartElement.hasAttribute('data-targets')){
-            let targets = JSON.parse(chartElement.getAttribute('data-targets'));
-            createTargets(chartElement,min,max,targets);
-          }
-        }
-
-        if(chartElement.hasAttribute('data-events')){
-          let events = JSON.parse(chartElement.getAttribute('data-events'));
-          createEvents(chartElement,events);
-        }
-
-        deleteCellData(chartElement);
-      }
-
+      deleteCellData(chartElement);
       setCellData(chartElement, table,min,max);
-
-      // Create lines for line graph
-      if(chartElement.querySelector(':scope > input[value="line"]:checked'))
-        createLines(chartElement,min,max);
-
-      // Create pies
-      if(chartElement.querySelector(':scope > input[value="pie"]:checked'))
-        createPies(chartElement);
-
-        
-
-      observer.observe(table, { attributes: true, childList: true, subtree: true });
-      observer2.observe(chartElement, { attributes: true });
-
+      createOptionalContent(chartElement,min,max); // TODO: move this to the observer and just update the data attribute
     }
+
+    observer.observe(table, { characterData: true, childList: true, subtree: true });
+    observer2.observe(chartElement, { attributes: true });
   };
 
   const tableUpdated = (mutationList:any, observer:any) => {
 
+    observer.disconnect();
+    observer2.disconnect();
+
+
     for (const mutation of mutationList) {
 
-      observer.disconnect();
-      observer2.disconnect();
+      console.log(mutation);
 
       let attributeChange = false;
 
       min = chartElement.getAttribute('data-min');
       max = chartElement.getAttribute('data-max');
       
-      if(mutation.type == "characterData"){
+      if(mutation.type == "characterData" || (mutation.type == "childList" && mutation.addedNodes.length)){
 
         let cell = mutation.target.parentNode.closest('td');
-        
-        cell.removeAttribute('data-numeric');
-        cell.removeAttribute('style');
 
-        cell.setAttribute('data-numeric',parseFloat(cell.textContent.replace('£','').replace('%','')));
-      }
+        if(cell){
+          let newValue = parseFloat(cell.textContent.replace('£','').replace('%',''));
 
-      Array.from(chartElement.querySelectorAll('tbody tr td[data-numeric]')).forEach((td: any) => {
-        
-        if(parseFloat(td.getAttribute('data-numeric')) > max){
+          // Check if the new value will cause an overall update to be needed
+          if(newValue > max){
 
-          max = parseFloat(td.getAttribute('data-numeric'));
-          attributeChange = true;
-        }
-      });
+            max = newValue;
+            attributeChange = true;
+            chartElement.setAttribute('data-max',max);
+          }
+          else if(newValue < min){
 
-
-      if(attributeChange){
-
-        guidelines = chartElement.getAttribute('data-guidelines') ? chartElement.getAttribute('data-guidelines').split(',') : [];
-        
-        // Y Axis and Guidelines
-        if(guidelines){
-          createChartYaxis(chartElement,min,max,guidelines);
-          createChartGuidelines(chartElement,min,max,guidelines);
+            min = newValue;
+            attributeChange = true;
+            chartElement.setAttribute('data-min',min);
+          }
         }
 
+        if(attributeChange){
+
+          createChartAssets(chartElement);
+        }
+
+        deleteCellData(chartElement);
+        setCellData(chartElement, table,min,max);
+        createOptionalContent(chartElement,min,max); // TODO: move this to the observer and just update the data attribute
       }
-
-      deleteCellData(chartElement);
-      setCellData(chartElement, table,min,max);
-
-      // Create lines for line graph
-      if(chartElement.querySelector(':scope > input[value="line"]:checked'))
-        createLines(chartElement,min,max);
-
-      // Create pies
-      if(chartElement.querySelector(':scope > input[value="pie"]:checked'))
-        createPies(chartElement);
-
-
-      observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
-      observer2.observe(chartElement, { attributes: true });
     }
+
+    observer.observe(table, { characterData: true, childList: true, subtree: true });
+    observer2.observe(chartElement, { attributes: true });
   };
 
 
-  const observer = new MutationObserver(tableUpdated);
-  const observer2 = new MutationObserver(attributesUpdated);
+  let observer = new MutationObserver(tableUpdated);
+  let observer2 = new MutationObserver(attributesUpdated);
 
   observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
   observer2.observe(chartElement, { attributes: true });
@@ -442,6 +314,10 @@ export const setIntersctionObserver = function(chartElement:any) {
 
         setTimeout(function() {
           entry.target.classList.remove('animating');
+
+          
+            setEventObservers(entry.target); // TO  DO - put back in place but without breaking stuff
+          
         }, 3000);
       }
     });
@@ -515,15 +391,7 @@ export const createTable = function(chartElement:any,data:any){
   const newThead = document.createElement("thead");
   const newTheadRow = document.createElement("tr");
   const newTbody = document.createElement("tbody");
-  const chartID = `chart-${Date.now()+(Math.floor(Math.random() * 100) + 1)}`;
-
-  const chartInner = chartElement.querySelector('.chart__inner');
-  let chartKey = document.createElement("div");
-  let previousInput:any;
-  chartKey.setAttribute('class','chart__key');
-  chartKey.setAttribute('role','presentation');
-
-  chartElement.insertBefore(chartKey,chartInner);
+  const chartID = `chart-${Date.now()+(Math.floor(Math.random() * 100) + 1)}`; // TODO: improve unique id's
 
 
   let firstRow = data[0];
@@ -533,9 +401,7 @@ export const createTable = function(chartElement:any,data:any){
     const newHeading = document.createElement('th');
     newHeading.innerHTML = cell;
     newTheadRow.appendChild(newHeading);
-    if(index != 0){
-      previousInput = createChartKeyItem(chartID,index,cell,chartKey,chartElement,previousInput);
-    }
+
   });
 
   newThead.appendChild(newTheadRow);
@@ -564,9 +430,17 @@ export const createTable = function(chartElement:any,data:any){
   newTable.appendChild(newTbody);
 
   chartElement.appendChild(newTable);
+
+  chartElement.setAttribute('data-csv-loaded', 'true');
+  setupChart(chartElement);
 }
 
 export const createChartKey = function(chartElement:any){
+
+  let table = chartElement.querySelector('table');
+
+  if(!table)
+    return false;
 
   const chartID = `chart-${Date.now()+(Math.floor(Math.random() * 100) + 1)}`;
   const chartInner = chartElement.querySelector('.chart__inner');
@@ -988,10 +862,13 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
       }
 
       // totals
-      let chartTotal = chartElement.getAttribute('data-total') ? Number.parseFloat(chartElement.getAttribute('data-total')) : 0;
-      let keyTotal = chartElement.querySelector(`.key[data-label="${label}"]`).getAttribute('data-total') ? Number.parseFloat(chartElement.querySelector(`.key[data-label="${label}"]`).getAttribute('data-total')) : 0;
-      chartElement.querySelector(`.key[data-label="${label}"]`).setAttribute('data-total',keyTotal+value);
-      chartElement.setAttribute('data-total',chartTotal+value);
+      if(chartElement.classList.contains('chart--show-totals')){
+        let chartTotal = chartElement.getAttribute('data-total') ? Number.parseFloat(chartElement.getAttribute('data-total')) : 0;
+        let keyTotal = chartElement.querySelector(`.key[data-label="${label}"]`).getAttribute('data-total') ? Number.parseFloat(chartElement.querySelector(`.key[data-label="${label}"]`).getAttribute('data-total')) : 0;
+        chartElement.querySelector(`.key[data-label="${label}"]`).setAttribute('data-total',keyTotal+value);
+        chartElement.setAttribute('data-total',chartTotal+value);
+      }
+
     });
 
     
@@ -1004,6 +881,65 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
   });
 
 }
+
+export const createOptionalContent = function(chartElement:any,min:any,max:any) {
+  if(chartElement.classList.contains('chart--show-totals'))
+    addKeyTotals(chartElement);
+
+  if(chartElement.hasAttribute('data-slope'))
+    createSlope(chartElement,min,max);
+
+  // TODO: switch to a switch statement
+  // Create lines for line graph
+  if(chartElement.querySelector(':scope > input[value="line"]:checked'))
+    createLines(chartElement,min,max);
+
+  // Create lines for line graph
+  if(chartElement.querySelector(':scope > input[value="proportional"]:checked'))
+    createProportionalAreas(chartElement);
+
+  // Create pies
+  if(chartElement.querySelector(':scope > input:is([value="pie"],[value="polar"]):checked'))
+    createPies(chartElement);
+
+  if(chartElement.querySelector(':scope > input[value="radar"]:checked'))
+    createRadar(chartElement,min,max);
+
+  if(chartElement.querySelector(':scope > input[value="combo"]:checked')){
+
+    defineCellType(chartElement);
+    createLines(chartElement,min,max);
+  }
+
+  if(chartElement.querySelector(':scope > input[value="treemap"]:checked'))
+    setTreemapCellData(chartElement);
+
+
+  if(chartElement.querySelector(':scope > input:is([value="bar"],[value="dumbbell"]):checked')){
+    let chartInner = chartElement.querySelector('.chart__inner');
+    let table = chartElement.querySelector('.chart__inner table');
+    // set the longest label attr so that the bar chart knows what margin to set on the left
+    let longestLabel = '';
+    Array.from(table.querySelectorAll('tbody tr td:first-child')).forEach((td: any) => {
+      if(typeof td.textContent != "undefined" && td.textContent.length > longestLabel.length)
+        longestLabel = td.textContent;
+    });
+    chartInner.setAttribute('data-longest-label',longestLabel);
+
+    // set the longest data set attr so that the bar chart knows what margin to set on the left
+    let longestSet = '';
+    Array.from(table.querySelectorAll('thead tr th')).forEach((td: any) => {
+      if(td.textContent.length > longestSet.length)
+        longestSet = td.textContent;
+    });
+    chartInner.setAttribute('data-set-label',longestSet);
+
+  }
+  
+
+
+}
+
 
 function addKeyTotals(chartElement:any){
 
@@ -1019,7 +955,7 @@ function addKeyTotals(chartElement:any){
   Array.from(chartElement.querySelectorAll('.chart__key .key[data-label]')).forEach((key:any, index) => {
 
     if(key.querySelector('.chart__total'))
-      return false;
+      key.querySelector('.chart__total').remove();
 
     let label = key.getAttribute('data-label');
     let keyTotal:any = 0;
@@ -1053,6 +989,33 @@ function addKeyTotals(chartElement:any){
 
 function setTreemapCellData(chartElement:any){
 
+
+  let table = chartElement.querySelector('.chart__inner table');
+  let min:any = chartElement.hasAttribute('data-min') ? chartElement.getAttribute('data-min') : 0;
+
+  deleteCellData(chartElement);
+
+  let newMax = 0;
+
+  Array.from(chartElement.querySelectorAll('table tbody tr td:not(:first-child)')).forEach((td: any) => {
+
+    const display = getComputedStyle(td).display;
+
+    if(display != 'none'){
+
+      let value = td.innerHTML;
+
+      value = value.replace('£','');
+      value = value.replace('%','');
+      value = Number.parseFloat(value);
+
+      newMax += value;
+    }
+  });
+  setCellData(chartElement,table,min,newMax);
+
+
+
   let cumulativeLeft:number = 0;
   let cumulativeTop:number = 0;
   let trackerPercent:number = 0;
@@ -1078,7 +1041,6 @@ function setTreemapCellData(chartElement:any){
       // Add an if to check checkbox
       if(display != 'none' && cumulativeLeft > maxLeft){
 
-  console.log('hi3')
         width = 100 - cumulativeLeft;
         height = (percent/width) * 100;
 
@@ -1102,7 +1064,6 @@ function setTreemapCellData(chartElement:any){
       }
       else if (display != 'none'){
 
-        console.log('hi5')
         if (trackerPercent == 0){
           
           overallPercent += percent;
@@ -1406,6 +1367,13 @@ export const createSlope = function(chartElement:any,min:any,max:any){
 
 
 export const createProportionalAreas = function(chartElement:any){
+
+  let table = chartElement.querySelector('.chart__inner table');
+  let min:any = chartElement.hasAttribute('data-min') ? chartElement.getAttribute('data-min') : 0;
+  let max:any = chartElement.hasAttribute('data-max') ? chartElement.getAttribute('data-max') : 0;
+
+  deleteCellData(chartElement);
+  setCellData(chartElement, table,min,max);
 
   let returnString = '';
   let tableWrapper = chartElement.querySelector('.table__wrapper');
