@@ -84,24 +84,8 @@ export const createOptionalContent = function (chartElement, min, max) {
     }
     if (chartElement.querySelector(':scope > input[value="treemap"]:checked'))
         setTreemapCellData(chartElement);
-    if (chartElement.querySelector(':scope > input:is([value="bar"],[value="dumbbell"]):checked')) {
-        let chartInner = chartElement.querySelector('.chart__inner');
-        let table = chartElement.querySelector('.chart__inner table');
-        // set the longest label attr so that the bar chart knows what margin to set on the left
-        let longestLabel = '';
-        Array.from(table.querySelectorAll('tbody tr td:first-child')).forEach((td) => {
-            if (typeof td.textContent != "undefined" && td.textContent.length > longestLabel.length)
-                longestLabel = td.textContent;
-        });
-        chartInner.setAttribute('data-longest-label', longestLabel);
-        // set the longest data set attr so that the bar chart knows what margin to set on the left
-        let longestSet = '';
-        Array.from(table.querySelectorAll('thead tr th')).forEach((td) => {
-            if (td.textContent.length > longestSet.length)
-                longestSet = td.textContent;
-        });
-        chartInner.setAttribute('data-set-label', longestSet);
-    }
+    if (chartElement.querySelector(':scope > input:is([value="bar"],[value="dumbbell"]):checked'))
+        setLongestLabel(chartElement);
 };
 // #endregion
 // #region Event handlers and observers
@@ -129,13 +113,14 @@ export const setEventObservers = function (chartElement) {
     const attributesUpdated = (mutationList, observer) => {
         observer.disconnect();
         observer2.disconnect();
-        console.log(mutationList);
         for (const mutation of mutationList) {
             if (mutation.attributeName == 'class')
                 continue;
-            if (mutation.type === 'attributes') {
+            else if (mutation.type === 'attributes' && mutation.attributeName === 'data-total')
+                continue;
+            else if (mutation.type === 'attributes')
                 console.log(`The ${mutation.attributeName} attribute was modified.`);
-            }
+            console.log(mutation);
             min = chartElement.getAttribute('data-min');
             max = chartElement.getAttribute('data-max');
             createChartAssets(chartElement);
@@ -143,7 +128,7 @@ export const setEventObservers = function (chartElement) {
             setCellData(chartElement, table, min, max);
             createOptionalContent(chartElement, min, max); // TODO: move this to the observer and just update the data attribute
         }
-        observer.observe(table, { characterData: true, childList: true, subtree: true });
+        observer.observe(table, { characterData: true, subtree: true });
         observer2.observe(chartElement, { attributes: true });
     };
     const tableUpdated = (mutationList, observer) => {
@@ -178,12 +163,12 @@ export const setEventObservers = function (chartElement) {
                 createOptionalContent(chartElement, min, max); // TODO: move this to the observer and just update the data attribute
             }
         }
-        observer.observe(table, { characterData: true, childList: true, subtree: true });
+        observer.observe(table, { characterData: true, subtree: true });
         observer2.observe(chartElement, { attributes: true });
     };
     let observer = new MutationObserver(tableUpdated);
     let observer2 = new MutationObserver(attributesUpdated);
-    observer.observe(table, { characterData: true, attributes: true, childList: true, subtree: true });
+    observer.observe(table, { characterData: true, subtree: true });
     observer2.observe(chartElement, { attributes: true });
     return true;
 };
@@ -198,10 +183,12 @@ export const setIntersctionObserver = function (chartElement) {
                 entry.target.classList.add('inview');
                 entry.target.classList.add('animating');
                 intObserver.unobserve(entry.target);
+                let rowCount = entry.target.querySelectorAll('tbody tr').length;
+                let animationTime = 2000 + (rowCount * 100);
                 setTimeout(function () {
                     entry.target.classList.remove('animating');
                     setEventObservers(entry.target); // TO  DO - put back in place but without breaking stuff
-                }, 3000);
+                }, animationTime);
             }
         });
     };
@@ -338,19 +325,28 @@ const getValues = function (value, min, max, start) {
 };
 export const deleteCellData = function (chartElement) {
     Array.from(chartElement.querySelectorAll('tbody tr')).forEach((tr) => {
+        let trDisplay = getComputedStyle(tr).display;
+        if (trDisplay == 'none')
+            return;
         tr.removeAttribute('style');
         tr.removeAttribute('data-label');
         tr.removeAttribute('data-max');
-    });
-    Array.from(chartElement.querySelectorAll('tbody tr td')).forEach((td) => {
-        td.removeAttribute('style');
-        td.removeAttribute('data-label');
-        td.removeAttribute('data-numeric');
-    });
-    Array.from(chartElement.querySelectorAll('tbody tr td span')).forEach((span) => {
-        let content = span.innerHTML;
-        let parent = span.parentNode;
-        parent.innerHTML = content;
+        Array.from(chartElement.querySelectorAll('tbody tr td')).forEach((td) => {
+            let tdDisplay = getComputedStyle(td).display;
+            if (tdDisplay == 'none')
+                return;
+            td.removeAttribute('style');
+            //td.removeAttribute('data-label');
+            td.removeAttribute('data-numeric');
+            Array.from(td.querySelectorAll('span')).forEach((span) => {
+                let spanDisplay = getComputedStyle(span).display;
+                if (spanDisplay == 'none')
+                    return;
+                let content = span.innerHTML;
+                let parent = span.parentNode;
+                parent.innerHTML = content;
+            });
+        });
     });
 };
 export const setCellData = function (chartElement, table, min, max, secondTable) {
@@ -427,24 +423,29 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
                 td.innerHTML = `<span data-group="${group}" data-label="${label}">${content}</span>`;
             if (!td.hasAttribute('style')) {
                 let { percent, bottom, axis } = getValues(value, rowMin, rowMax, start);
-                let order = (10000 - Math.round(percent * 100));
                 td.setAttribute('data-percent', percent);
-                td.setAttribute("style", `--bottom:${bottom}%;--percent:${percent}%;--axis:${axis}%;--order:${order};`);
-                if (percent < coverageStart) {
-                    tr.style.setProperty('--coverage-start', `${percent}%`);
-                    coverageStart = percent;
-                }
-                if (percent > coverageEnd) {
-                    tr.style.setProperty('--coverage-end', `${percent}%`);
-                    coverageEnd = percent;
-                }
+                td.setAttribute("style", `--bottom:${bottom}%;--percent:${percent}%;--axis:${axis}%;`);
                 if (tr.hasAttribute('data-total')) {
                     let rowTotal = tr.getAttribute('data-total');
                     let comparison = ((value - rowMin) / (rowTotal)) * 100;
-                    order = (10000 - Math.round(comparison * 100));
                     cumulativeComparison += comparison;
                     td.setAttribute('data-comparison', comparison);
-                    td.setAttribute("style", `--bottom:${bottom}%;--percent:${percent}%;--axis:${axis}%;--order:${order};--cumulative-comparision:${cumulativeComparison}%;--comparison:${comparison}%;`);
+                    td.style.setProperty('--cumulative-comparision', `${cumulativeComparison}%`);
+                    td.style.setProperty('--comparison', `${comparison}%`);
+                }
+                if (chartElement.classList.contains("chart--value-order")) {
+                    let order = (10000 - Math.round(percent * 100));
+                    td.style.setProperty('--order', `${order}%`);
+                }
+                if (chartType == "dumbbell") {
+                    if (percent < coverageStart) {
+                        tr.style.setProperty('--coverage-start', `${percent}%`);
+                        coverageStart = percent;
+                    }
+                    if (percent > coverageEnd) {
+                        tr.style.setProperty('--coverage-end', `${percent}%`);
+                        coverageEnd = percent;
+                    }
                 }
             }
             // Second table 
@@ -462,11 +463,13 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
             // totals
             if (chartElement.classList.contains('chart--show-totals')) {
                 let chartTotal = chartElement.getAttribute('data-total') ? Number.parseFloat(chartElement.getAttribute('data-total')) : 0;
-                let keyTotal = chartElement.querySelector(`.key[data-label="${label}"]`).getAttribute('data-total') ? Number.parseFloat(chartElement.querySelector(`.key[data-label="${label}"]`).getAttribute('data-total')) : 0;
-                chartElement.querySelector(`.key[data-label="${label}"]`).setAttribute('data-total', keyTotal + value);
+                let keyTotal = chartElement.querySelector(`.key[data-label="${label}"]`) && chartElement.querySelector(`.key[data-label="${label}"]`).getAttribute('data-total') ? Number.parseFloat(chartElement.querySelector(`.key[data-label="${label}"]`).getAttribute('data-total')) : 0;
+                if (chartElement.querySelector(`.key[data-label="${label}"]`))
+                    chartElement.querySelector(`.key[data-label="${label}"]`).setAttribute('data-total', keyTotal + value);
                 chartElement.setAttribute('data-total', chartTotal + value);
             }
         });
+        // Values for incremental charts i.e. histograms...
         if (increment && start && end) {
             let firstCellValue = parseFloat(tr.querySelector('td:first-child').textContent.replace('£', '').replace('%', '').replace(',', ''));
             let position = ((firstCellValue - start) / (end - start)) * 100;
@@ -584,6 +587,24 @@ export const defineCellType = function (chartElement) {
         cell.classList.add('chart__bar');
     });
     return true;
+};
+export const setLongestLabel = function (chartElement) {
+    let chartInner = chartElement.querySelector('.chart__inner');
+    let table = chartElement.querySelector('.chart__inner table');
+    // set the longest label attr so that the bar chart knows what margin to set on the left
+    let longestLabel = '';
+    Array.from(table.querySelectorAll('tbody tr td:first-child')).forEach((td) => {
+        if (typeof td.textContent != "undefined" && td.textContent.length > longestLabel.length)
+            longestLabel = td.textContent;
+    });
+    chartInner.setAttribute('data-longest-label', longestLabel);
+    // set the longest data set attr so that the bar chart knows what margin to set on the left
+    let longestSet = '';
+    Array.from(table.querySelectorAll('thead tr th')).forEach((td) => {
+        if (td.textContent.length > longestSet.length)
+            longestSet = td.textContent;
+    });
+    chartInner.setAttribute('data-set-label', longestSet);
 };
 // #endregion
 // #region Functions to add HTML to the page 
@@ -779,10 +800,10 @@ export const createPies = function (chartElement) {
         let title = titleKey.innerHTML;
         let pieCount = 0;
         // Work out the total amount
-        Array.from(item.querySelectorAll('td')).forEach((cell, subindex) => {
-            const display = getComputedStyle(cell).display;
+        Array.from(item.querySelectorAll('td')).forEach((td, subindex) => {
+            const display = getComputedStyle(td).display;
             if (subindex != 0 && display != 'none') {
-                let value = cell.getAttribute('data-numeric');
+                let value = td.getAttribute('data-numeric');
                 value = value.replace('£', '');
                 value = value.replace('%', '');
                 value = value.replace(',', '');
@@ -792,33 +813,36 @@ export const createPies = function (chartElement) {
             }
         });
         // Create the paths
-        Array.from(item.querySelectorAll('td')).forEach((cell, subindex) => {
-            const display = getComputedStyle(cell).display;
-            if (subindex != 0) {
-                let value = cell.getAttribute('data-numeric');
+        Array.from(item.querySelectorAll('td')).forEach((td, subindex) => {
+            const display = getComputedStyle(td).display;
+            console.log(display);
+            if (subindex != 0 && pieCount == 1 && display != "none") {
+                const pathData = `M 0 0 L 100 0 A 100 100 0 1 1 100 -0.01 L 0 0`;
+                paths += `<path d="${pathData}" style="${td.getAttribute('style')} --path-index: ${subindex};"></path>`;
+                tooltips += `<foreignObject x="-70" y="-70" width="140" height="140" ><div><span class="h5 mb-0"><span class="total d-block">${ucfirst(unsnake(title))}</span> ${ucfirst(unsnake(td.getAttribute('data-label')))}<br/> ${td.innerHTML}${td.hasAttribute('data-second') ? `${td.getAttribute('data-second-label')}: ${td.getAttribute('data-second')}` : ''}</span></div></foreignObject>`;
+            }
+            else if (subindex != 0) {
+                let value = td.getAttribute('data-numeric');
+                let hide = display == "none" ? "display: none;" : "";
                 value = value.replace('£', '');
                 value = value.replace('%', '');
                 value = value.replace(',', '');
                 value = Number.parseInt(value);
                 let percent = value / total;
                 const [startX, startY] = getCoordinatesForPercent(cumulativePercent, pieCount);
+                const [endX, endY] = getCoordinatesForPercent(cumulativePercent + percent, pieCount);
+                const largeArcFlag = percent > .5 ? 1 : 0; // if the slice is more than 50%, take the large arc (the long way around)
+                const pathData = [
+                    `M 0 0`,
+                    `L ${startX.toFixed(0)} ${startY.toFixed(0)}`,
+                    `A 100 100 0 ${largeArcFlag} 1 ${endX.toFixed(0)} ${endY.toFixed(0)}`,
+                    `L 0 0`, // Line
+                ].join(' ');
+                paths += `<path d="${pathData}" style="${td.getAttribute('style')} --path-index: ${subindex};${hide}"></path>`;
+                tooltips += `<foreignObject x="-70" y="-70" width="140" height="140" ><div><span class="h5 mb-0"><span class="total d-block">${ucfirst(unsnake(title))}</span> ${ucfirst(unsnake(td.getAttribute('data-label')))}<br/> ${td.innerHTML}${td.hasAttribute('data-second') ? `${td.getAttribute('data-second-label')}: ${td.getAttribute('data-second')}` : ''}</span></div></foreignObject>`;
                 // each slice starts where the last slice ended, so keep a cumulative percent
                 if (display != 'none')
                     cumulativePercent += percent;
-                const [endX, endY] = getCoordinatesForPercent(cumulativePercent, pieCount);
-                // if the slice is more than 50%, take the large arc (the long way around)
-                const largeArcFlag = percent > .5 ? 1 : 0;
-                // create an array and join it just for code readability
-                if (startX && startY && endX && endY) {
-                    const pathData = [
-                        `M 0 0`,
-                        `L ${startX.toFixed(0)} ${startY.toFixed(0)}`,
-                        `A 100 100 0 ${largeArcFlag} 1 ${endX.toFixed(0)} ${endY.toFixed(0)}`,
-                        `L 0 0`, // Line
-                    ].join(' ');
-                    paths += `<path d="${pathData}" style="${cell.getAttribute('style')} --path-index: ${subindex};"></path>`;
-                    tooltips += `<foreignObject x="-70" y="-70" width="140" height="140" ><div><span class="h5 mb-0"><span class="total d-block">${ucfirst(unsnake(title))}</span> ${ucfirst(unsnake(cell.getAttribute('data-label')))}<br/> ${cell.innerHTML}${cell.hasAttribute('data-second') ? `${cell.getAttribute('data-second-label')}: ${cell.getAttribute('data-second')}` : ''}</span></div></foreignObject>`;
-                }
             }
         });
         returnString += `<div class="pie"><svg viewBox="-105 -105 210 210" preserveAspectRatio="none" style="--row-index: ${index + 1};">${paths}${tooltips}</svg><div><span class="h5 mb-0">${title}</span></div></div>`;
