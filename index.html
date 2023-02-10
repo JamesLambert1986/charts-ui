@@ -7,11 +7,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="shortcut icon" href="favicon.svg?cache=1675861153784">
+    <link rel="shortcut icon" href="favicon.svg?cache=1676026885243">
 
     <title>BBC Charts UI Library</title>
-    <link rel="stylesheet" href="_app/css/app.css?cache=1675861153784" />
-    <link rel="stylesheet" href="_assets/css/charts.css?cache=1675861153784" />
+    <link rel="stylesheet" href="_app/css/app.css?cache=1676026885243" />
+    <link rel="stylesheet" href="_assets/css/charts.css?cache=1676026885243" />
 
     <script>
         url = new URL(window.location.href);
@@ -47,8 +47,8 @@
       </script>
   
 
-    <script src="_assets/js/main.js?cache=1675861153784" type="module" defer></script>
-    <script src="_app/js/app.js?cache=1675861153784" type="module" defer></script>
+    <script src="_assets/js/main.js?cache=1676026885243" type="module" defer></script>
+    <script src="_app/js/app.js?cache=1676026885243" type="module" defer></script>
     <!-- #endregion:HEAD -->
     
   </head>
@@ -95,8 +95,8 @@
           <input type="checkbox" name="expand-submenu" id="expand-submenu" class="d-none" />
           <nav class="navbar expand-submenu py-0 flex-fill">
             <ul class="navbar-nav me-auto mb-0 w-100 flex-row flex-wrap">
-              <li class="nav-item"><a href="#bar" class="nav-link ps-0 pe-3">Bar</a></li>
               <li class="nav-item"><a href="#column" class="nav-link pe-3">Column</a></li>
+              <li class="nav-item"><a href="#bar" class="nav-link ps-0 pe-3">Bar</a></li>
               <li class="nav-item"><a href="#responsive" class="nav-link pe-3">Responsive</a></li>
               <li class="nav-item"><a href="#stacked" class="nav-link pe-3">Stacked</a></li>
               <li class="nav-item"><a href="#scatter" class="nav-link pe-3">Scatter</a></li>
@@ -117,67 +117,7 @@
         </div>
       </div>
 
-      <div class="container" id="bar">
-          
-
-        <h2>Bar Chart</h2>
-        
-        <div class="resize">
-          
-        <figure class="chart chart--display-data chart--animate" data-max="50" data-min="0" data-type="bar" data-guidelines="45%">
-
-          <table>
-              <thead>
-                  <tr>
-                      <th>Issue</th>
-                      <th>Democrat</th>
-                      <th>Republican</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                      <td>Inflation</td>
-                      <td>45%</td>
-                      <td>18%</td>
-                  </tr>
-                  <tr>
-                      <td>Abortion</td>
-                      <td>12%</td>
-                      <td>43%</td>
-                  </tr>
-                  <tr>
-                      <td>Gun policy</td>
-                      <td>8%</td>
-                      <td>14%</td>
-                  </tr>
-                  <tr>
-                      <td>Immigration</td>
-                      <td>15%</td>
-                      <td>5%</td>
-                  </tr>
-                  <tr>
-                      <td>Crime</td>
-                      <td>13%</td>
-                      <td>10%</td>
-                  </tr>
-              </tbody>
-          </table>
-
-          <figcaption>
-            <p class="chart__title">National exit poll: Issues by party</p>
-            <p class="chart__strapline">Which issue mattered most in deciding how to vote</p>
-            <p>Sample size: 4,636 respondents.</p>
-            <p>Figures may not sum to 100 and all figures have a margin of error</p>
-            <p class="chart__source">Source: Edison Research/NEP via Reuters, 9 Nov, 00.18 EST (0.518 GMT)</p>
-          </figcaption>
-        </figure>
-
-        </div>
-      </div>
       <div class="container" id="column">
-        <p>Data copied from https://www.bbc.co.uk/news/world-us-canada-63556122</p>
-
-
         <h2>Column chart</h2>
         
         <figure class="chart chart--animate chart--show-totals" data-max="1800" data-min="0" data-type="column" data-guidelines="0,200,400,600,800,1000,1200,1400,1600,1800">
@@ -351,6 +291,61 @@
         </figure>
 
         <p>Data copied from <a href="https://www.bbc.co.uk/news/uk-wales-52380643">Registered Covid-19 deaths in Wales udring the pandemic</a></p>
+
+      </div>
+      <div class="container" id="bar">
+          
+        <h2>Bar Chart</h2>
+        
+        <figure class="chart chart--display-data chart--animate" data-max="50" data-min="0" data-type="bar" data-guidelines="45%">
+
+          <table>
+              <thead>
+                  <tr>
+                      <th>Issue</th>
+                      <th>Democrat</th>
+                      <th>Republican</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>Inflation</td>
+                      <td>45%</td>
+                      <td>18%</td>
+                  </tr>
+                  <tr>
+                      <td>Abortion</td>
+                      <td>12%</td>
+                      <td>43%</td>
+                  </tr>
+                  <tr>
+                      <td>Gun policy</td>
+                      <td>8%</td>
+                      <td>14%</td>
+                  </tr>
+                  <tr>
+                      <td>Immigration</td>
+                      <td>15%</td>
+                      <td>5%</td>
+                  </tr>
+                  <tr>
+                      <td>Crime</td>
+                      <td>13%</td>
+                      <td>10%</td>
+                  </tr>
+              </tbody>
+          </table>
+
+          <figcaption>
+            <p class="chart__title">National exit poll: Issues by party</p>
+            <p class="chart__strapline">Which issue mattered most in deciding how to vote</p>
+            <p>Sample size: 4,636 respondents.</p>
+            <p>Figures may not sum to 100 and all figures have a margin of error</p>
+            <p class="chart__source">Source: Edison Research/NEP via Reuters, 9 Nov, 00.18 EST (0.518 GMT)</p>
+          </figcaption>
+        </figure>
+
+        <p>Data copied from https://www.bbc.co.uk/news/world-us-canada-63556122</p>
 
       </div>
       <div class="container" id="responsive">
