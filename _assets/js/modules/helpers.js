@@ -87,4 +87,20 @@ export const safeID = function (str) {
     str = str.replace(/\W/g, '');
     return str;
 };
+export const numberOfDays = function (startDateString, endDateString) {
+    let convertStart = startDateString.split('/');
+    let convertEnd = endDateString.split('/');
+    let dateStart = new Date(convertStart[1] + '/' + convertStart[0] + '/' + convertStart[2]);
+    let dateEnd = new Date(convertEnd[1] + '/' + convertEnd[0] + '/' + convertEnd[2]);
+    if (dateStart == "Invalid Date")
+        throw "Start date is not a valid date";
+    if (dateEnd == "Invalid Date")
+        throw "End date is not a valid date";
+    // To calculate the time difference of two dates
+    let diffTime = dateEnd.getTime() - dateStart.getTime();
+    let numberOfDays = (diffTime / (1000 * 3600 * 24) + 1);
+    if (numberOfDays < 0)
+        throw "The start date should be before the end date";
+    return numberOfDays;
+};
 //# sourceMappingURL=helpers.js.map

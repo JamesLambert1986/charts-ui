@@ -51,7 +51,6 @@
     <script src="_app/js/app.js?cache=1678695246814" type="module" defer></script>
     <!-- #endregion:HEAD -->
     
-    <script src="_app/js/livechart.js?cache=1678695246814" type="module" defer></script>
   </head>
   <body>
     <!-- #region:HEADER -->
@@ -84,32 +83,67 @@
     <main>
       <div class="bg-primary text-white py-4">
         <div class="container">
-          <h1>Series based chart (Beta)</h1>
+          <h1>Logarithmic scale</h1>
 
-          <p>Display a series of rows on an incremental based display. </p>
+          <p class="mb-0">...</p>
+
         </div>
       </div>
       
-
-    <div class="container pt-3">
       
-      <figure class="chart chart--crop-10 chart--display-data chart--display-set-label chart--value-order chart--hide-key chart--hide-total" data-max="3000" data-min="0" data-type="bar" id="timeBased" data-csv="_app/data/National_Carbon_Emissions_2021v1.0.csv" data-series="true">
 
-        <figcaption>
-          <p class="chart__title">How China's carbon emissions have grown</p>
-          <p class="chart__strapline">National carbon emissions (million tonnes of carbon per year)</p>
-          <p class="chart__source">Source: Global Carbon Project 2021</p>
-        </figcaption>
+      <div class="container pt-3">
+        <h2>Log-linear</h2>
+        <figure class="chart" data-type="line" data-min="2" data-log-steps="12" data-log-base="2" data-guidelines="auto" >
+          <table>
+            <thead>
+              <tr class="">
+                <th>Date</th>
+                <th>Total cases</th>
+                <th>Deaths</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>24 April</td>
+                <td>30</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td>27 April</td>
+                <td>65</td>
+                <td>7</td>
+              </tr>
+              <tr>
+                <td>30 April</td>
+                <td>192</td>
+                <td>8</td>
+              </tr>
+              <tr>
+                <td>3 May</td>
+                <td>260</td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td>6 May</td>
+                <td>512</td>
+                <td>28</td>
+              </tr>
+              <tr>
+                <td>9 May</td>
+                <td>2100</td>
+                <td>36</td>
+              </tr>
+            </tbody>
+          </table>
+        </figure>
+<!-- https://en.wikipedia.org/wiki/Semi-log_plot#2009_%22swine_flu%22_progression -->
 
-
-      </figure>
       
-    <p>Data copied from https://www.bbc.co.uk/news/science-environment-63502762</p>
-
       </div>
-    </main>
-    <div class="container" id="more-examples">
-      <!-- #region:MORE -->
+
+      <div class="container" id="more-examples">
+        <!-- #region:MORE -->
 <a href="./#more-examples" class="btn btn-secondary">Back to more examples</a>
 <a href="./floating" class="btn btn-primary">Floating values</a>
 <a href="./gantt" class="btn btn-primary">Gantt Chart</a>
@@ -121,6 +155,7 @@
 <a href="./react" class="btn btn-primary">React component</a>
 
     <!-- #endregion:MORE -->
-    </div>
+      </div>
+    </main>
   </body>
 </html>

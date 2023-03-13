@@ -1,42 +1,63 @@
-import { ucfirst, unsnake } from './helpers.js';
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+import { ucfirst, unsnake, numberOfDays } from './helpers.js';
 // #region Functions that setup and trigger other functions 
-export const setupChart = function (chartElement) {
+export const setupChart = (chartElement) => {
     // Load CSV data and create a HTML table
     if (chartElement.hasAttribute('data-csv') && !chartElement.hasAttribute('data-csv-loaded')) {
         let csvURL = chartElement.getAttribute('data-csv');
-        getCSVData(chartElement, csvURL);
+        getCSVData(csvURL).then(function (result) {
+            if (result)
+                createTable(chartElement, result);
+        });
         return false; // getCSVData will re-trigger setupChart after the CSV data is transformed into a table
     }
-    // Populate chart data attributes from existing HTML
-    if (chartElement.querySelector('.chart__yaxis')) {
-        chartElement.setAttribute('data-guidelines', Array.from(chartElement.querySelectorAll('.chart__yaxis .axis__point')).map((element) => element.textContent));
+    setDataAttributesFromHTML(chartElement);
+    if (chartElement.hasAttribute('data-log-base') && chartElement.hasAttribute('data-log-steps')) {
+        let base = chartElement.getAttribute('data-log-base');
+        let steps = chartElement.getAttribute('data-log-steps');
+        let guidelineString = `${base}`;
+        let currentStep = base;
+        for (let i = 1; i < steps; i++) {
+            currentStep = currentStep * base;
+            guidelineString += `,${currentStep}`;
+        }
+        console.log(guidelineString);
+        chartElement.setAttribute('data-guidelines', guidelineString);
+        chartElement.setAttribute('data-max', currentStep);
     }
     // Add the basic HTML structure
-    addBasicHTMLStructure(chartElement);
-    let { min, max } = getChartData(chartElement);
-    createChartAssets(chartElement);
+    createBasicHTMLStructure(chartElement);
+    setupChartAssets(chartElement);
     // Make sure table cells have enough data attached to them to display the chart data
-    let table = chartElement.querySelector('.chart__inner table');
+    let tableElement = chartElement.querySelector('.chart__inner table');
     let secondTable = chartElement.querySelector(':scope > table');
     if (secondTable) {
         let secondMin = chartElement.hasAttribute('data-second-min') ? parseFloat(chartElement.getAttribute('data-second-min')) : 0;
         let secondMax = chartElement.hasAttribute('data-second-max') ? parseFloat(chartElement.getAttribute('data-second-max')) : getLargestValue(secondTable);
         setCellData(chartElement, secondTable, secondMin, secondMax);
     }
-    setCellData(chartElement, table, min, max, secondTable);
+    let { min, max } = getChartData(chartElement);
+    setCellData(chartElement, tableElement, min, max, secondTable);
     // Create stuff like SVG's and add additional data only required for certain chart types
-    createOptionalContent(chartElement, min, max);
+    setupOptionalContent(chartElement, min, max);
     // Event handlers
     setEventHandlers(chartElement, min, max);
     if (chartElement.classList.contains('chart--animate'))
         setIntersctionObserver(chartElement);
     else
         setEventObservers(chartElement); // TO  DO - put back in place but without breaking stuff
-    if (chartElement.hasAttribute('data-series'))
-        createSeries(chartElement);
+    createSeries(chartElement);
     return true;
 };
-export const createChartAssets = function (chartElement) {
+export const setupChartAssets = function (chartElement) {
     let { min, max, type, guidelines, targets, events, xaxis } = getChartData(chartElement);
     // Create chart key if the one isn't already created
     if (!chartElement.querySelector('.chart__key')) {
@@ -61,7 +82,7 @@ export const createChartAssets = function (chartElement) {
         createXaxis(chartElement, xaxis);
     }
 };
-export const createOptionalContent = function (chartElement, min, max) {
+export const setupOptionalContent = function (chartElement, min, max) {
     if (chartElement.classList.contains('chart--show-totals'))
         addKeyTotals(chartElement);
     if (chartElement.hasAttribute('data-slope'))
@@ -93,14 +114,14 @@ export const setEventHandlers = function (chartElement, min, max) {
     const showData = chartElement.querySelectorAll(':scope > input[type="checkbox"]');
     for (var i = 0; i < showData.length; i++) {
         showData[i].addEventListener('change', function () {
-            createOptionalContent(chartElement, min, max); // TODO: move this to the observer and just update the data attribute
+            setupOptionalContent(chartElement, min, max); // TODO: move this to the observer and just update the data attribute
         });
     }
     // Update chart type
     const chartTypes = chartElement.querySelectorAll(':scope > input[type="radio"]');
     for (var i = 0; i < chartTypes.length; i++) {
         chartTypes[i].addEventListener('change', function () {
-            createOptionalContent(chartElement, min, max); // TODO: move this to the observer and just update the data attribute
+            setupOptionalContent(chartElement, min, max); // TODO: move this to the observer and just update the data attribute
         });
     }
 };
@@ -123,10 +144,10 @@ export const setEventObservers = function (chartElement) {
             console.log(mutation);
             min = chartElement.getAttribute('data-min');
             max = chartElement.getAttribute('data-max');
-            createChartAssets(chartElement);
+            setupChartAssets(chartElement);
             deleteCellData(chartElement);
             setCellData(chartElement, table, min, max);
-            createOptionalContent(chartElement, min, max); // TODO: move this to the observer and just update the data attribute
+            setupOptionalContent(chartElement, min, max); // TODO: move this to the observer and just update the data attribute
         }
         observer.observe(table, { characterData: true, subtree: true });
         observer2.observe(chartElement, { attributes: true });
@@ -156,11 +177,11 @@ export const setEventObservers = function (chartElement) {
                     }
                 }
                 if (attributeChange) {
-                    createChartAssets(chartElement);
+                    setupChartAssets(chartElement);
                 }
                 deleteCellData(chartElement);
                 setCellData(chartElement, table, min, max);
-                createOptionalContent(chartElement, min, max); // TODO: move this to the observer and just update the data attribute
+                setupOptionalContent(chartElement, min, max); // TODO: move this to the observer and just update the data attribute
             }
         }
         observer.observe(table, { characterData: true, subtree: true });
@@ -197,35 +218,42 @@ export const setIntersctionObserver = function (chartElement) {
 };
 // #endregion
 // #region Create table from CSV URL
-export const csvToObj = function (data) {
+export const convertCSVToObj = function (data) {
     let newRows = [];
     let rows = data.split('\n');
     rows.forEach((row) => {
         let newRow = [];
-        let cells = row.replace('\r', '').split(',');
-        cells.forEach((cell) => {
-            newRow.push(cell);
+        let items = row.replace('\r', '').split(',');
+        items.forEach((item) => {
+            newRow.push(item);
         });
         newRows.push(newRow);
     });
     return newRows;
 };
-function getCSVData(chartElement, csvURL) {
-    var request = new XMLHttpRequest();
-    request.open('GET', csvURL, true);
-    request.send(null);
-    request.onreadystatechange = function () {
-        if (request.readyState === 4 && request.status === 200) {
-            let type = request.getResponseHeader('Content-Type');
-            if (type != null && type.indexOf("csv") != -1) {
-                const data = csvToObj(request.responseText);
-                createTable(chartElement, data);
-                return true;
-            }
-        }
-        return false;
-    };
-    return true;
+export function getCSVData(csvURL) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let data = yield new Promise(resolve => {
+            var request = new XMLHttpRequest();
+            request.open('GET', csvURL, true);
+            request.send(null);
+            request.onreadystatechange = function () {
+                if (request.status === 404) {
+                    // TO DO: Add an error message to chart
+                    resolve(false);
+                }
+                if (request.readyState === 4 && request.status === 200) {
+                    let type = request.getResponseHeader('Content-Type');
+                    if (type != null && type.indexOf("csv") != -1) {
+                        const data = convertCSVToObj(request.responseText);
+                        resolve(data);
+                    }
+                }
+                return false;
+            };
+        });
+        return data;
+    });
 }
 export const createTable = function (chartElement, data) {
     const newTable = document.createElement("table");
@@ -287,16 +315,7 @@ function getLargestValue(table) {
     // TO DO round to the nearest 10, 100, 1000 and so on
     return Math.ceil(largetValue);
 }
-export const numDays = function (start, end) {
-    let convertStart = start.split('/');
-    let convertEnd = end.split('/');
-    var dateStart = new Date(convertStart[1] + '/' + convertStart[0] + '/' + convertStart[2]);
-    var dateEnd = new Date(convertEnd[1] + '/' + convertEnd[0] + '/' + convertEnd[2]);
-    // To calculate the time difference of two dates
-    var diffTime = dateEnd.getTime() - dateStart.getTime();
-    return (diffTime / (1000 * 3600 * 24) + 1);
-};
-const getValues = function (value, min, max, start) {
+const getValues = function (chartElement, value, min, max, start) {
     let cleanValue = String(value);
     cleanValue = cleanValue.replace('£', '');
     cleanValue = cleanValue.replace('%', '');
@@ -307,6 +326,11 @@ const getValues = function (value, min, max, start) {
     let bottom = 0;
     if (start && start != 0) {
         bottom = ((start - min) / (max - min)) * 100;
+    }
+    if (chartElement.hasAttribute('data-log-base') && chartElement.hasAttribute('data-log-steps')) {
+        let base = chartElement.getAttribute('data-log-base');
+        let steps = chartElement.getAttribute('data-log-steps');
+        ({ percent, bottom, axis } = getLogValues(cleanValue, min, base, steps));
     }
     // If the value is negative the position below the 0 line
     if (min < 0) {
@@ -321,6 +345,15 @@ const getValues = function (value, min, max, start) {
             axis = percent + bottom;
         }
     }
+    return { percent, axis, bottom };
+};
+export const getLogValues = function (value, min, base, steps) {
+    let step = Math.log(value) / Math.log(base);
+    let stepMin = min == 0 ? 0 : Math.log(min) / Math.log(base);
+    let percent = ((step - stepMin) / (steps - stepMin)) * 100;
+    let axis = percent;
+    let bottom = 0;
+    console.log(`Value: ${value}, Step: ${step}, Axis: ${axis}`);
     return { percent, axis, bottom };
 };
 export const deleteCellData = function (chartElement) {
@@ -352,11 +385,12 @@ export const deleteCellData = function (chartElement) {
 export const setCellData = function (chartElement, table, min, max, secondTable) {
     let chartType = chartElement.getAttribute('data-type');
     let increment = chartElement.getAttribute('data-increment');
-    let start = chartElement.getAttribute('data-start');
-    let end = chartElement.getAttribute('data-end');
+    let incrementStart = chartElement.getAttribute('data-start');
+    let incrementEnd = chartElement.getAttribute('data-end');
     let startDay = min;
+    // Change how gant charts are configured as this just seems bizarre now
     if (increment == "days") {
-        max = numDays(min, max);
+        max = numberOfDays(min, max);
         min = 0;
         chartElement.querySelector('tbody').setAttribute('style', `--single-day:${((1 / max) * 100)}%;`);
     }
@@ -372,8 +406,8 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
             if (increment == "days") {
                 let dates = td.textContent.split(' - ');
                 if (dates[1]) {
-                    value = numDays(dates[0], dates[1]);
-                    start = numDays(startDay, dates[0]) - 1;
+                    value = numberOfDays(dates[0], dates[1]);
+                    start = numberOfDays(startDay, dates[0]) - 1;
                 }
             }
             td.setAttribute('data-numeric', value);
@@ -422,7 +456,7 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
             if (!td.querySelector('span[data-group]'))
                 td.innerHTML = `<span data-group="${group}" data-label="${label}">${content}</span>`;
             if (!td.hasAttribute('style')) {
-                let { percent, bottom, axis } = getValues(value, rowMin, rowMax, start);
+                let { percent, bottom, axis } = getValues(chartElement, value, rowMin, rowMax, start);
                 td.setAttribute('data-percent', percent);
                 td.setAttribute("style", `--bottom:${bottom}%;--percent:${percent}%;--axis:${axis}%;`);
                 if (tr.hasAttribute('data-total')) {
@@ -470,9 +504,9 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
             }
         });
         // Values for incremental charts i.e. histograms...
-        if (increment && start && end) {
+        if (increment && incrementStart && incrementEnd) {
             let firstCellValue = parseFloat(tr.querySelector('td:first-child').textContent.replace('£', '').replace('%', '').replace(',', ''));
-            let position = ((firstCellValue - start) / (end - start)) * 100;
+            let position = ((firstCellValue - incrementStart) / (incrementEnd - incrementStart)) * 100;
             tr.setAttribute('style', `--position:${position}%;`);
         }
     });
@@ -606,18 +640,24 @@ export const setLongestLabel = function (chartElement) {
     });
     chartInner.setAttribute('data-set-label', longestSet);
 };
+export const setDataAttributesFromHTML = (chartElement) => {
+    // Populate chart data attributes from existing HTML
+    if (chartElement.querySelector('.chart__yaxis')) {
+        chartElement.setAttribute('data-guidelines', Array.from(chartElement.querySelectorAll('.chart__yaxis .axis__point')).map((element) => element.textContent));
+    }
+};
 // #endregion
 // #region Functions to add HTML to the page 
-export const addBasicHTMLStructure = function (chartElement) {
-    let table = chartElement.querySelector('table');
-    if (!table)
+export const createBasicHTMLStructure = function (chartElement) {
+    let tableElement = chartElement.querySelector('table');
+    if (!tableElement)
         return false;
     // Wrap the table with some divs to add functionality
     if (!chartElement.querySelector('.table__wrapper')) {
         const tableWrapper = document.createElement('div');
         tableWrapper.setAttribute('class', 'table__wrapper');
         chartElement.append(tableWrapper);
-        tableWrapper.append(table);
+        tableWrapper.append(tableElement);
     }
     if (!chartElement.querySelector('.chart__inner')) {
         const tableWrapper = chartElement.querySelector('.table__wrapper');
@@ -629,8 +669,8 @@ export const addBasicHTMLStructure = function (chartElement) {
     return true;
 };
 export const createChartKey = function (chartElement) {
-    let table = chartElement.querySelector('table');
-    if (!table)
+    let tableElement = chartElement.querySelector('table');
+    if (!tableElement)
         return false;
     const chartID = `chart-${Date.now() + (Math.floor(Math.random() * 100) + 1)}`;
     const chartInner = chartElement.querySelector('.chart__inner');
@@ -672,12 +712,16 @@ function createChartKeyItem(chartID, index, text, chartKey, chartElement, previo
 export const createChartType = function (chartElement, type) {
     const chartID = `chart-${Date.now() + (Math.floor(Math.random() * 100) + 1)}`;
     const chartKey = chartElement.querySelector('.chart__key');
+    const chartInner = chartElement.querySelector('.chart__inner');
     const chartType = document.createElement('input');
     chartType.setAttribute('type', 'radio');
     chartType.setAttribute('name', `${chartID}-type`);
     chartType.value = type;
     chartType.setAttribute('checked', 'checked');
-    chartElement.insertBefore(chartType, chartKey);
+    if (chartKey)
+        chartElement.insertBefore(chartType, chartKey);
+    else
+        chartElement.insertBefore(chartType, chartInner);
 };
 export const createChartYaxis = function (chartElement, min, max, guidelines) {
     const chartInner = chartElement.querySelector('.chart__inner');
@@ -685,7 +729,7 @@ export const createChartYaxis = function (chartElement, min, max, guidelines) {
     let chartYaxis = chartElement.querySelector('.chart__yaxis');
     let startDay = min;
     if (increment == "days") {
-        max = numDays(min, max);
+        max = numberOfDays(min, max);
         min = 0;
     }
     if (!chartYaxis) {
@@ -696,9 +740,9 @@ export const createChartYaxis = function (chartElement, min, max, guidelines) {
     for (var i = 0; i < guidelines.length; i++) {
         let value = parseFloat(guidelines[i].replace('£', '').replace('%', ''));
         if (increment == "days") {
-            value = numDays(startDay, guidelines[i]);
+            value = numberOfDays(startDay, guidelines[i]);
         }
-        let { axis } = getValues(value, min, max);
+        let { axis } = getValues(chartElement, value, min, max);
         chartYaxis.innerHTML += `<div class="axis__point" style="--percent:${axis}%;"><span>${guidelines[i]}</span></div>`;
     }
     chartInner.prepend(chartYaxis);
@@ -709,7 +753,7 @@ export const createChartGuidelines = function (chartElement, min, max, guideline
     let chartGuidelines = chartElement.querySelector('.chart__guidelines');
     let startDay = min;
     if (increment == "days") {
-        max = numDays(min, max);
+        max = numberOfDays(min, max);
         min = 0;
     }
     if (!chartGuidelines) {
@@ -720,9 +764,9 @@ export const createChartGuidelines = function (chartElement, min, max, guideline
     for (var i = 0; i < guidelines.length; i++) {
         let value = parseFloat(guidelines[i]);
         if (increment == "days") {
-            value = numDays(startDay, guidelines[i]) - 1;
+            value = numberOfDays(startDay, guidelines[i]) - 1;
         }
-        let { axis } = getValues(value, min, max);
+        let { axis } = getValues(chartElement, value, min, max);
         chartGuidelines.innerHTML += `<div class="guideline" style="--percent:${axis}%;"><span>${guidelines[i]}</span></div>`;
     }
     tableWrapper.prepend(chartGuidelines);
@@ -734,7 +778,7 @@ export const createTargets = function (chartElement, min, max, targets) {
     }
     Object.keys(targets).forEach(key => {
         const value = parseFloat(targets[key]);
-        let { axis } = getValues(value, min, max);
+        let { axis } = getValues(chartElement, value, min, max);
         if (!Number.isNaN(axis))
             chartGuidelines.innerHTML += `<div class="guideline guideline--target" style="--percent:${axis}%;"><span>${key}</span></div>`;
     });
@@ -815,7 +859,6 @@ export const createPies = function (chartElement) {
         // Create the paths
         Array.from(item.querySelectorAll('td')).forEach((td, subindex) => {
             const display = getComputedStyle(td).display;
-            console.log(display);
             if (subindex != 0 && pieCount == 1 && display != "none") {
                 const pathData = `M 0 0 L 100 0 A 100 100 0 1 1 100 -0.01 L 0 0`;
                 paths += `<path d="${pathData}" style="${td.getAttribute('style')} --path-index: ${subindex};"></path>`;
@@ -834,8 +877,8 @@ export const createPies = function (chartElement) {
                 const largeArcFlag = percent > .5 ? 1 : 0; // if the slice is more than 50%, take the large arc (the long way around)
                 const pathData = [
                     `M 0 0`,
-                    `L ${startX.toFixed(0)} ${startY.toFixed(0)}`,
-                    `A 100 100 0 ${largeArcFlag} 1 ${endX.toFixed(0)} ${endY.toFixed(0)}`,
+                    `L ${(startX ? startX.toFixed(0) : 0)} ${(startY ? startY.toFixed(0) : 0)}`,
+                    `A 100 100 0 ${largeArcFlag} 1 ${(endX ? endX.toFixed(0) : 0)} ${(endY ? endY.toFixed(0) : 0)}`,
                     `L 0 0`, // Line
                 ].join(' ');
                 paths += `<path d="${pathData}" style="${td.getAttribute('style')} --path-index: ${subindex};${hide}"></path>`;
@@ -885,7 +928,7 @@ export const createLines = function (chartElement, min, max) {
             Array.from(item.querySelectorAll('td:not(:first-child)')).forEach((cell, subindex) => {
                 if (!cell.classList.contains('chart__bar')) {
                     let value = cell.getAttribute('data-numeric');
-                    let { axis } = getValues(value, min, max);
+                    let { axis } = getValues(chartElement, value, min, max);
                     if (!Number.isNaN(axis)) {
                         lines[subindex] += `${commands[subindex]} ${(spacerIndent) + (spacer * counter)} ${100 - axis} `;
                         animatelines[subindex] += `${commands[subindex]} ${spacer * counter} 100 `;
@@ -946,8 +989,8 @@ export const createSlope = function (chartElement, min, max) {
     let b = yInt ? parseFloat(yInt) : (totalY - (m * totalX)) / n; // Y intercept
     let firstY = (m * parseFloat(start)) + b;
     let lastY = (m * parseFloat(end)) + b;
-    let { percent: firstYPercent } = getValues(firstY, min, max);
-    let { percent: lastYPercent } = getValues(lastY, min, max);
+    let { percent: firstYPercent } = getValues(chartElement, firstY, min, max);
+    let { percent: lastYPercent } = getValues(chartElement, lastY, min, max);
     slopeWrapper.innerHTML = `<svg viewBox="0 0 200 100" class="line" preserveAspectRatio="none"><path fill="none" d="M 0 ${100 - firstYPercent} L 200 ${100 - lastYPercent}" style="--path: path('M 0 100 L 200 100');"></path></svg>`;
 };
 export const createProportionalAreas = function (chartElement) {
@@ -1024,6 +1067,8 @@ export const createProportionalAreas = function (chartElement) {
     linesWrapper.innerHTML = returnString;
 };
 export const createSeries = function (chartElement) {
+    if (!chartElement.hasAttribute('data-series'))
+        return;
     let currentRow = 1;
     let seriesInterval;
     let seriesControl = document.createElement('div');
@@ -1117,7 +1162,7 @@ export const createRadar = function (chartElement, min, max) {
             Array.from(item.querySelectorAll('td')).forEach((cell, subindex) => {
                 if (subindex != 0) {
                     let value = cell.getAttribute('data-numeric');
-                    let { axis } = getValues(value, min, max);
+                    let { axis } = getValues(chartElement, value, min, max);
                     let command = counter == 0 ? 'M' : 'L';
                     let x = 50;
                     let y = 50 - (axis / 2);
@@ -1149,7 +1194,7 @@ export const createRadar = function (chartElement, min, max) {
     }
     Array.from(chartElement.querySelectorAll('.chart__guidelines .guideline')).forEach((guideline) => {
         let value = guideline.textContent;
-        let { axis } = getValues(value, min, max);
+        let { axis } = getValues(chartElement, value, min, max);
         let line = '';
         for (let i = 0; i < chartElement.querySelectorAll('tbody tr').length; i++) {
             let command = i == 0 ? 'M' : 'L';

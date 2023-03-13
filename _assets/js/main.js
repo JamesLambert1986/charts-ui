@@ -1,4 +1,4 @@
-import { setupChart, addBasicHTMLStructure, createChartKey, createChartType } from './modules/chart.js';
+import { setupChart, createBasicHTMLStructure, createChartKey, createChartType } from './modules/chart.js';
 document.addEventListener("DOMContentLoaded", function () {
     const options = {
         rootMargin: '200px',
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
     const intObserver = new IntersectionObserver(callback, options);
     Array.from(document.querySelectorAll('.chart')).forEach((arrayElement) => {
-        addBasicHTMLStructure(arrayElement);
+        createBasicHTMLStructure(arrayElement);
         if (!arrayElement.querySelector('.chart__key')) {
             createChartKey(arrayElement);
         }

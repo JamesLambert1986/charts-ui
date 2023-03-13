@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
-import chart from '../_assets/ts/modules/chart';
+import * as chart from '../_assets/ts/modules/chart';
 
-describe('Create chart', () => {
+describe('Setup chart function', () => {
 
-  test('uses jest-dom', () => {
+  beforeEach(() => {
+    
     document.body.innerHTML = `
 <figure id="chart" class="chart" data-max="100" data-min="0" data-type="scatter" data-guidelines="£0,£50,£100">
   <table>
@@ -39,16 +40,109 @@ describe('Create chart', () => {
   </table>
 </figure>
 `;
+  });
 
+  test('should call getCSVData function and then return false', () => {
+    
     let chartElement = document.getElementById('chart');
+    chartElement.setAttribute('data-csv','true');
+    let returnValue = chart.setupChart(chartElement);
+    expect(returnValue).toBe(false);
 
-    chart(chartElement);
+    chartElement.setAttribute('data-csv-loaded','true');
+    returnValue = chart.setupChart(chartElement);
+    expect(returnValue).toBe(true);
+  });
 
-    const chartInner = document.querySelector('.chart__inner');
+  test('should call setDataAttributesFromHTML function only once', () => {
+    
+    let chartElement = document.getElementById('chart');
+    const spy = jest.spyOn(chart,'setDataAttributesFromHTML') 
 
+    chart.setupChart(chartElement);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 
-    expect(typeof chartInner).toBe('object');
-  })
+  test('should call createBasicHTMLStructure function only once', () => {
+    
+    let chartElement = document.getElementById('chart');
+    const spy = jest.spyOn(chart,'createBasicHTMLStructure') 
+
+    chart.setupChart(chartElement);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test('should call createChartAssets function only once', () => {
+    
+    let chartElement = document.getElementById('chart');
+    const spy = jest.spyOn(chart,'setupChartAssets') 
+
+    chart.setupChart(chartElement);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test('should call setCellData function only once', () => {
+    
+    let chartElement = document.getElementById('chart');
+    const spy = jest.spyOn(chart,'setCellData') 
+
+    chart.setupChart(chartElement);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test('should call createOptionalContent function only once', () => {
+    
+    let chartElement = document.getElementById('chart');
+    const spy = jest.spyOn(chart,'createOptionalContent') 
+
+    chart.setupChart(chartElement);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test('should call setEventHandlers function only once', () => {
+    
+    let chartElement = document.getElementById('chart');
+    const spy = jest.spyOn(chart,'setEventHandlers') 
+
+    chart.setupChart(chartElement);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test('should NOT call setIntersctionObserver by default', () => {
+    
+    let chartElement = document.getElementById('chart');
+    const spy = jest.spyOn(chart,'setIntersctionObserver') 
+
+    chart.setupChart(chartElement);
+    expect(spy).toHaveBeenCalledTimes(0);
+  });
+  
+  test('should call setIntersctionObserver if the chart element has the chart--animate class', () => {
+    
+    let chartElement = document.getElementById('chart');
+    chartElement.classList.add('chart--animate');
+
+    const spy = jest.spyOn(chart,'setIntersctionObserver') 
+
+    const mockIntersectionObserver = jest.fn();
+    mockIntersectionObserver.mockReturnValue({
+      observe: () => null,
+      unobserve: () => null,
+      disconnect: () => null
+    });
+    window.IntersectionObserver = mockIntersectionObserver;
+
+    chart.setupChart(chartElement);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  test('should call createSeries function only once', () => {
+    
+    let chartElement = document.getElementById('chart');
+    const spy = jest.spyOn(chart,'createSeries') 
+
+    chart.setupChart(chartElement);
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
 });
-
-
