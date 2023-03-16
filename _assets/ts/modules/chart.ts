@@ -550,6 +550,9 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
     let coverageStart:number = 100;
     let coverageEnd:number = 0;
     let cumulativeComparison:number = 0;
+    // For waffle charts
+    let previousAfter:number = 0;
+    let rowPosition:number = 0;
 
     // Set the data numeric value if not set
     Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td:any) => {
@@ -586,7 +589,7 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
       tr.setAttribute('data-max',tr.querySelector('[data-label="Max"][data-numeric]').getAttribute('data-numeric'));
     }
 
-    if(chartType == "proportional"){
+    if(chartType == "proportional" || chartType == "waffle"){
 
       let total = 0;
 
@@ -659,6 +662,48 @@ export const setCellData = function(chartElement:any,table:any,min:any,max:any,s
             tr.style.setProperty('--coverage-end',`${percent}%`);
             coverageEnd = percent;
           }
+        }
+
+        if(chartType == "waffle") {
+
+          let actualPercent = Math.round(td.getAttribute('data-comparison'));
+          let percentMinusAfter = previousAfter != 0 ? actualPercent - (10 - previousAfter) : actualPercent;
+          let rowHeight = percentMinusAfter < 10 ? 10 : Math.floor(percentMinusAfter/10)*10;
+          let rowWidth = percentMinusAfter < 10 ? percentMinusAfter*10 : 100;
+          let maxWidth = actualPercent*10;
+
+          td.style.setProperty('--rowPosition',`${rowPosition}%`);
+          td.style.setProperty('--rowHeight',`${rowHeight}%`);
+          td.style.setProperty('--rowWidth',`${rowWidth}%`);
+          td.style.setProperty('--maxWidth',`${maxWidth}%`);
+
+          // Create the psuedo element variables for the the block that sticks out BELOW the main row
+          let beforeWidth = 0;
+          if(previousAfter != 0){
+            beforeWidth = 100 - (previousAfter*10);
+
+            td.style.setProperty('--beforeWidth',`${beforeWidth}%`);
+            td.style.setProperty('--beforeHeight',`${10/rowHeight * 100}%`);
+            td.style.setProperty('--beforeLeft',`${previousAfter*10}%`);
+          }
+
+          // Create the psuedo element variables for the the block that sticks out ABOVE the main row
+          let afterWidth = Math.round(percentMinusAfter - rowHeight)*10;
+          let afterHeight = 10/(rowHeight) * 100;
+
+          td.style.setProperty('--afterWidth',`${afterWidth}%`);
+          td.style.setProperty('--afterHeight',`${afterHeight}%`);
+
+          // If the row width plus the previous after is under 10 it needs to be added to the new previousAfter variable
+          if(previousAfter + beforeWidth/10 + rowWidth/10 < 10 )
+            previousAfter += beforeWidth/10 + (rowWidth/10);
+          else if (percentMinusAfter < 10)
+            previousAfter = percentMinusAfter;
+          else 
+            previousAfter = afterWidth/10;
+
+          // Add to the row position so that the new row is shoved up if needed
+          rowPosition += (rowWidth > 0 ? rowHeight : 0) + (afterWidth > 0 ? 10 : 0);
         }
       }
 

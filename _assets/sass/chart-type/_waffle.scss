@@ -1,0 +1,80 @@
+// #region Pie chart
+#{'.chart '+$waffle-chart} {
+  --chart-height-set: 100%;
+  --chart-height-lg-set: 100%;
+  --chart-height-resp: 100%;
+
+  table tbody {
+  }
+
+  table tbody tr {
+    flex-direction: column-reverse;
+    justify-content: end;
+    overflow: hidden;
+    
+    td,
+    td:not(:first-child) {
+
+      max-width: 100%;
+    }
+
+    td:not(:first-child) {
+
+      width: 100%;
+      max-width: 100%;
+      height: var(--rowHeight);
+      position: absolute;
+      bottom: var(--rowPosition,0);
+      left: 0;
+      width: 100%;
+      flex-grow: 0;
+      flex-shrink: 0;
+      background-size: 100% var(--rowWidth);
+      background: linear-gradient(90deg, var(--chart-colour) var(--rowWidth), transparent var(--rowWidth), transparent 100%);
+
+      &:before {
+        height: var(--beforeHeight,0%);
+        width: var(--beforeWidth,0%);
+        max-width: var(--maxWidth);
+        content: " ";
+        display: block!important;
+        position: absolute;
+        top: 100%;
+        left: var(--beforeLeft, 0);
+        z-index: 2;
+        background-color: var(--chart-colour);
+      }
+
+      &:after {
+        height: var(--afterHeight,0%);
+        width: var(--afterWidth,0%);
+        max-width: var(--maxWidth);
+        content: " ";
+        display: block!important;
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        z-index: 2;
+        background-color: var(--chart-colour);
+      }
+    }
+
+
+    &:after {
+
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    
+      z-index: 3;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' version='1.1' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:svgjs='http://svgjs.dev/svgjs' viewBox='0 0 800 800' width='800' height='800'%3E%3Cg stroke-width='2' stroke='white' fill='none'%3E%3Crect width='80' height='80' x='0' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='0'%3E%3C/rect%3E%3Crect width='80' height='80' x='0' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='80'%3E%3C/rect%3E%3Crect width='80' height='80' x='0' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='160'%3E%3C/rect%3E%3Crect width='80' height='80' x='0' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='240'%3E%3C/rect%3E%3Crect width='80' height='80' x='0' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='320'%3E%3C/rect%3E%3Crect width='80' height='80' x='0' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='400'%3E%3C/rect%3E%3Crect width='80' height='80' x='0' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='480'%3E%3C/rect%3E%3Crect width='80' height='80' x='0' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='560'%3E%3C/rect%3E%3Crect width='80' height='80' x='0' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='640'%3E%3C/rect%3E%3Crect width='80' height='80' x='0' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='720'%3E%3C/rect%3E%3Crect width='80' height='80' x='0' y='800'%3E%3C/rect%3E%3Crect width='80' height='80' x='80' y='800'%3E%3C/rect%3E%3Crect width='80' height='80' x='160' y='800'%3E%3C/rect%3E%3Crect width='80' height='80' x='240' y='800'%3E%3C/rect%3E%3Crect width='80' height='80' x='320' y='800'%3E%3C/rect%3E%3Crect width='80' height='80' x='400' y='800'%3E%3C/rect%3E%3Crect width='80' height='80' x='480' y='800'%3E%3C/rect%3E%3Crect width='80' height='80' x='560' y='800'%3E%3C/rect%3E%3Crect width='80' height='80' x='640' y='800'%3E%3C/rect%3E%3Crect width='80' height='80' x='720' y='800'%3E%3C/rect%3E%3Crect width='80' height='80' x='800' y='800'%3E%3C/rect%3E%3C/g%3E%3C/svg%3E");
+    background-size: 100% 100%;
+    }
+  }
+
+}

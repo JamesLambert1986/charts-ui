@@ -44,3 +44,4 @@ $polar-chart: 'input[type="radio"]:not([value="none"])[value="polar"]:checked ~ 
 $tree-chart: 'input[type="radio"]:not([value="none"])[value="treemap"]:checked ~ .chart__inner';
 $tree-chart-key: 'input[type="radio"]:not([value="none"])[value="treemap"]:checked ~ .chart__key';
 $dumbbell-chart: 'input[type="radio"]:not([value="none"])[value="dumbbell"]:checked ~ .chart__inner';
+$waffle-chart: 'input[type="radio"]:not([value="none"])[value="waffle"]:checked ~ .chart__inner';
