@@ -1,6 +1,6 @@
 {
-  "name": "bbc-charts",
-  "description": "BBC Charts UI library",
+  "name": "charts-ui",
+  "description": "Charts UI library",
   "version": "0.0.1",
   "scripts": {
     "watch:sass": "sass --watch _assets/sass/:_assets/css/ _app/sass/:_app/css/ --style=compressed",

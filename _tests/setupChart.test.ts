@@ -93,7 +93,7 @@ describe('Setup chart function', () => {
   test('should call createOptionalContent function only once', () => {
     
     let chartElement = document.getElementById('chart');
-    const spy = jest.spyOn(chart,'createOptionalContent') 
+    const spy = jest.spyOn(chart,'setupOptionalContent') 
 
     chart.setupChart(chartElement);
     expect(spy).toHaveBeenCalledTimes(1);

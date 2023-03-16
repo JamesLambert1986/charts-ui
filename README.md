@@ -1,2 +1,1 @@
-# bbc-charts
-Charts UI library
+# Charts UI library

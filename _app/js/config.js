@@ -1,4 +1,4 @@
-import { csvToObj, createTable, createSeries, deleteCellData } from  '../../_assets/js/modules/chart.js';
+import { convertCSVToObj, createTable, createSeries, deleteCellData } from  '../../_assets/js/modules/chart.js';
 
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -366,7 +366,7 @@ console.log(cssFile);
     const reader = new FileReader();
     reader.addEventListener('load', (e) => {
       const text = e.target.result;
-      const data = csvToObj(text);
+      const data = convertCSVToObj(text);
 
       chart.remove();
       chartWrapper.innerHTML = `<figure class="chart" data-min="0" data-max="3000" id="chart"></figure>`;
