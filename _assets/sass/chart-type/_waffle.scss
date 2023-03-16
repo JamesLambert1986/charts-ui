@@ -4,13 +4,37 @@
   --chart-height-lg-set: 100%;
   --chart-height-resp: 100%;
 
+  table {
+    padding-top: 0;
+  }
+
   table tbody {
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: relative;
+    gap: 1rem;
+  }
+
+  table tbody:has(tr:nth-child(2)) tr {
+
+    min-width: 8.75rem;
+    width: 100%;
+    flex-basis: 49%;
+    flex-grow: 0;
+    flex-shrink: 1;
+  }
+  table tbody:has(tr:nth-child(3)) tr {
+
+    flex-basis: 30%;
   }
 
   table tbody tr {
     flex-direction: column-reverse;
     justify-content: end;
-    overflow: hidden;
+    background-color: #d0d0d0;
+    position: relative;
+    aspect-ratio: 1;
+    margin-bottom: 2rem;
     
     td,
     td:not(:first-child) {

@@ -402,6 +402,7 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
         // For waffle charts
         let previousAfter = 0;
         let rowPosition = 0;
+        let totalPercent = 0;
         // Set the data numeric value if not set
         Array.from(tr.querySelectorAll('td:not([data-numeric]):not(:first-child)')).forEach((td) => {
             let value = parseFloat(td.textContent.replace('£', '').replace('%', '').replace(',', ''));
@@ -429,7 +430,7 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
         if (tr.querySelector('[data-label="Max"]')) {
             tr.setAttribute('data-max', tr.querySelector('[data-label="Max"][data-numeric]').getAttribute('data-numeric'));
         }
-        if (chartType == "proportional" || chartType == "waffle") {
+        if ((chartType == "proportional" || chartType == "waffle") && !tr.hasAttribute('data-total')) {
             let total = 0;
             Array.from(tr.querySelectorAll('td[data-numeric]:not(:first-child)')).forEach((td) => {
                 let display = getComputedStyle(td).display;
@@ -486,6 +487,10 @@ export const setCellData = function (chartElement, table, min, max, secondTable)
                 }
                 if (chartType == "waffle") {
                     let actualPercent = Math.round(td.getAttribute('data-comparison'));
+                    // Prevent the chart from spilling out of the top
+                    totalPercent += actualPercent;
+                    if (totalPercent > 100)
+                        actualPercent = actualPercent - (totalPercent - 100);
                     let percentMinusAfter = previousAfter != 0 ? actualPercent - (10 - previousAfter) : actualPercent;
                     let rowHeight = percentMinusAfter < 10 ? 10 : Math.floor(percentMinusAfter / 10) * 10;
                     let rowWidth = percentMinusAfter < 10 ? percentMinusAfter * 10 : 100;
@@ -1253,8 +1258,13 @@ export const createRadar = function (chartElement, min, max) {
 };
 function addKeyTotals(chartElement) {
     let chartTotal = 0;
-    Array.from(chartElement.querySelectorAll('tbody td[data-numeric]:not([data-label="Min"]):not([data-label="Max"]):not(:first-child)')).forEach((td) => {
+    Array.from(chartElement.querySelectorAll('tbody tr:not([data-total]) td[data-numeric]:not([data-label="Min"]):not([data-label="Max"]):not(:first-child)')).forEach((td) => {
         const value = Number.parseFloat(td.getAttribute('data-numeric'));
+        chartTotal += value;
+    });
+    // Get row totals already worked out
+    Array.from(chartElement.querySelectorAll('tbody tr[data-total]')).forEach((tr) => {
+        const value = Number.parseFloat(tr.getAttribute('data-total'));
         chartTotal += value;
     });
     chartElement.setAttribute('data-total', chartTotal);
